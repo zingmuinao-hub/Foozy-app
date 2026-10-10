@@ -3,238 +3,566 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Foozy Restaurant Dashboard</title>
+<title>Foozy Partners</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+:root {
+  --orange:#ff781f;
+  --cream:#fff8ef;
+  --dark:#201d1b;
+  --muted:#8b8179;
+  --white:#fff;
+  --line:#eee7df;
+}
 *{box-sizing:border-box}
-body{margin:0;background:#fff8ef;color:#30251f;font-family:Arial,sans-serif}
-header{background:#f47721;color:white;padding:20px}
-header h1{margin:0}header p{margin:6px 0 0}
-main{max-width:850px;margin:auto;padding:18px}
-.card{background:white;padding:18px;border-radius:14px;margin:15px 0;box-shadow:0 2px 10px #0000000c}
-input,textarea,button{width:100%;padding:12px;margin:6px 0;border-radius:8px;border:1px solid #ddd;font-size:16px}
-button{background:#f47721;color:white;border:0;font-weight:bold;cursor:pointer}
-button:disabled{opacity:.5}
-.secondary{background:#55443a}
-.item{display:flex;gap:12px;align-items:center;border-top:1px solid #eee;padding:12px 0}
-.item img{width:80px;height:80px;object-fit:cover;border-radius:10px}
-.details{flex:1;min-width:0}.details p{margin:5px 0}
-.item button{width:auto;padding:9px;font-size:13px}
-small{color:#76695f}
-.hidden{display:none}
-#message{padding:10px;border-radius:8px;background:#fff0dc;overflow-wrap:anywhere}
+body{
+  margin:0;background:var(--cream);color:var(--dark);
+  font-family:Arial,sans-serif
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+button:disabled{opacity:.5;cursor:wait}
+.layout{min-height:100vh}
+.sidebar{
+  display:none;background:var(--dark);color:white;
+  padding:24px 16px
+}
+.brand{font-size:25px;font-weight:900;color:var(--orange)}
+.brand small{display:block;color:#aaa;font-size:11px;margin-top:5px}
+.nav{margin-top:35px;display:grid;gap:9px}
+.nav button{
+  border:0;background:transparent;color:#ccc;text-align:left;
+  padding:13px;border-radius:10px
+}
+.nav button.active,.nav button:hover{
+  background:#3a3029;color:#ff984f
+}
+.content{min-width:0;padding:18px;max-width:1200px;margin:auto}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.topbar h1{font-size:24px;margin:5px 0}
+.eyebrow{color:var(--muted);font-size:12px}
+.avatar{
+  width:48px;height:48px;border-radius:15px;object-fit:cover;
+  background:#ffe3ca
+}
+.panel{background:white;border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:17px}
+.hero{
+  background:linear-gradient(120deg,#241e1a,#493025);
+  color:white;position:relative;overflow:hidden;
+  min-height:190px;display:flex;align-items:end;
+  border-radius:20px;margin-top:20px;padding:22px
+}
+.hero:before{
+  content:"";position:absolute;width:180px;height:180px;
+  border-radius:50%;background:#ff781f30;right:-40px;top:-55px
+}
+.hero h2{font-size:26px;margin:0 0 8px}
+.hero p{color:#e5d8cf;margin:0}
+.hero button{margin-top:16px}
+button.primary{
+  border:0;background:var(--orange);color:#241b15;
+  padding:12px 16px;border-radius:10px;font-weight:bold
+}
+button.secondary{
+  border:1px solid var(--line);background:white;
+  color:var(--dark);padding:10px;border-radius:10px
+}
+button.danger{background:#fff0ed;color:#b72f20;border:0}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:15px}
+.stat{background:white;border:1px solid var(--line);padding:16px;border-radius:15px}
+.stat strong{display:block;font-size:25px;margin-top:12px}
+.stat span{font-size:12px;color:var(--muted)}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.section-head h2{font-size:19px}
+.field{margin:12px 0}
+label{display:block;font-size:13px;font-weight:bold;margin-bottom:7px}
+input,textarea,select{
+  display:block;width:100%;padding:12px;border:1px solid #e5ddd5;
+  border-radius:10px;background:#fff;color:var(--dark)
+}
+textarea{min-height:80px;resize:vertical}
+.help{font-size:12px;color:var(--muted);line-height:1.5}
+.hidden{display:none!important}
+.menu-grid,.offer-grid{display:grid;grid-template-columns:1fr;gap:14px}
+.food-card,.offer-card{border:1px solid var(--line);border-radius:15px;overflow:hidden}
+.food-card img,.offer-card img{
+  width:100%;height:170px;object-fit:cover;background:#f5e8da
+}
+.food-body,.offer-body{padding:14px}
+.food-body h3,.offer-body h3{margin:0 0 7px}
+.food-body p,.offer-body p{font-size:13px;color:var(--muted)}
+.food-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.food-actions button{flex:1}
+.badge{display:inline-block;background:#e3f8e9;color:#207441;padding:6px 9px;border-radius:20px;font-size:11px}
+.badge.off{background:#ffe7e3;color:#a52d20}
+.photo-preview{width:100%;max-height:180px;object-fit:cover;border-radius:12px;margin-top:8px}
+.empty{padding:25px;text-align:center;color:var(--muted);font-size:14px}
+.message{margin-top:15px;padding:12px;border-radius:10px;background:#fff0dc;overflow-wrap:anywhere;font-size:13px}
+.bottom-nav{
+  position:sticky;bottom:0;background:white;border-top:1px solid var(--line);
+  display:flex;justify-content:space-around;gap:2px;padding:8px 3px;
+  padding-bottom:max(8px,env(safe-area-inset-bottom));z-index:5
+}
+.bottom-nav button{
+  flex:1;border:0;background:transparent;color:#7e746d;
+  font-size:10px;padding:9px 2px;border-radius:9px
+}
+.bottom-nav button.active{color:var(--orange);background:#fff1e5}
+.bottom-nav b{display:block;font-size:17px;margin-bottom:4px}
+@media(min-width:760px){
+  .layout{display:grid;grid-template-columns:225px minmax(0,1fr)}
+  .sidebar{display:block;position:sticky;top:0;height:100vh}
+  .content{width:100%;padding:30px}
+  .bottom-nav{display:none}
+  .stats{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .menu-grid,.offer-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(min-width:1100px){
+  .menu-grid,.offer-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
 </style>
 </head>
 <body>
-<header>
-<h1>🍔 Foozy Partner</h1>
-<p>Manage your restaurant and menu</p>
-</header>
 
-<main>
-<section class="card" id="loginBox">
-<h2>Restaurant Owner Login</h2>
-<input id="email" type="email" placeholder="Email address" autocomplete="email">
-<input id="password" type="password" placeholder="Password" autocomplete="current-password">
-<button id="loginBtn" onclick="login()">Login</button>
-<p><small>Use your existing Foozy owner account.</small></p>
-</section>
+<div class="layout">
+<aside class="sidebar">
+  <div class="brand">foozy<span style="color:white">.</span>
+    <small>RESTAURANT PARTNER</small>
+  </div>
+  <nav class="nav" id="sideNav">
+    <button data-page="overview" class="active">▦ &nbsp; Overview</button>
+    <button data-page="menu">🍔 &nbsp; My Menu</button>
+    <button data-page="offers">🎉 &nbsp; Special Offers</button>
+    <button data-page="profile">🏪 &nbsp; Restaurant Profile</button>
+  </nav>
+  <p class="help" style="margin-top:40px;color:#aaa">Your restaurant. Your brand. Your Foozy.</p>
+  <button class="secondary" id="logoutSide" style="width:100%;margin-top:15px">Log out</button>
+</aside>
 
-<section id="dashboard" class="hidden">
-<div class="card">
-<h2 id="welcome">Your Restaurant</h2>
-<p id="restaurantInfo">Loading restaurant...</p>
-<button class="secondary" onclick="logout()">Log out</button>
-</div>
+<main class="content">
+  <section id="loginPage">
+    <div class="brand">foozy<span style="color:#201d1b">.</span></div>
+    <div class="panel">
+      <h2>Welcome back 👋</h2>
+      <p class="help">Sign in to manage your restaurant.</p>
+      <form id="loginForm">
+        <div class="field"><label>Email</label><input id="email" type="email" autocomplete="username" required></div>
+        <div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password" required></div>
+        <button class="primary" style="width:100%">Sign in to Foozy</button>
+      </form>
+    </div>
+  </section>
 
-<div class="card">
-<h2>Add Food Item</h2>
-<form id="foodForm">
-<input id="foodName" placeholder="Food name" required maxlength="100">
-<input id="foodPrice" type="number" placeholder="Price in ₹" min="0.01" step="0.01" required>
-<input id="foodCategory" placeholder="Category (e.g. Burgers)" maxlength="60">
-<textarea id="foodDescription" placeholder="Description (optional)" maxlength="500"></textarea>
-<label for="foodImage"><small>Food photo — camera or gallery</small></label>
-<input id="foodImage" type="file" accept="image/*" capture="environment">
-<button id="addBtn" type="submit">Add Food</button>
-</form>
-</div>
+  <section id="app" class="hidden">
+    <header class="topbar">
+      <div><div class="eyebrow">FOOZY PARTNERS / <span id="crumb">OVERVIEW</span></div><h1 id="pageTitle">Overview</h1></div>
+      <img class="avatar" id="avatar" alt="Restaurant logo">
+    </header>
 
-<div class="card">
-<h2>Your Menu</h2>
-<div id="menuList">Loading menu...</div>
-</div>
-</section>
+    <div id="page-overview" class="page">
+      <div class="hero">
+        <div style="position:relative">
+          <div class="eyebrow" style="color:#ffb57f">YOUR RESTAURANT DASHBOARD</div>
+          <h2 id="heroName">Welcome to Foozy</h2>
+          <p id="heroAddress">Manage your restaurant in one place.</p>
+          <button class="primary" data-go="profile">Edit restaurant profile ↗</button>
+        </div>
+      </div>
+      <div class="stats">
+        <div class="stat"><span>MENU ITEMS</span><strong id="statMenu">—</strong></div>
+        <div class="stat"><span>AVAILABLE ITEMS</span><strong id="statAvailable">—</strong></div>
+        <div class="stat"><span>ACTIVE OFFERS</span><strong id="statOffers">—</strong></div>
+        <div class="stat"><span>RESTAURANT STATUS</span><strong id="statStatus" style="font-size:17px">—</strong></div>
+      </div>
+      <div class="panel">
+        <div class="section-head"><h2>Quick actions</h2></div>
+        <button class="primary" data-go="menu">＋ Add food item</button>
+        <button class="secondary" data-go="offers">🎉 Create special offer</button>
+        <p class="help">Order and sales statistics will be added after we connect your existing orders table.</p>
+      </div>
+    </div>
 
-<p id="message" role="status" aria-live="polite">Connect to your Foozy account to begin.</p>
+    <div id="page-menu" class="page hidden">
+      <div class="panel">
+        <div class="section-head"><h2>Add food to your menu</h2></div>
+        <form id="foodForm">
+          <div class="field"><label>Food name</label><input id="foodName" maxlength="100" required></div>
+          <div class="field"><label>Price (₹)</label><input id="foodPrice" type="number" min="0.01" step="0.01" required></div>
+          <div class="field"><label>Category</label><input id="foodCategory" placeholder="Momos, Burgers, Drinks..."></div>
+          <div class="field"><label>Description (optional)</label><textarea id="foodDescription" maxlength="500"></textarea></div>
+          <div class="field"><label>Food photo</label><input id="foodImage" type="file" accept="image/*" capture="environment"><p class="help">Choose a photo from your gallery or use your camera. Maximum 5 MB.</p></div>
+          <button class="primary" id="saveFood">＋ Add food item</button>
+          <button class="secondary hidden" id="cancelEdit" type="button">Cancel editing</button>
+        </form>
+      </div>
+      <div class="panel">
+        <div class="section-head"><h2>Your menu</h2><button class="secondary" id="refreshMenu">↻ Refresh</button></div>
+        <div id="menuList" class="menu-grid"><p class="empty">Loading menu...</p></div>
+      </div>
+    </div>
+
+    <div id="page-offers" class="page hidden">
+      <div class="panel">
+        <h2>Make something special 🎉</h2>
+        <p class="help">Create anniversary specials, combo deals, festival offers or limited-time discounts.</p>
+        <form id="offerForm">
+          <div class="field"><label>Offer title</label><input id="offerTitle" placeholder="Our Anniversary Special!" required maxlength="100"></div>
+          <div class="field"><label>Description</label><textarea id="offerDescription" placeholder="Tell customers about your offer"></textarea></div>
+          <div class="field"><label>Discount type</label><select id="offerType"><option value="percentage">Percentage off (%)</option><option value="fixed">Fixed amount off (₹)</option></select></div>
+          <div class="field"><label>Discount value</label><input id="offerValue" type="number" min="0.01" step="0.01" required></div>
+          <div class="field"><label>Starts at</label><input id="offerStart" type="datetime-local" required></div>
+          <div class="field"><label>Ends at</label><input id="offerEnd" type="datetime-local" required></div>
+          <button class="primary" id="saveOffer">＋ Create offer</button>
+        </form>
+      </div>
+      <div class="panel">
+        <div class="section-head"><h2>Your promotions</h2><button class="secondary" id="refreshOffers">↻ Refresh</button></div>
+        <div id="offerList" class="offer-grid"><p class="empty">Loading offers...</p></div>
+      </div>
+    </div>
+
+    <div id="page-profile" class="page hidden">
+      <div class="panel">
+        <h2>Your restaurant identity 🏪</h2>
+        <p class="help">Make your Foozy restaurant page feel like your own brand.</p>
+        <form id="profileForm">
+          <div class="field"><label>Restaurant name</label><input id="profileName" required maxlength="100"></div>
+          <div class="field"><label>Address</label><input id="profileAddress" required maxlength="250"></div>
+          <div class="field"><label>Description</label><textarea id="profileDescription" maxlength="1000"></textarea></div>
+          <div class="field"><label>Restaurant logo</label><input id="logoFile" type="file" accept="image/*"><img id="logoPreview" class="photo-preview hidden" alt="Logo preview"></div>
+          <div class="field"><label>Cover photo</label><input id="coverFile" type="file" accept="image/*"><img id="coverPreview" class="photo-preview hidden" alt="Cover preview"></div>
+          <button class="primary" id="saveProfile">Save profile</button>
+        </form>
+        <hr style="border:0;border-top:1px solid var(--line);margin:22px 0">
+        <h3>Restaurant availability</h3>
+        <p class="help">This changes the restaurant's existing is_active field. Public visibility still depends on your existing Foozy website and database policies.</p>
+        <button class="secondary" id="toggleRestaurant">Change status</button>
+      </div>
+    </div>
+
+    <div id="message" class="message" role="status" aria-live="polite">Welcome to Foozy Partners.</div>
+  </section>
 </main>
+</div>
+
+<nav class="bottom-nav hidden" id="bottomNav">
+  <button data-page="overview" class="active"><b>▦</b>Home</button>
+  <button data-page="menu"><b>🍔</b>Menu</button>
+  <button data-page="offers"><b>🎉</b>Offers</button>
+  <button data-page="profile"><b>🏪</b>Profile</button>
+</nav>
 
 <script>
-const SUPABASE_URL = "https://snmufxscviahmmsdbess.supabase.co";
-const SUPABASE_KEY = "sb_publishable_Ix1rMiMTqPQIsBEM708shg_POK6_JM8";
-const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_URL="https://snmufxscviahmmsdbess.supabase.co";
+const SUPABASE_KEY="sb_publishable_Ix1rMiMTqPQIsBEM708shg_POK6_JM8";
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
-let ownerId = null;
-let restaurant = null;
-let busy = false;
+let ownerId=null, restaurant=null, menuItems=[], offers=[], editingId=null, busy=false;
 
-function say(text){
-  document.getElementById("message").textContent = text;
+const $=id=>document.getElementById(id);
+function say(t){$("message").textContent=t;}
+function esc(t){return String(t??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+
+function go(page){
+  document.querySelectorAll(".page").forEach(el=>el.classList.add("hidden"));
+  $("page-"+page).classList.remove("hidden");
+  document.querySelectorAll("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+  const names={overview:"Overview",menu:"My Menu",offers:"Special Offers",profile:"Restaurant Profile"};
+  $("pageTitle").textContent=names[page];
+  $("crumb").textContent=names[page].toUpperCase();
+  if(page==="menu")loadMenu();
+  if(page==="offers")loadOffers();
+  window.scrollTo({top:0,behavior:"smooth"});
 }
+document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>go(b.dataset.page));
+document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>go(b.dataset.go));
 
 async function login(){
   if(busy)return;
-  const email=document.getElementById("email").value.trim();
-  const password=document.getElementById("password").value;
-  if(!email||!password){say("Enter your email and password.");return;}
   busy=true;
-  document.getElementById("loginBtn").disabled=true;
   try{
-    const {data,error}=await db.auth.signInWithPassword({email,password});
+    const {data,error}=await db.auth.signInWithPassword({
+      email:$("email").value.trim(),password:$("password").value
+    });
     if(error)throw error;
     ownerId=data.user.id;
-    await loadRestaurant();
-  }catch(e){say("Login failed: "+e.message);}
-  finally{busy=false;document.getElementById("loginBtn").disabled=false;}
+    await startApp();
+  }catch(e){alert("Login failed: "+e.message);}
+  finally{busy=false;}
 }
+$("loginForm").onsubmit=e=>{e.preventDefault();login();};
 
-async function loadRestaurant(){
-  const {data,error}=await db.from("restaurants")
-    .select("*").eq("owner_id",ownerId).limit(1).maybeSingle();
+async function startApp(){
+  const {data,error}=await db.from("restaurants").select("*")
+    .eq("owner_id",ownerId).limit(1).maybeSingle();
   if(error)throw error;
   if(!data){
-    document.getElementById("loginBox").classList.remove("hidden");
-    document.getElementById("dashboard").classList.add("hidden");
-    say("No approved restaurant is linked to this account yet. Apply through Foozy and wait for admin approval.");
+    $("app").classList.add("hidden");
+    $("loginPage").classList.remove("hidden");
+    alert("No approved restaurant is linked to this account yet.");
     return;
   }
   restaurant=data;
-  document.getElementById("loginBox").classList.add("hidden");
-  document.getElementById("dashboard").classList.remove("hidden");
-  document.getElementById("welcome").textContent=data.name;
-  document.getElementById("restaurantInfo").textContent=data.address||"Restaurant address not added";
-  await loadMenu();
-  say("Welcome to your Foozy dashboard!");
+  $("loginPage").classList.add("hidden");
+  $("app").classList.remove("hidden");
+  $("bottomNav").classList.remove("hidden");
+  renderProfile();
+  await Promise.all([loadMenu(),loadOffers()]);
+  go("overview");
+  say("Welcome to "+restaurant.name+"!");
+}
+
+function renderProfile(){
+  $("heroName").textContent=restaurant.name;
+  $("heroAddress").textContent=restaurant.address||"Add your restaurant address";
+  $("profileName").value=restaurant.name||"";
+  $("profileAddress").value=restaurant.address||"";
+  $("profileDescription").value=restaurant.description||"";
+  $("statStatus").textContent=restaurant.is_active?"OPEN":"CLOSED";
+  $("avatar").src=restaurant.logo_url||"";
+  $("avatar").style.visibility=restaurant.logo_url?"visible":"hidden";
+  showPreview("logoPreview",restaurant.logo_url);
+  showPreview("coverPreview",restaurant.cover_image_url);
+}
+function showPreview(id,url){
+  const el=$(id);
+  if(url){el.src=url;el.classList.remove("hidden");}
+  else{el.removeAttribute("src");el.classList.add("hidden");}
+}
+async function uploadImage(file,path){
+  if(!file)return null;
+  if(!file.type.startsWith("image/"))throw Error("Please choose an image.");
+  if(file.size>5*1024*1024)throw Error("Images must be under 5 MB.");
+  const ext=(file.name.split(".").pop()||"jpg").replace(/[^a-z0-9]/gi,"")||"jpg";
+  const full=path+"/"+crypto.randomUUID()+"."+ext;
+  const {error}=await db.storage.from("food-images").upload(full,file);
+  if(error)throw error;
+  return db.storage.from("food-images").getPublicUrl(full).data.publicUrl;
 }
 
 async function loadMenu(){
-  const box=document.getElementById("menuList");
-  box.textContent="Loading menu...";
-  const {data,error}=await db.from("menu_items")
-    .select("*").eq("restaurant_id",restaurant.id).order("name");
-  if(error){box.textContent="Could not load menu: "+error.message;return;}
-  box.replaceChildren();
-  if(!data.length){box.textContent="No food items yet. Add your first dish above.";return;}
+  $("menuList").innerHTML='<p class="empty">Loading menu...</p>';
+  const {data,error}=await db.from("menu_items").select("*")
+    .eq("restaurant_id",restaurant.id).order("name");
+  if(error){$("menuList").textContent=error.message;return;}
+  menuItems=data||[];
+  $("statMenu").textContent=menuItems.length;
+  $("statAvailable").textContent=menuItems.filter(x=>x.is_available).length;
+  if(!menuItems.length){$("menuList").innerHTML='<p class="empty">Your menu is empty. Add your first dish!</p>';return;}
+  $("menuList").innerHTML=menuItems.map(x=>`
+    <article class="food-card">
+      ${x.image_url?`<img src="${esc(x.image_url)}" alt="${esc(x.name)}" loading="lazy">`:""}
+      <div class="food-body">
+        <span class="badge ${x.is_available?"":"off"}">${x.is_available?"AVAILABLE":"OUT OF STOCK"}</span>
+        <h3>${esc(x.name)}</h3>
+        <strong>₹${esc(x.price)}</strong>
+        <p>${esc(x.category||"Uncategorised")}</p>
+        <p>${esc(x.description||"No description")}</p>
+        <div class="food-actions">
+          <button class="secondary" data-edit="${esc(x.id)}">Edit</button>
+          <button class="secondary" data-stock="${esc(x.id)}">${x.is_available?"Out of stock":"In stock"}</button>
+          <button class="secondary danger" data-delete="${esc(x.id)}">Delete</button>
+        </div>
+      </div>
+    </article>`).join("");
+  $("menuList").querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>editFood(b.dataset.edit));
+  $("menuList").querySelectorAll("[data-stock]").forEach(b=>b.onclick=()=>changeStock(b.dataset.stock));
+  $("menuList").querySelectorAll("[data-delete]").forEach(b=>b.onclick=()=>deleteFood(b.dataset.delete));
+}
+$("refreshMenu").onclick=loadMenu;
 
-  data.forEach(item=>{
-    const row=document.createElement("div");
-    row.className="item";
-    if(item.image_url){
-      const img=document.createElement("img");
-      img.src=item.image_url;img.alt=item.name;img.loading="lazy";
-      row.appendChild(img);
+function editFood(id){
+  const x=menuItems.find(i=>String(i.id)===String(id));
+  if(!x)return;
+  editingId=x.id;
+  $("foodName").value=x.name||"";
+  $("foodPrice").value=x.price;
+  $("foodCategory").value=x.category||"";
+  $("foodDescription").value=x.description||"";
+  $("foodImage").value="";
+  $("saveFood").textContent="Save changes";
+  $("cancelEdit").classList.remove("hidden");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function resetFoodForm(){
+  $("foodForm").reset();editingId=null;
+  $("saveFood").textContent="＋ Add food item";
+  $("cancelEdit").classList.add("hidden");
+}
+$("cancelEdit").onclick=resetFoodForm;
+
+$("foodForm").onsubmit=async e=>{
+  e.preventDefault();
+  if(busy)return;
+  busy=true;$("saveFood").disabled=true;
+  let path=null;
+  try{
+    const file=$("foodImage").files[0];
+    let image_url=null;
+    if(file){
+      image_url=await uploadImage(file,restaurant.id);
+      path=image_url;
     }
-    const details=document.createElement("div");
-    details.className="details";
-    const title=document.createElement("strong");
-    title.textContent=item.name;
-    const price=document.createElement("p");
-    price.textContent="₹"+item.price;
-    const stock=document.createElement("small");
-    stock.textContent=item.is_available?"Available":"OUT OF STOCK";
-    details.append(title,price,stock);
-    row.appendChild(details);
+    const payload={
+      name:$("foodName").value.trim(),
+      price:Number($("foodPrice").value),
+      category:$("foodCategory").value.trim()||null,
+      description:$("foodDescription").value.trim()||null
+    };
+    if(!Number.isFinite(payload.price)||payload.price<=0)throw Error("Enter a valid price.");
+    if(image_url)payload.image_url=image_url;
 
-    const toggle=document.createElement("button");
-    toggle.className="secondary";
-    toggle.textContent=item.is_available?"Out of stock":"In stock";
-    toggle.onclick=()=>changeStock(item);
-    row.appendChild(toggle);
+    let result;
+    if(editingId){
+      result=await db.from("menu_items").update(payload)
+        .eq("id",editingId).eq("restaurant_id",restaurant.id);
+    }else{
+      result=await db.from("menu_items").insert({
+        ...payload,restaurant_id:restaurant.id,is_available:true
+      });
+    }
+    if(result.error)throw result.error;
+    resetFoodForm();say("Menu item saved!");await loadMenu();
+  }catch(e){say("Could not save food: "+e.message);}
+  finally{busy=false;$("saveFood").disabled=false;}
+};
 
-    const del=document.createElement("button");
-    del.textContent="Delete";
-    del.onclick=()=>deleteFood(item);
-    row.appendChild(del);
-    box.appendChild(row);
-  });
+async function changeStock(id){
+  const x=menuItems.find(i=>String(i.id)===String(id));
+  if(!x)return;
+  const {error}=await db.from("menu_items").update({is_available:!x.is_available})
+    .eq("id",x.id).eq("restaurant_id",restaurant.id);
+  if(error){say("Stock update failed: "+error.message);return;}
+  say("Stock status updated.");await loadMenu();
+}
+async function deleteFood(id){
+  const x=menuItems.find(i=>String(i.id)===String(id));
+  if(!x||!confirm("Permanently delete "+x.name+"?"))return;
+  const {error}=await db.from("menu_items").delete()
+    .eq("id",x.id).eq("restaurant_id",restaurant.id);
+  if(error){say("Delete failed: "+error.message);return;}
+  say("Food item deleted.");await loadMenu();
 }
 
-document.getElementById("foodForm").addEventListener("submit",async e=>{
+async function loadOffers(){
+  $("offerList").innerHTML='<p class="empty">Loading offers...</p>';
+  const {data,error}=await db.from("restaurant_offers").select("*")
+    .eq("restaurant_id",restaurant.id).order("created_at",{ascending:false});
+  if(error){$("offerList").textContent="Could not load offers: "+error.message;return;}
+  offers=data||[];
+  const now=Date.now();
+  const active=offers.filter(o=>o.is_active&&new Date(o.starts_at).getTime()<=now&&new Date(o.ends_at).getTime()>now);
+  $("statOffers").textContent=active.length;
+  if(!offers.length){$("offerList").innerHTML='<p class="empty">No offers yet. Create your first special promotion!</p>';return;}
+  $("offerList").innerHTML=offers.map(o=>{
+    const live=o.is_active&&new Date(o.starts_at).getTime()<=now&&new Date(o.ends_at).getTime()>now;
+    return `<article class="offer-card"><div class="offer-body">
+      <span class="badge ${live?"":"off"}">${live?"LIVE NOW":o.is_active?"SCHEDULED / ENDED":"INACTIVE"}</span>
+      <h3>${esc(o.title)}</h3><p>${esc(o.description||"Special restaurant offer")}</p>
+      <strong>${o.discount_type==="percentage"?esc(o.discount_value)+"% off":"₹"+esc(o.discount_value)+" off"}</strong>
+      <p>${new Date(o.starts_at).toLocaleString()} – ${new Date(o.ends_at).toLocaleString()}</p>
+      <div class="food-actions">
+        <button class="secondary" data-offer-toggle="${esc(o.id)}">${o.is_active?"Deactivate":"Activate"}</button>
+        <button class="secondary danger" data-offer-delete="${esc(o.id)}">Delete</button>
+      </div></div></article>`;
+  }).join("");
+  $("offerList").querySelectorAll("[data-offer-toggle]").forEach(b=>b.onclick=()=>toggleOffer(b.dataset.offerToggle));
+  $("offerList").querySelectorAll("[data-offer-delete]").forEach(b=>b.onclick=()=>deleteOffer(b.dataset.offerDelete));
+}
+$("refreshOffers").onclick=loadOffers;
+
+$("offerForm").onsubmit=async e=>{
   e.preventDefault();
-  if(busy||!restaurant)return;
-  busy=true;
-  const btn=document.getElementById("addBtn");
-  btn.disabled=true;
-  let uploadedPath=null;
+  const start=new Date($("offerStart").value);
+  const end=new Date($("offerEnd").value);
+  const type=$("offerType").value;
+  const value=Number($("offerValue").value);
+  if(!Number.isFinite(value)||value<=0||(type==="percentage"&&value>100)){say("Enter a valid discount value.");return;}
+  if(!Number.isFinite(start.getTime())||!Number.isFinite(end.getTime())||end<=start){say("The end date must be after the start date.");return;}
+  if(busy)return;
+  busy=true;$("saveOffer").disabled=true;
   try{
-    const file=document.getElementById("foodImage").files[0];
-    let imageUrl=null;
-
-    if(file){
-      if(!file.type.startsWith("image/"))throw Error("Choose an image file.");
-      if(file.size>5*1024*1024)throw Error("Photo must be under 5 MB.");
-      const ext=(file.name.split(".").pop()||"jpg").replace(/[^a-z0-9]/gi,"").toLowerCase()||"jpg";
-      uploadedPath=restaurant.id+"/"+crypto.randomUUID()+"."+ext;
-      const {error}=await db.storage.from("food-images").upload(uploadedPath,file,{upsert:false});
-      if(error)throw error;
-      imageUrl=db.storage.from("food-images").getPublicUrl(uploadedPath).data.publicUrl;
-    }
-
-    const {error}=await db.from("menu_items").insert({
+    const {error}=await db.from("restaurant_offers").insert({
       restaurant_id:restaurant.id,
-      name:document.getElementById("foodName").value.trim(),
-      price:Number(document.getElementById("foodPrice").value),
-      category:document.getElementById("foodCategory").value.trim()||null,
-      description:document.getElementById("foodDescription").value.trim()||null,
-      image_url:imageUrl,
-      is_available:true
+      title:$("offerTitle").value.trim(),
+      description:$("offerDescription").value.trim()||null,
+      discount_type:type,discount_value:value,
+      starts_at:start.toISOString(),ends_at:end.toISOString(),is_active:true
     });
     if(error)throw error;
-    e.target.reset();
-    say("Food item added successfully!");
-    await loadMenu();
-  }catch(err){
-    say("Could not add food: "+err.message);
-    if(uploadedPath){
-      await db.storage.from("food-images").remove([uploadedPath]);
-    }
-  }finally{
-    busy=false;btn.disabled=false;
-  }
-});
+    $("offerForm").reset();say("Offer created!");
+    await loadOffers();
+  }catch(e){say("Could not create offer: "+e.message);}
+  finally{busy=false;$("saveOffer").disabled=false;}
+};
 
-async function changeStock(item){
-  const {error}=await db.from("menu_items")
-    .update({is_available:!item.is_available})
-    .eq("id",item.id).eq("restaurant_id",restaurant.id);
-  if(error){say("Stock update failed: "+error.message);return;}
-  say("Stock updated.");
-  await loadMenu();
+async function toggleOffer(id){
+  const o=offers.find(x=>String(x.id)===String(id));
+  if(!o)return;
+  const {error}=await db.from("restaurant_offers").update({is_active:!o.is_active})
+    .eq("id",o.id).eq("restaurant_id",restaurant.id);
+  if(error){say("Could not update offer: "+error.message);return;}
+  say("Offer status updated.");await loadOffers();
+}
+async function deleteOffer(id){
+  if(!confirm("Delete this offer?"))return;
+  const {error}=await db.from("restaurant_offers").delete()
+    .eq("id",id).eq("restaurant_id",restaurant.id);
+  if(error){say("Could not delete offer: "+error.message);return;}
+  say("Offer deleted.");await loadOffers();
 }
 
-async function deleteFood(item){
-  if(!confirm("Delete "+item.name+" permanently?"))return;
-  const {error}=await db.from("menu_items")
-    .delete().eq("id",item.id).eq("restaurant_id",restaurant.id);
-  if(error){say("Delete failed: "+error.message);return;}
-  say("Food item deleted.");
-  await loadMenu();
+$("profileForm").onsubmit=async e=>{
+  e.preventDefault();
+  if(busy)return;
+  busy=true;$("saveProfile").disabled=true;
+  try{
+    const patch={
+      name:$("profileName").value.trim(),
+      address:$("profileAddress").value.trim(),
+      description:$("profileDescription").value.trim()||null
+    };
+    const logo=$("logoFile").files[0],cover=$("coverFile").files[0];
+    if(logo)patch.logo_url=await uploadImage(logo,restaurant.id+"/branding");
+    if(cover)patch.cover_image_url=await uploadImage(cover,restaurant.id+"/branding");
+    const {data,error}=await db.from("restaurants").update(patch)
+      .eq("id",restaurant.id).eq("owner_id",ownerId).select().single();
+    if(error)throw error;
+    restaurant=data;renderProfile();say("Restaurant profile updated!");
+  }catch(e){say("Could not save profile: "+e.message);}
+  finally{busy=false;$("saveProfile").disabled=false;}
+};
+
+$("logoFile").onchange=()=>previewLocal("logoFile","logoPreview");
+$("coverFile").onchange=()=>previewLocal("coverFile","coverPreview");
+function previewLocal(inputId,previewId){
+  const f=$(inputId).files[0];if(!f)return;
+  if(!f.type.startsWith("image/")||f.size>5*1024*1024){say("Choose an image under 5 MB.");$(inputId).value="";return;}
+  $(previewId).src=URL.createObjectURL(f);$(previewId).classList.remove("hidden");
 }
+
+$("toggleRestaurant").onclick=async()=>{
+  const next=!restaurant.is_active;
+  if(!confirm("Set restaurant status to "+(next?"OPEN":"CLOSED")+"?"))return;
+  const {data,error}=await db.from("restaurants").update({is_active:next})
+    .eq("id",restaurant.id).eq("owner_id",ownerId).select().single();
+  if(error){say("Could not change restaurant status: "+error.message);return;}
+  restaurant=data;renderProfile();say("Restaurant status updated.");
+};
 
 async function logout(){
   await db.auth.signOut();
   ownerId=null;restaurant=null;
-  document.getElementById("dashboard").classList.add("hidden");
-  document.getElementById("loginBox").classList.remove("hidden");
-  say("You have logged out.");
+  $("app").classList.add("hidden");$("bottomNav").classList.add("hidden");
+  $("loginPage").classList.remove("hidden");$("password").value="";
 }
+$("logoutSide").onclick=logout;
 
 db.auth.getSession().then(async ({data,error})=>{
-  if(error){say("Could not check session.");return;}
+  if(error){say("Could not check login session.");return;}
   if(data.session){
     ownerId=data.session.user.id;
-    try{await loadRestaurant();}
-    catch(e){say("Could not load dashboard: "+e.message);}
+    try{await startApp();}catch(e){say("Could not open dashboard: "+e.message);}
   }
 });
 </script>
