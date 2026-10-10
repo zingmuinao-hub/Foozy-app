@@ -1740,6 +1740,11 @@ if (!window.foozySupabase) {
             <strong style="font-size:18px;color:#e66b24;">
               ₹${Number(item.price || 0).toFixed(0)}
             </strong>
+            <button
+  onclick="addToCart('${safe(name)}', ${Number(item.price || 0)})"
+  style="width:100%;margin-top:12px;padding:10px;background:#e66b24;color:white;border:0;border-radius:8px;font-weight:bold;cursor:pointer;">
+  🛒 Add to Cart
+</button>
           </div>
         </article>
       `;
