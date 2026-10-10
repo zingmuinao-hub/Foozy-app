@@ -1,1 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Foozy Restaurant Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#fff8ef;color:#30251f;font-family:Arial,sans-serif}
+header{background:#f47721;color:white;padding:20px}
+header h1{margin:0}header p{margin:6px 0 0}
+main{max-width:850px;margin:auto;padding:18px}
+.card{background:white;padding:18px;border-radius:14px;margin:15px 0;box-shadow:0 2px 10px #0000000c}
+input,textarea,button{width:100%;padding:12px;margin:6px 0;border-radius:8px;border:1px solid #ddd;font-size:16px}
+button{background:#f47721;color:white;border:0;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.5}
+.secondary{background:#55443a}
+.item{display:flex;gap:12px;align-items:center;border-top:1px solid #eee;padding:12px 0}
+.item img{width:80px;height:80px;object-fit:cover;border-radius:10px}
+.details{flex:1;min-width:0}.details p{margin:5px 0}
+.item button{width:auto;padding:9px;font-size:13px}
+small{color:#76695f}
+.hidden{display:none}
+#message{padding:10px;border-radius:8px;background:#fff0dc;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<header>
+<h1>🍔 Foozy Partner</h1>
+<p>Manage your restaurant and menu</p>
+</header>
 
+<main>
+<section class="card" id="loginBox">
+<h2>Restaurant Owner Login</h2>
+<input id="email" type="email" placeholder="Email address" autocomplete="email">
+<input id="password" type="password" placeholder="Password" autocomplete="current-password">
+<button id="loginBtn" onclick="login()">Login</button>
+<p><small>Use your existing Foozy owner account.</small></p>
+</section>
+
+<section id="dashboard" class="hidden">
+<div class="card">
+<h2 id="welcome">Your Restaurant</h2>
+<p id="restaurantInfo">Loading restaurant...</p>
+<button class="secondary" onclick="logout()">Log out</button>
+</div>
+
+<div class="card">
+<h2>Add Food Item</h2>
+<form id="foodForm">
+<input id="foodName" placeholder="Food name" required maxlength="100">
+<input id="foodPrice" type="number" placeholder="Price in ₹" min="0.01" step="0.01" required>
+<input id="foodCategory" placeholder="Category (e.g. Burgers)" maxlength="60">
+<textarea id="foodDescription" placeholder="Description (optional)" maxlength="500"></textarea>
+<label for="foodImage"><small>Food photo — camera or gallery</small></label>
+<input id="foodImage" type="file" accept="image/*" capture="environment">
+<button id="addBtn" type="submit">Add Food</button>
+</form>
+</div>
+
+<div class="card">
+<h2>Your Menu</h2>
+<div id="menuList">Loading menu...</div>
+</div>
+</section>
+
+<p id="message" role="status" aria-live="polite">Connect to your Foozy account to begin.</p>
+</main>
+
+<script>
+const SUPABASE_URL = "https://snmufxscviahmmsdbess.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Ix1rMiMTqPQIsBEM708shg_POK6_JM8";
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let ownerId = null;
+let restaurant = null;
+let busy = false;
+
+function say(text){
+  document.getElementById("message").textContent = text;
+}
+
+async function login(){
+  if(busy)return;
+  const email=document.getElementById("email").value.trim();
+  const password=document.getElementById("password").value;
+  if(!email||!password){say("Enter your email and password.");return;}
+  busy=true;
+  document.getElementById("loginBtn").disabled=true;
+  try{
+    const {data,error}=await db.auth.signInWithPassword({email,password});
+    if(error)throw error;
+    ownerId=data.user.id;
+    await loadRestaurant();
+  }catch(e){say("Login failed: "+e.message);}
+  finally{busy=false;document.getElementById("loginBtn").disabled=false;}
+}
+
+async function loadRestaurant(){
+  const {data,error}=await db.from("restaurants")
+    .select("*").eq("owner_id",ownerId).limit(1).maybeSingle();
+  if(error)throw error;
+  if(!data){
+    document.getElementById("loginBox").classList.remove("hidden");
+    document.getElementById("dashboard").classList.add("hidden");
+    say("No approved restaurant is linked to this account yet. Apply through Foozy and wait for admin approval.");
+    return;
+  }
+  restaurant=data;
+  document.getElementById("loginBox").classList.add("hidden");
+  document.getElementById("dashboard").classList.remove("hidden");
+  document.getElementById("welcome").textContent=data.name;
+  document.getElementById("restaurantInfo").textContent=data.address||"Restaurant address not added";
+  await loadMenu();
+  say("Welcome to your Foozy dashboard!");
+}
+
+async function loadMenu(){
+  const box=document.getElementById("menuList");
+  box.textContent="Loading menu...";
+  const {data,error}=await db.from("menu_items")
+    .select("*").eq("restaurant_id",restaurant.id).order("name");
+  if(error){box.textContent="Could not load menu: "+error.message;return;}
+  box.replaceChildren();
+  if(!data.length){box.textContent="No food items yet. Add your first dish above.";return;}
+
+  data.forEach(item=>{
+    const row=document.createElement("div");
+    row.className="item";
+    if(item.image_url){
+      const img=document.createElement("img");
+      img.src=item.image_url;img.alt=item.name;img.loading="lazy";
+      row.appendChild(img);
+    }
+    const details=document.createElement("div");
+    details.className="details";
+    const title=document.createElement("strong");
+    title.textContent=item.name;
+    const price=document.createElement("p");
+    price.textContent="₹"+item.price;
+    const stock=document.createElement("small");
+    stock.textContent=item.is_available?"Available":"OUT OF STOCK";
+    details.append(title,price,stock);
+    row.appendChild(details);
+
+    const toggle=document.createElement("button");
+    toggle.className="secondary";
+    toggle.textContent=item.is_available?"Out of stock":"In stock";
+    toggle.onclick=()=>changeStock(item);
+    row.appendChild(toggle);
+
+    const del=document.createElement("button");
+    del.textContent="Delete";
+    del.onclick=()=>deleteFood(item);
+    row.appendChild(del);
+    box.appendChild(row);
+  });
+}
+
+document.getElementById("foodForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(busy||!restaurant)return;
+  busy=true;
+  const btn=document.getElementById("addBtn");
+  btn.disabled=true;
+  let uploadedPath=null;
+  try{
+    const file=document.getElementById("foodImage").files[0];
+    let imageUrl=null;
+
+    if(file){
+      if(!file.type.startsWith("image/"))throw Error("Choose an image file.");
+      if(file.size>5*1024*1024)throw Error("Photo must be under 5 MB.");
+      const ext=(file.name.split(".").pop()||"jpg").replace(/[^a-z0-9]/gi,"").toLowerCase()||"jpg";
+      uploadedPath=restaurant.id+"/"+crypto.randomUUID()+"."+ext;
+      const {error}=await db.storage.from("food-images").upload(uploadedPath,file,{upsert:false});
+      if(error)throw error;
+      imageUrl=db.storage.from("food-images").getPublicUrl(uploadedPath).data.publicUrl;
+    }
+
+    const {error}=await db.from("menu_items").insert({
+      restaurant_id:restaurant.id,
+      name:document.getElementById("foodName").value.trim(),
+      price:Number(document.getElementById("foodPrice").value),
+      category:document.getElementById("foodCategory").value.trim()||null,
+      description:document.getElementById("foodDescription").value.trim()||null,
+      image_url:imageUrl,
+      is_available:true
+    });
+    if(error)throw error;
+    e.target.reset();
+    say("Food item added successfully!");
+    await loadMenu();
+  }catch(err){
+    say("Could not add food: "+err.message);
+    if(uploadedPath){
+      await db.storage.from("food-images").remove([uploadedPath]);
+    }
+  }finally{
+    busy=false;btn.disabled=false;
+  }
+});
+
+async function changeStock(item){
+  const {error}=await db.from("menu_items")
+    .update({is_available:!item.is_available})
+    .eq("id",item.id).eq("restaurant_id",restaurant.id);
+  if(error){say("Stock update failed: "+error.message);return;}
+  say("Stock updated.");
+  await loadMenu();
+}
+
+async function deleteFood(item){
+  if(!confirm("Delete "+item.name+" permanently?"))return;
+  const {error}=await db.from("menu_items")
+    .delete().eq("id",item.id).eq("restaurant_id",restaurant.id);
+  if(error){say("Delete failed: "+error.message);return;}
+  say("Food item deleted.");
+  await loadMenu();
+}
+
+async function logout(){
+  await db.auth.signOut();
+  ownerId=null;restaurant=null;
+  document.getElementById("dashboard").classList.add("hidden");
+  document.getElementById("loginBox").classList.remove("hidden");
+  say("You have logged out.");
+}
+
+db.auth.getSession().then(async ({data,error})=>{
+  if(error){say("Could not check session.");return;}
+  if(data.session){
+    ownerId=data.session.user.id;
+    try{await loadRestaurant();}
+    catch(e){say("Could not load dashboard: "+e.message);}
+  }
+});
+</script>
+</body>
+</html>
