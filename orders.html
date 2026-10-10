@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Foozy | Restaurant Orders</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--orange:#f47721;--ink:#29231f;--cream:#fff8ef;--line:#eee2d5}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:Arial,sans-serif}
+header{background:var(--ink);color:white;padding:20px}
+header h1{margin:0;color:#ff9a4a}
+header p{margin:7px 0 0;color:#ddd}
+main{max-width:950px;margin:24px auto;padding:0 15px}
+.panel{background:white;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:18px}
+input,button,select{font:inherit;padding:12px;border-radius:9px}
+input{width:100%;border:1px solid #ddd;margin:7px 0 14px}
+button{border:0;background:var(--orange);color:white;font-weight:bold;cursor:pointer;margin:5px 4px 5px 0}
+button.secondary{background:#eee8e1;color:var(--ink)}
+button.danger{background:#b83232;color:white}
+.order{border:1px solid var(--line);border-radius:12px;padding:16px;margin:14px 0}
+.order h3{margin:5px 0}
+.muted{color:#756b63;font-size:14px;line-height:1.6}
+.status{display:inline-block;background:#fff0df;color:#91410b;padding:6px 10px;border-radius:20px;font-size:12px;font-weight:bold}
+.error{color:#b42318}
+#message{white-space:pre-wrap}
+</style>
+</head>
+<body>
+<header>
+  <h1>Foozy 🍔</h1>
+  <p>Restaurant Order Management</p>
+</header>
+
+<main>
+  <section class="panel" id="loginPanel">
+    <h2>Restaurant Login</h2>
+    <p class="muted">Sign in using your existing Foozy restaurant account.</p>
+    <form id="loginForm">
+      <label>Email</label>
+      <input id="email" type="email" required autocomplete="username">
+      <label>Password</label>
+      <input id="password" type="password" required autocomplete="current-password">
+      <button type="submit">Log in</button>
+    </form>
+  </section>
+
+  <section class="panel" id="ordersPanel" hidden>
+    <h2>Incoming Orders</h2>
+    <p id="restaurantName" class="muted"></p>
+    <button id="refreshButton">Refresh Orders</button>
+    <button id="logoutButton" class="secondary">Log Out</button>
+    <p id="message" class="muted" aria-live="polite"></p>
+    <div id="ordersList"></div>
+  </section>
+</main>
+
+<script>
+const SUPABASE_URL = "https://snmufxscviahmmsdbess.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Ix1rMiMTqPQIsBEM708shg_POK6_JM8";
+
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const $ = id => document.getElementById(id);
+
+let restaurant = null;
+let orders = [];
+
+const statuses = [
+  "pending",
+  "accepted",
+  "preparing",
+  "ready_for_pickup",
+  "picked_up",
+  "out_for_delivery",
+  "delivered",
+  "rejected",
+  "cancelled"
+];
+
+function safe(value) {
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",
+    '"':"&quot;","'":"&#39;"
+  }[c]));
+}
+
+function displayItems(items) {
+  if (items == null) return "Item details unavailable";
+  if (typeof items === "string") {
+    try { items = JSON.parse(items); }
+    catch { return safe(items); }
+  }
+
+  if (Array.isArray(items)) {
+    return items.map(item => {
+      if (typeof item === "string") return safe(item);
+      if (item && typeof item === "object") {
+        return safe(item.name || item.food_name || item.title || "Food item")
+          + (item.quantity ? " × " + safe(item.quantity) : "");
+      }
+      return safe(item);
+    }).join("<br>");
+  }
+
+  if (typeof items === "object") {
+    return Object.entries(items).map(([name, qty]) =>
+      safe(name) + (typeof qty === "number" ? " × " + safe(qty) : "")
+    ).join("<br>");
+  }
+
+  return safe(items);
+}
+
+async function loadRestaurant() {
+  const {data:{user}, error:userError} = await db.auth.getUser();
+
+  if (userError || !user) {
+    $("loginPanel").hidden = false;
+    $("ordersPanel").hidden = true;
+    return;
+  }
+
+  const {data, error} = await db
+    .from("restaurants")
+    .select("id,name")
+    .eq("owner_id", user.id)
+    .limit(1)
+    .maybeSingle();
+
+  if (error) throw error;
+  if (!data) throw new Error("No restaurant is linked to this account.");
+
+  restaurant = data;
+  $("restaurantName").textContent = "Restaurant: " + restaurant.name;
+  $("loginPanel").hidden = true;
+  $("ordersPanel").hidden = false;
+
+  await loadOrders();
+}
+
+async function loadOrders() {
+  $("message").textContent = "Loading orders...";
+  $("ordersList").innerHTML = "";
+
+  const {data, error} = await db
+    .from("Order")
+    .select("*")
+    .eq("restaurant_id", restaurant.id)
+    .order("created_at", {ascending:false});
+
+  if (error) {
+    $("message").textContent = "Could not load orders: " + error.message;
+    return;
+  }
+
+  orders = data || [];
+  $("message").textContent = orders.length
+    ? orders.length + " order(s) found."
+    : "No orders yet. New orders will appear here when customers place them.";
+
+  if (!orders.length) return;
+
+  $("ordersList").innerHTML = orders.map(o => `
+    <article class="order">
+      <span class="status">${safe(o.order_status || "pending")}</span>
+      <h3>Order #${safe(o.id)}</h3>
+      <p class="muted">
+        <b>Customer:</b> ${safe(o.customer_name)}<br>
+        <b>Phone:</b> ${safe(o.customer_phone)}<br>
+        <b>Address:</b> ${safe(o.customer_adress)}<br>
+        <b>Items:</b><br>${displayItems(o.items)}<br>
+        <b>Total:</b> ₹${safe(o.total_amount)}<br>
+        <b>Delivery fee:</b> ₹${safe(o.delivery_fee ?? 0)}<br>
+        <b>Payment:</b> ${safe(o.payment_method)}<br>
+        <b>Placed:</b> ${safe(o.created_at)}<br>
+        <b>Notes:</b> ${safe(o.notes || "None")}
+      </p>
+      <label for="status-${safe(o.id)}">Update status</label><br>
+      <select id="status-${safe(o.id)}">
+        ${statuses.map(s => `
+          <option value="${s}" ${s === o.order_status ? "selected" : ""}>
+            ${s.replace(/_/g," ")}
+          </option>
+        `).join("")}
+      </select>
+      <button data-save="${safe(o.id)}">Save Status</button>
+    </article>
+  `).join("");
+
+  $("ordersList").querySelectorAll("[data-save]").forEach(button => {
+    button.addEventListener("click", () => updateStatus(button.dataset.save));
+  });
+}
+
+async function updateStatus(id) {
+  const order = orders.find(o => String(o.id) === String(id));
+  if (!order) return;
+
+  const newStatus = $("status-" + id).value;
+  const oldStatus = order.order_status;
+
+  if (newStatus === oldStatus) {
+    $("message").textContent = "The status hasn't changed.";
+    return;
+  }
+
+  if (!confirm("Change order status to " + newStatus.replace(/_/g," ") + "?")) {
+    return;
+  }
+
+  $("message").textContent = "Updating order...";
+
+  const {error} = await db
+    .from("Order")
+    .update({order_status:newStatus})
+    .eq("id", order.id)
+    .eq("restaurant_id", restaurant.id);
+
+  if (error) {
+    $("message").textContent = "Update failed: " + error.message;
+    return;
+  }
+
+  $("message").textContent = "Order status updated!";
+  await loadOrders();
+}
+
+$("loginForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  $("message").textContent = "";
+
+  const {error} = await db.auth.signInWithPassword({
+    email:$("email").value.trim(),
+    password:$("password").value
+  });
+
+  if (error) {
+    alert("Login failed: " + error.message);
+    return;
+  }
+
+  try {
+    await loadRestaurant();
+  } catch (error) {
+    alert("Could not open orders: " + error.message);
+  }
+});
+
+$("refreshButton").addEventListener("click", () => {
+  loadOrders();
+});
+
+$("logoutButton").addEventListener("click", async () => {
+  await db.auth.signOut();
+  restaurant = null;
+  orders = [];
+  $("loginPanel").hidden = false;
+  $("ordersPanel").hidden = true;
+  $("ordersList").innerHTML = "";
+});
+
+async function start() {
+  if (SUPABASE_URL.startsWith("YOUR_") ||
+      SUPABASE_KEY.startsWith("YOUR_")) {
+    $("message").textContent =
+      "Setup needed: enter the same Supabase project URL and publishable key used by your restaurant dashboard.";
+    return;
+  }
+
+  try {
+    await loadRestaurant();
+  } catch (error) {
+    $("message").textContent = "Could not load restaurant: " + error.message;
+  }
+}
+
+start();
+</script>
+</body>
+</html>
