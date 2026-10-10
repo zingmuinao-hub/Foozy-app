@@ -1516,18 +1516,19 @@ function addToCart(name, price, itemId = null, restaurantId = null) {
   showToast(name + ' added to your cart!');
 }
 
-function changeQuantity(name, amount) {
-  if (!cart[name]) return;
+function changeQuantity(key, amount) {
+  if (!cart[key]) return;
 
-  cart[name].quantity += amount;
+  cart[key].quantity += amount;
 
-  if (cart[name].quantity <= 0) {
-    delete cart[name];
+  if (cart[key].quantity <= 0) {
+    delete cart[key];
   }
+
+  localStorage.setItem('foozyCart', JSON.stringify(cart));
 
   updateCart();
 }
-
 function updateCart() {
   const count = Object.values(cart).reduce(
     (sum, item) => sum + item.quantity, 0
@@ -1603,19 +1604,95 @@ function outsideCart(event) {
   }
 }
 
-function checkoutDemo() {
-  const count = Object.values(cart).reduce(
-    (sum, item) => sum + item.quantity, 0
-  );
+async function checkoutDemo() {
+  const entries = Object.values(cart);
 
-  if (count === 0) {
-    showToast('Your cart is empty. Add food first!');
+  if (entries.length === 0) {
+    showToast('Your cart is empty!');
     return;
   }
 
-  showToast(
-    'Demo mode: real ordering and checkout are not connected yet.'
+  if (entries.some(item => !item.item_id || !item.restaurant_id)) {
+    alert('Please remove old cart items and add them again.');
+    return;
+  }
+
+  const restaurantIds = [
+    ...new Set(entries.map(item => item.restaurant_id))
+  ];
+
+  if (restaurantIds.length !== 1) {
+    alert('Please order from one restaurant at a time.');
+    return;
+  }
+
+  const customerName = prompt('Enter your full name:');
+  if (!customerName || !customerName.trim()) return;
+
+  const customerPhone = prompt('Enter your phone number:');
+  if (!customerPhone || !customerPhone.trim()) return;
+
+  const customerAddress = prompt('Enter your complete delivery address:');
+  if (!customerAddress || !customerAddress.trim()) return;
+
+  const paymentMethod = prompt(
+    'Choose payment method: Type COD or UPI'
   );
+
+  if (!paymentMethod ||
+      !['COD', 'UPI'].includes(paymentMethod.trim().toUpperCase())) {
+    alert('Please enter COD or UPI.');
+    return;
+  }
+
+  const notes = prompt('Delivery instructions (optional):') || '';
+
+  const payload = {
+    customer_name: customerName.trim(),
+    customer_phone: customerPhone.trim(),
+    customer_adress: customerAddress.trim(),
+    payment_method: paymentMethod.trim().toUpperCase(),
+    notes: notes.trim(),
+    items: entries.map(item => ({
+      item_id: item.item_id,
+      quantity: item.quantity
+    }))
+  };
+
+  try {
+    showToast('Placing your order...');
+
+    const { data, error } =
+      await window.foozySupabase.functions.invoke(
+        'create-order',
+        { body: payload }
+      );
+
+    if (error) {
+      console.error('Checkout error:', error);
+      alert('Could not place your order. Please try again.');
+      return;
+    }
+
+    if (!data || !data.success) {
+      alert(data?.error || 'Your order could not be placed.');
+      return;
+    }
+
+    alert(
+      'Order placed successfully! Your order ID is: ' +
+      data.order.id +
+      '\n\n' + data.message
+    );
+
+    Object.keys(cart).forEach(key => delete cart[key]);
+    localStorage.setItem('foozyCart', JSON.stringify(cart));
+    updateCart();
+
+  } catch (error) {
+    console.error('Checkout error:', error);
+    alert('Connection problem. Please try again.');
+  }
 }
 
 /* NOTIFICATIONS */
