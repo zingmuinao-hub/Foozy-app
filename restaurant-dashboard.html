@@ -540,6 +540,8 @@ async function loadDashboardOrders(){
     }
 
     restaurant = linkedRestaurant;
+    console.log("Dashboard restaurant ID:", restaurant.id);
+console.log("Logged-in user ID:", user.id);
 
     const { data, error } = await db
       .from("Order")
