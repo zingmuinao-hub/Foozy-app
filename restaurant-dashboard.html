@@ -132,6 +132,7 @@ textarea{min-height:80px;resize:vertical}
   <nav class="nav" id="sideNav">
     <button data-page="overview" class="active">▦ &nbsp; Overview</button>
     <button data-page="menu">🍔 &nbsp; My Menu</button>
+    <button data-page="orders">🛎️ &nbsp; Orders</button>
     <button data-page="offers">🎉 &nbsp; Special Offers</button>
     <button data-page="profile">🏪 &nbsp; Restaurant Profile</button>
   </nav>
@@ -236,6 +237,20 @@ textarea{min-height:80px;resize:vertical}
 
     <div id="ordersList">
       <p class="empty">Orders will appear here.</p>
+    </div>
+  </div>
+    </div>
+    <div id="page-orders" class="page hidden">
+  <div class="panel">
+    <h2>🛎️ Incoming Orders</h2>
+    <p class="help">View and manage your restaurant orders.</p>
+
+    <button class="primary" id="refreshOrders">
+      🔄 Refresh Orders
+    </button>
+
+    <div id="dashboardOrders">
+      <p class="help">Orders will appear here.</p>
     </div>
   </div>
     </div>
