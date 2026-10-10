@@ -1547,7 +1547,9 @@ function updateCart() {
     cartItems.innerHTML =
       '<p class="empty">Your cart is empty. Add something delicious!</p>';
   } else {
-    Object.entries(cart).forEach(([name, item]) => {
+    Object.entries(cart).forEach(([key, item]) => {
+      const name = item.name || key;
+
       const row = document.createElement('div');
       row.className = 'cart-line';
 
@@ -1569,7 +1571,7 @@ function updateCart() {
       minus.className = 'add-btn';
       minus.textContent = '−';
       minus.setAttribute('aria-label', 'Remove one ' + name);
-      minus.addEventListener('click', () => changeQuantity(name, -1));
+      minus.addEventListener('click', () => changeQuantity(key, -1));
 
       const quantity = document.createElement('strong');
       quantity.textContent = item.quantity;
@@ -1578,7 +1580,7 @@ function updateCart() {
       plus.className = 'add-btn';
       plus.textContent = '+';
       plus.setAttribute('aria-label', 'Add one ' + name);
-      plus.addEventListener('click', () => changeQuantity(name, 1));
+      plus.addEventListener('click', () => changeQuantity(key, 1));
 
       controls.append(minus, quantity, plus);
       row.append(details, controls);
