@@ -558,7 +558,13 @@ function subscribeToNewOrders(restaurantId) {
     )
     .subscribe((status, error) => {
   console.log("Foozy live order connection:", status, error || "");
-showOrderPopup("Live connection: " + status);
+
+  if (status === "SUBSCRIBED") {
+    showOrderPopup("🟢 Foozy live connection connected!");
+  } else if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+    showOrderPopup("⚠️ Live connection failed: " + status);
+  }
+});
 }
 async function loadDashboardOrders(){
   const box = $("dashboardOrders");
