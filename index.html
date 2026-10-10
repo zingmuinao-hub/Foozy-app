@@ -1671,11 +1671,19 @@ async function checkoutDemo() {
     if (error) {
   console.error('Checkout error:', error);
 
-  alert(
-    'Checkout error: ' +
-    (error.message || JSON.stringify(error))
-  );
+  let details = error.message || 'Unknown error';
 
+  try {
+    if (error.context) {
+      const response = error.context.clone();
+      const body = await response.text();
+      details += '\nServer response: ' + body;
+    }
+  } catch (e) {
+    console.error('Could not read server response:', e);
+  }
+
+  alert(details);
   return;
     }
 
