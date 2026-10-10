@@ -502,7 +502,79 @@ async function loadOffers(){
   $("offerList").querySelectorAll("[data-offer-toggle]").forEach(b=>b.onclick=()=>toggleOffer(b.dataset.offerToggle));
   $("offerList").querySelectorAll("[data-offer-delete]").forEach(b=>b.onclick=()=>deleteOffer(b.dataset.offerDelete));
 }
-$("refreshOffers").onclick=loadOffers;
+async function loadDashboardOrders(){
+  const box = $("dashboardOrders");
+  box.innerHTML = '<p class="help">Loading orders...</p>';
+
+  const {data, error} = await db
+    .from("Order")
+    .select("*")
+    .eq("restaurant_id", restaurant.id)
+    .order("created_at", {ascending:false});
+
+  if(error){
+    box.textContent = "Could not load orders: " + error.message;
+    return;
+  }
+
+  if(!data || !data.length){
+    box.innerHTML = '<p class="help">No orders yet. New orders will appear here when available.</p>';
+    return;
+  }
+
+  box.innerHTML = data.map(o => `
+    <div class="panel">
+      <h3>Order #${esc(o.id)}</h3>
+      <p>
+        <b>Status:</b> ${esc(o.order_status || "pending")}<br>
+        <b>Customer:</b> ${esc(o.customer_name)}<br>
+        <b>Phone:</b> ${esc(o.customer_phone)}<br>
+        <b>Address:</b> ${esc(o.customer_adress)}<br>
+        <b>Items:</b> ${esc(typeof o.items === "string" ? o.items : JSON.stringify(o.items || []))}<br>
+        <b>Total:</b> ₹${esc(o.total_amount)}<br>
+        <b>Payment:</b> ${esc(o.payment_method)}
+      </p>
+
+      <label>Update order status</label>
+      <select id="orderStatus-${esc(o.id)}">
+        ${["pending","accepted","preparing","ready_for_pickup","picked_up","out_for_delivery","delivered","rejected","cancelled"].map(s =>
+          `<option value="${s}" ${s === o.order_status ? "selected" : ""}>${s.replace(/_/g," ")}</option>`
+        ).join("")}
+      </select>
+
+      <button class="primary" data-save-order="${esc(o.id)}">Save Status</button>
+    </div>
+  `).join("");
+
+  box.querySelectorAll("[data-save-order]").forEach(button => {
+    button.onclick = async () => {
+      const id = button.dataset.saveOrder;
+      const status = $("orderStatus-" + id).value;
+
+      button.disabled = true;
+      button.textContent = "Saving...";
+
+      const {error} = await db
+        .from("Order")
+        .update({order_status:status})
+        .eq("id", id)
+        .eq("restaurant_id", restaurant.id);
+
+      if(error){
+        alert("Could not update order: " + error.message);
+        button.disabled = false;
+        button.textContent = "Save Status";
+        return;
+      }
+
+      alert("Order status updated!");
+      await loadDashboardOrders();
+    };
+  });
+}
+  $("refreshOrders").onclick = loadDashboardOrders;
+$("sideNav").querySelector('[data-page="orders"]').addEventListener("click", loadDashboardOrders);
+  $("refreshOffers").onclick=loadOffers;
 
 $("offerForm").onsubmit=async e=>{
   e.preventDefault();
