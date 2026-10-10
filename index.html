@@ -1631,6 +1631,117 @@ document.getElementById('year').textContent =
 updateCart();
 </script>
 
+  <!-- FOOZY LIVE MENU -->
+<section id="foozy-live-menu" style="padding:24px 16px;background:#fffaf3;color:#29231f;font-family:Arial,sans-serif;">
+  <h2 style="font-size:26px;margin-bottom:6px;">🍔 Fresh on Foozy</h2>
+  <p style="color:#777;margin-bottom:20px;">Discover something delicious today!</p>
+
+  <div id="foozy-menu-status" style="padding:12px 0;color:#777;">
+    Loading delicious food...
+  </div>
+
+  <div id="foozy-menu-grid"
+       style="display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:14px;">
+  </div>
+</section>
+
+<script>
+(async function loadFoozyMenu() {
+  const status = document.getElementById("foozy-menu-status");
+  const grid = document.getElementById("foozy-menu-grid");
+
+  if (!window.foozySupabase) {
+    status.textContent = "Database connection not found. Please refresh the page.";
+    return;
+  }
+
+  try {
+    const [menuResult, restaurantResult] = await Promise.all([
+      window.foozySupabase
+        .from("menu_items")
+        .select("id,name,description,price,image_url,category,restaurant_id")
+        .eq("is_available", true),
+
+      window.foozySupabase
+        .from("restaurants")
+        .select("id,name")
+        .eq("is_active", true)
+    ]);
+
+    if (menuResult.error) throw menuResult.error;
+    if (restaurantResult.error) throw restaurantResult.error;
+
+    const restaurantNames = {};
+    (restaurantResult.data || []).forEach(function (restaurant) {
+      restaurantNames[restaurant.id] = restaurant.name;
+    });
+
+    const items = menuResult.data || [];
+
+    if (items.length === 0) {
+      status.textContent =
+        "Our menu is being prepared. Check back soon! 🧡";
+      return;
+    }
+
+    status.style.display = "none";
+
+    grid.innerHTML = items.map(function (item) {
+      const name = String(item.name || "Delicious Food");
+      const description = String(item.description || "");
+      const restaurant = String(
+        restaurantNames[item.restaurant_id] || "Local Restaurant"
+      );
+      const image = /^https?:\/\//i.test(item.image_url || "")
+        ? item.image_url
+        : "";
+
+      const safe = function (value) {
+        return value.replace(/[&<>"']/g, function (char) {
+          return {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+          }[char];
+        });
+      };
+
+      return `
+        <article style="background:white;border-radius:16px;overflow:hidden;box-shadow:0 3px 12px #00000010;">
+          ${
+            image
+              ? `<img src="${safe(image)}" alt="${safe(name)}"
+                   style="width:100%;height:140px;object-fit:cover;"
+                   onerror="this.style.display='none'">`
+              : `<div style="height:140px;display:flex;align-items:center;justify-content:center;background:#fff0dc;font-size:54px;">🍔</div>`
+          }
+          <div style="padding:12px;">
+            <div style="font-size:11px;color:#e66b24;margin-bottom:6px;">
+              ${safe(restaurant)}
+            </div>
+            <h3 style="font-size:17px;margin:0 0 7px;">
+              ${safe(name)}
+            </h3>
+            <p style="font-size:12px;color:#777;min-height:30px;margin:0 0 10px;">
+              ${safe(description)}
+            </p>
+            <strong style="font-size:18px;color:#e66b24;">
+              ₹${Number(item.price || 0).toFixed(0)}
+            </strong>
+          </div>
+        </article>
+      `;
+    }).join("");
+
+  } catch (error) {
+    console.error("Foozy menu error:", error);
+    status.textContent =
+      "We couldn't load the menu right now. Please try again later.";
+  }
+})();
+          </script>
 </body>
   <!-- Supabase connection -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
