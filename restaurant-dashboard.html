@@ -556,7 +556,9 @@ function subscribeToNewOrders(restaurantId) {
         loadDashboardOrders();
       }
     )
-    .subscribe();
+    .subscribe((status, error) => {
+  console.log("Foozy live order connection:", status, error || "");
+});
 }
 async function loadDashboardOrders(){
   const box = $("dashboardOrders");
