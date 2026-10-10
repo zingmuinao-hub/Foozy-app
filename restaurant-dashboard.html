@@ -490,6 +490,74 @@ async function loadOffers(){
   $("offerList").querySelectorAll("[data-offer-toggle]").forEach(b=>b.onclick=()=>toggleOffer(b.dataset.offerToggle));
   $("offerList").querySelectorAll("[data-offer-delete]").forEach(b=>b.onclick=()=>deleteOffer(b.dataset.offerDelete));
 }
+  let dashboardOrderChannel = null;
+let dashboardSubscribedRestaurantId = null;
+
+function showOrderPopup(message) {
+  let popup = document.getElementById("foozyOrderPopup");
+
+  if (!popup) {
+    popup = document.createElement("div");
+    popup.id = "foozyOrderPopup";
+
+    popup.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 99999;
+      background: #ff6b2c;
+      color: white;
+      padding: 16px 20px;
+      border-radius: 14px;
+      font-weight: 800;
+      box-shadow: 0 8px 25px #0005;
+      max-width: 85%;
+    `;
+
+    document.body.appendChild(popup);
+  }
+
+  popup.textContent = message;
+  popup.style.display = "block";
+
+  clearTimeout(window.foozyPopupTimer);
+
+  window.foozyPopupTimer = setTimeout(() => {
+    popup.style.display = "none";
+  }, 5000);
+}
+
+function subscribeToNewOrders(restaurantId) {
+  if (
+    dashboardSubscribedRestaurantId === restaurantId &&
+    dashboardOrderChannel
+  ) {
+    return;
+  }
+
+  if (dashboardOrderChannel) {
+    db.removeChannel(dashboardOrderChannel);
+  }
+
+  dashboardSubscribedRestaurantId = restaurantId;
+
+  dashboardOrderChannel = db
+    .channel("foozy-orders-" + restaurantId)
+    .on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "Order",
+        filter: "restaurant_id=eq." + restaurantId
+      },
+      () => {
+        showOrderPopup("🔔 New Foozy order received!");
+        loadDashboardOrders();
+      }
+    )
+    .subscribe();
+}
 async function loadDashboardOrders(){
   const box = $("dashboardOrders");
   box.innerHTML = '<p class="help">Loading orders...</p>';
@@ -523,6 +591,7 @@ async function loadDashboardOrders(){
     }
 
     restaurant = linkedRestaurant;
+    subscribeToNewOrders(restaurant.id);
     console.log("Dashboard restaurant ID:", restaurant.id);
 console.log("Logged-in user ID:", user.id);
 
