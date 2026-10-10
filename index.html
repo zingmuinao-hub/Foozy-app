@@ -2015,7 +2015,19 @@ if (!window.foozySupabase) {
   );
 
   window.foozySupabase = foozySupabase;
-
+  
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/Foozy-app/sw.js")
+      .then(() => {
+        console.log("Foozy background worker registered!");
+      })
+      .catch(error => {
+        console.error("Foozy worker error:", error);
+      });
+  });
+}
   console.log("Foozy database connection initialized!");
 </script>
 </html>
