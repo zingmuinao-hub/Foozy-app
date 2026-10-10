@@ -344,7 +344,7 @@ async function startApp(){
   await Promise.all([
   loadMenu(),
   loadOffers(),
-  loadOrders()
+  loadDashboardOrders()
 ]);
   go("overview");
   say("Welcome to "+restaurant.name+"!");
