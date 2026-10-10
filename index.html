@@ -1749,7 +1749,7 @@ if (!window.foozySupabase) {
               ₹${Number(item.price || 0).toFixed(0)}
             </strong>
             <button
-  onclick="addToCart('${safe(name)}', ${Number(item.price || 0)})"
+  onclick="addToCart('${safe(name)}', ${Number(item.price || 0)}, '${item.id}', '${item.restaurant_id}')"
   style="width:100%;margin-top:12px;padding:10px;background:#e66b24;color:white;border:0;border-radius:8px;font-weight:bold;cursor:pointer;">
   🛒 Add to Cart
 </button>
