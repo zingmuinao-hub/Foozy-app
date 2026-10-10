@@ -1,1491 +1,1635 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#ff6b35">
-  <title>Foozy — Good Food, Great Mood</title>
-  <meta name="description" content="Discover delicious food and explore local restaurants with Foozy. Your town's food, just a tap away.">
-
-  <style>
-    :root {
-      --orange: #ff6b35;
-      --orange-dark: #e95522;
-      --cream: #fff8f2;
-      --ink: #202124;
-      --muted: #777777;
-      --white: #ffffff;
-      --green: #218653;
-      --border: #f0e9e2;
-      --shadow: 0 8px 28px rgba(50, 35, 20, .07);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        Roboto, Arial, sans-serif;
-      background: #fff;
-      color: var(--ink);
-      line-height: 1.5;
-    }
-
-    button, input {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .container {
-      width: min(1120px, calc(100% - 36px));
-      margin: auto;
-    }
-
-    .topbar {
-      background: var(--orange);
-      color: white;
-      text-align: center;
-      padding: 9px 12px;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: .2px;
-    }
-
-    header {
-      background: white;
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .navbar {
-      min-height: 76px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-    }
-
-    .logo {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      font-size: 29px;
-      font-weight: 900;
-      letter-spacing: -1.5px;
-    }
-
-    .logo-icon {
-      display: grid;
-      place-items: center;
-      width: 42px;
-      height: 42px;
-      background: var(--orange);
-      color: white;
-      border-radius: 14px;
-      font-size: 25px;
-      letter-spacing: 0;
-    }
-
-    .logo span:last-child {
-      color: var(--orange);
-    }
-
-    .location {
-      font-size: 12px;
-      color: var(--muted);
-      margin-left: 24px;
-      flex: 1;
-    }
-
-    .location strong {
-      display: block;
-      color: var(--ink);
-      font-size: 14px;
-    }
-
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .btn {
-      border: 0;
-      border-radius: 12px;
-      padding: 12px 17px;
-      font-weight: 750;
-      font-size: 13px;
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      gap: 7px;
-      transition: .2s ease;
-    }
-
-    .btn:hover {
-      transform: translateY(-2px);
-    }
-
-    .btn-orange {
-      background: var(--orange);
-      color: white;
-    }
-
-    .btn-orange:hover {
-      background: var(--orange-dark);
-    }
-
-    .btn-light {
-      background: var(--cream);
-      color: var(--ink);
-    }
-
-    .hero {
-      background: var(--cream);
-      padding: 65px 0 60px;
-      overflow: hidden;
-    }
-
-    .hero-grid {
-      display: grid;
-      grid-template-columns: 1.05fr .95fr;
-      align-items: center;
-      gap: 35px;
-    }
-
-    .eyebrow {
-      display: inline-block;
-      background: #ffeadf;
-      color: var(--orange-dark);
-      padding: 8px 13px;
-      border-radius: 30px;
-      font-size: 11px;
-      font-weight: 850;
-      letter-spacing: .8px;
-      text-transform: uppercase;
-      margin-bottom: 20px;
-    }
-
-    h1 {
-      font-size: clamp(40px, 5.3vw, 65px);
-      line-height: 1.04;
-      letter-spacing: -2.7px;
-      font-weight: 900;
-      max-width: 600px;
-    }
-
-    h1 span {
-      color: var(--orange);
-    }
-
-    .hero-copy {
-      margin: 21px 0 27px;
-      color: var(--muted);
-      max-width: 440px;
-      font-size: 15px;
-      line-height: 1.8;
-    }
-
-    .search-box {
-      display: flex;
-      background: white;
-      border: 1px solid var(--border);
-      padding: 7px;
-      border-radius: 15px;
-      max-width: 490px;
-      box-shadow: var(--shadow);
-      gap: 8px;
-    }
-
-    .search-box input {
-      width: 100%;
-      min-width: 0;
-      border: none;
-      outline: none;
-      padding: 10px;
-      background: transparent;
-      font-size: 13px;
-    }
-
-    .search-box button {
-      white-space: nowrap;
-    }
-
-    .hero-notes {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      margin-top: 24px;
-      color: #626262;
-      font-size: 12px;
-      font-weight: 650;
-    }
-
-    .hero-visual {
-      min-height: 340px;
-      display: grid;
-      place-items: center;
-      position: relative;
-    }
-
-    .hero-circle {
-      position: absolute;
-      width: min(340px, 90%);
-      aspect-ratio: 1;
-      border-radius: 50%;
-      background: #ffe1cd;
-    }
-
-    .hero-food {
-      position: relative;
-      z-index: 1;
-      width: min(380px, 100%);
-      aspect-ratio: 1;
-      object-fit: cover;
-      border-radius: 50%;
-      box-shadow: 0 24px 60px rgba(101, 57, 26, .17);
-      border: 9px solid rgba(255,255,255,.8);
-    }
-
-    .floating-card {
-      position: absolute;
-      z-index: 2;
-      background: white;
-      padding: 13px 16px;
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      font-size: 12px;
-      font-weight: 800;
-    }
-
-    .floating-card small {
-      display: block;
-      color: var(--muted);
-      font-weight: 500;
-      margin-top: 3px;
-    }
-
-    .floating-one {
-      left: -2px;
-      bottom: 32px;
-    }
-
-    .floating-two {
-      right: 0;
-      top: 28px;
-    }
-
-    section {
-      padding: 65px 0;
-    }
-
-    .section-head {
-      display: flex;
-      align-items: end;
-      justify-content: space-between;
-      gap: 15px;
-      margin-bottom: 27px;
-    }
-
-    .section-head h2 {
-      font-size: clamp(25px, 3vw, 34px);
-      letter-spacing: -1px;
-      font-weight: 900;
-    }
-
-    .section-head p {
-      color: var(--muted);
-      margin-top: 5px;
-      font-size: 13px;
-    }
-
-    .text-link {
-      border: none;
-      background: transparent;
-      color: var(--orange-dark);
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .categories {
-      display: grid;
-      grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .category {
-      border: 1px solid var(--border);
-      background: white;
-      border-radius: 18px;
-      padding: 17px 8px;
-      text-align: center;
-      transition: .2s;
-      color: var(--ink);
-    }
-
-    .category:hover, .category.active {
-      border-color: var(--orange);
-      background: var(--cream);
-      transform: translateY(-3px);
-    }
-
-    .category-icon {
-      width: 57px;
-      height: 57px;
-      display: grid;
-      place-items: center;
-      border-radius: 18px;
-      background: var(--cream);
-      font-size: 29px;
-      margin: 0 auto 11px;
-    }
-
-    .category strong {
-      display: block;
-      font-size: 12px;
-    }
-
-    .restaurants-section {
-      background: #fffaf6;
-    }
-
-    .restaurant-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 21px;
-    }
-
-    .restaurant-card {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 19px;
-      overflow: hidden;
-      transition: .25s;
-    }
-
-    .restaurant-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow);
-    }
-
-    .restaurant-image {
-      width: 100%;
-      height: 190px;
-      object-fit: cover;
-      display: block;
-      background: var(--cream);
-    }
-
-    .restaurant-info {
-      padding: 17px;
-    }
-
-    .restaurant-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: start;
-      gap: 8px;
-    }
-
-    .restaurant-title h3 {
-      font-size: 17px;
-      font-weight: 850;
-    }
-
-    .rating {
-      background: #e8f7ed;
-      color: #197342;
-      padding: 5px 8px;
-      border-radius: 7px;
-      font-size: 11px;
-      font-weight: 850;
-      white-space: nowrap;
-    }
-
-    .restaurant-info p {
-      color: var(--muted);
-      font-size: 12px;
-      margin-top: 7px;
-    }
-
-    .restaurant-meta {
-      border-top: 1px solid var(--border);
-      padding-top: 12px;
-      margin-top: 13px;
-      font-size: 11px;
-      font-weight: 650;
-      color: #656565;
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .food-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 19px;
-    }
-
-    .food-card {
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      overflow: hidden;
-      transition: .2s;
-      background: white;
-    }
-
-    .food-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow);
-    }
-
-    .food-image-wrap {
-      position: relative;
-      background: var(--cream);
-    }
-
-    .food-image {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
-      display: block;
-    }
-
-    .food-tag {
-      position: absolute;
-      top: 11px;
-      left: 11px;
-      background: white;
-      padding: 5px 8px;
-      border-radius: 7px;
-      font-size: 10px;
-      font-weight: 800;
-    }
-
-    .food-info {
-      padding: 14px;
-    }
-
-    .food-info h3 {
-      font-size: 14px;
-      font-weight: 850;
-    }
-
-    .food-description {
-      font-size: 11px;
-      color: var(--muted);
-      margin-top: 5px;
-      min-height: 32px;
-    }
-
-    .food-bottom {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-top: 12px;
-      gap: 8px;
-    }
-
-    .price {
-      font-size: 16px;
-      font-weight: 900;
-    }
-
-    .add-btn {
-      border: 1px solid #ffd1bd;
-      background: #fff3ec;
-      color: var(--orange-dark);
-      padding: 8px 12px;
-      border-radius: 9px;
-      font-size: 12px;
-      font-weight: 850;
-    }
-
-    .add-btn:hover {
-      background: var(--orange);
-      color: white;
-    }
-
-    .promo {
-      padding: 0 0 65px;
-    }
-
-    .promo-box {
-      background: var(--orange);
-      color: white;
-      border-radius: 25px;
-      padding: 38px 42px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 25px;
-      overflow: hidden;
-    }
-
-    .promo-box h2 {
-      font-size: clamp(25px, 4vw, 39px);
-      letter-spacing: -1.3px;
-      line-height: 1.15;
-    }
-
-    .promo-box p {
-      font-size: 13px;
-      margin-top: 10px;
-      opacity: .9;
-    }
-
-    .promo-box .btn {
-      background: white;
-      color: var(--orange-dark);
-      flex-shrink: 0;
-    }
-
-    footer {
-      background: #202124;
-      color: white;
-      padding: 42px 0 25px;
-    }
-
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr;
-      gap: 35px;
-    }
-
-    .footer-description {
-      color: #b9b9b9;
-      max-width: 330px;
-      font-size: 12px;
-      margin-top: 15px;
-      line-height: 1.8;
-    }
-
-    .footer-heading {
-      font-size: 13px;
-      margin-bottom: 13px;
-    }
-
-    .footer-links {
-      display: grid;
-      gap: 10px;
-      color: #c9c9c9;
-      font-size: 12px;
-    }
-
-    .footer-links a:hover {
-      color: #ff9b76;
-    }
-
-    .copyright {
-      border-top: 1px solid #414141;
-      margin-top: 30px;
-      padding-top: 20px;
-      color: #b9b9b9;
-      font-size: 11px;
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .cart-fab {
-      position: fixed;
-      right: 20px;
-      bottom: 20px;
-      z-index: 30;
-      border: 0;
-      border-radius: 50px;
-      background: var(--orange);
-      color: white;
-      padding: 15px 19px;
-      font-size: 13px;
-      font-weight: 850;
-      box-shadow: 0 8px 30px rgba(255,107,53,.35);
-    }
-
-    .cart-count {
-      display: inline-grid;
-      place-items: center;
-      width: 22px;
-      height: 22px;
-      background: white;
-      color: var(--orange-dark);
-      border-radius: 50%;
-      margin-left: 6px;
-      font-size: 11px;
-    }
-
-    .toast {
-      position: fixed;
-      left: 50%;
-      bottom: 86px;
-      transform: translate(-50%, 20px);
-      background: #202124;
-      color: white;
-      padding: 12px 19px;
-      border-radius: 12px;
-      font-size: 13px;
-      opacity: 0;
-      pointer-events: none;
-      transition: .2s;
-      z-index: 50;
-      text-align: center;
-      width: max-content;
-      max-width: calc(100% - 30px);
-    }
-
-    .toast.show {
-      opacity: 1;
-      transform: translate(-50%, 0);
-    }
-
-    .empty-state {
-      display: none;
-      color: var(--muted);
-      padding: 35px 10px;
-      text-align: center;
-      grid-column: 1 / -1;
-    }
-
-    @media (max-width: 800px) {
-      .location {
-        display: none;
-      }
-
-      .hero {
-        padding: 45px 0;
-      }
-
-      .hero-grid {
-        grid-template-columns: 1fr;
-        gap: 10px;
-      }
-
-      .hero-copy {
-        max-width: 550px;
-      }
-
-      .hero-visual {
-        min-height: 290px;
-      }
-
-      .hero-food {
-        width: min(300px, 78%);
-      }
-
-      .hero-circle {
-        width: min(275px, 75%);
-      }
-
-      .categories {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 10px;
-      }
-
-      .restaurant-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .food-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .restaurant-image {
-        height: 155px;
-      }
-
-      .food-image {
-        height: 145px;
-      }
-
-      .promo-box {
-        padding: 30px 25px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .container {
-        width: calc(100% - 28px);
-      }
-
-      .navbar {
-        min-height: 65px;
-        gap: 8px;
-      }
-
-      .logo {
-        font-size: 25px;
-        gap: 6px;
-      }
-
-      .logo-icon {
-        width: 35px;
-        height: 35px;
-        font-size: 21px;
-        border-radius: 11px;
-      }
-
-      .nav-actions .btn {
-        padding: 10px;
-        font-size: 11px;
-      }
-
-      section {
-        padding: 45px 0;
-      }
-
-      h1 {
-        font-size: 43px;
-        letter-spacing: -2px;
-      }
-
-      .hero-copy {
-        font-size: 13px;
-      }
-
-      .search-box {
-        flex-wrap: wrap;
-      }
-
-      .search-box input {
-        flex: 1 1 150px;
-      }
-
-      .search-box button {
-        flex: 1;
-      }
-
-      .hero-notes {
-        gap: 10px;
-        font-size: 10px;
-      }
-
-      .hero-visual {
-        min-height: 260px;
-      }
-
-      .section-head {
-        align-items: start;
-      }
-
-      .section-head h2 {
-        font-size: 25px;
-      }
-
-      .section-head p {
-        font-size: 11px;
-      }
-
-      .categories {
-        gap: 8px;
-      }
-
-      .category {
-        padding: 12px 4px;
-        border-radius: 13px;
-      }
-
-      .category-icon {
-        width: 43px;
-        height: 43px;
-        font-size: 23px;
-        border-radius: 13px;
-      }
-
-      .category strong {
-        font-size: 10px;
-      }
-
-      .restaurant-grid {
-        gap: 10px;
-      }
-
-      .restaurant-image {
-        height: 115px;
-      }
-
-      .restaurant-info {
-        padding: 11px;
-      }
-
-      .restaurant-title h3 {
-        font-size: 13px;
-      }
-
-      .rating {
-        padding: 4px 5px;
-        font-size: 9px;
-      }
-
-      .restaurant-info p {
-        font-size: 10px;
-      }
-
-      .restaurant-meta {
-        font-size: 9px;
-        flex-wrap: wrap;
-      }
-
-      .food-grid {
-        gap: 10px;
-      }
-
-      .food-image {
-        height: 120px;
-      }
-
-      .food-info {
-        padding: 10px;
-      }
-
-      .food-info h3 {
-        font-size: 12px;
-      }
-
-      .food-description {
-        font-size: 10px;
-      }
-
-      .price {
-        font-size: 14px;
-      }
-
-      .add-btn {
-        padding: 7px 9px;
-        font-size: 10px;
-      }
-
-      .promo-box {
-        padding: 25px 20px;
-        flex-direction: column;
-        align-items: start;
-      }
-
-      .footer-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 25px;
-      }
-
-      .footer-grid > div:first-child {
-        grid-column: 1 / -1;
-      }
-
-      .copyright {
-        font-size: 10px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ff641f">
+
+<title>Foozy — Food Is Calling!</title>
+
+<meta name="description" content="Discover delicious food in Ukhrul with Foozy. Your cravings, delivered locally.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --orange: #ff641f;
+  --dark: #24211f;
+  --cream: #fff8f1;
+  --muted: #817b76;
+  --white: #ffffff;
+  --green: #248b52;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--cream);
+  color: var(--dark);
+}
+
+button, input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+img {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+}
+
+.container {
+  width: min(1120px, 92%);
+  margin: auto;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* WELCOME ADVERTISEMENT */
+
+.welcome {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #17110e;
+  color: white;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.welcome-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(25,13,8,.88), rgba(25,13,8,.30)),
+    linear-gradient(0deg, rgba(25,13,8,.55), transparent 70%),
+    url('https://images.unsplash.com/photo-1571091718767-18b5b1457add?auto=format&fit=crop&w=1800&q=85')
+    center/cover;
+  transform: scale(1.04);
+  animation: zoom 15s ease-in-out infinite alternate;
+}
+
+@keyframes zoom {
+  from { transform: scale(1.04); }
+  to { transform: scale(1.15); }
+}
+
+.welcome-content {
+  position: relative;
+  z-index: 2;
+  width: min(700px, 88%);
+  margin: auto;
+  padding: 45px 0;
+}
+
+.logo {
+  font-size: 35px;
+  font-weight: 900;
+  letter-spacing: -2px;
+}
+
+.logo span {
+  color: var(--orange);
+}
+
+.welcome-tag {
+  display: inline-block;
+  background: rgba(255,100,31,.18);
+  border: 1px solid rgba(255,130,80,.7);
+  color: #ffd5c3;
+  padding: 8px 14px;
+  border-radius: 50px;
+  margin-top: 55px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.welcome h1 {
+  font-size: clamp(43px, 9vw, 78px);
+  line-height: 1.02;
+  letter-spacing: -2px;
+  margin: 22px 0;
+  max-width: 700px;
+}
+
+.welcome h1 span {
+  color: #ff814d;
+}
+
+.welcome p {
+  color: #eee4de;
+  font-size: 17px;
+  max-width: 420px;
+  line-height: 1.7;
+}
+
+.welcome-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+}
+
+.primary-btn {
+  background: var(--orange);
+  color: white;
+  border: none;
+  border-radius: 13px;
+  padding: 15px 23px;
+  font-weight: 900;
+  transition: .2s;
+}
+
+.primary-btn:hover {
+  background: #e95110;
+  transform: translateY(-2px);
+}
+
+.skip-btn {
+  background: rgba(255,255,255,.13);
+  color: white;
+  border: 1px solid rgba(255,255,255,.4);
+  border-radius: 13px;
+  padding: 15px 22px;
+  font-weight: 800;
+}
+
+.welcome-bottom {
+  margin-top: 45px;
+  font-size: 12px;
+  color: #ddd0c9;
+  letter-spacing: 1px;
+}
+
+/* HEADER */
+
+header {
+  background: rgba(255,248,241,.96);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid #f0e5dc;
+  backdrop-filter: blur(12px);
+}
+
+.nav {
+  min-height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.nav .logo {
+  font-size: 32px;
+}
+
+.nav-location {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.nav-location strong {
+  color: var(--dark);
+  font-size: 14px;
+}
+
+.cart-btn {
+  background: var(--dark);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.cart-count {
+  background: var(--orange);
+  padding: 2px 7px;
+  border-radius: 20px;
+  margin-left: 5px;
+}
+
+/* HERO */
+
+.hero {
+  padding: 58px 0 45px;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 35px;
+  align-items: center;
+}
+
+.eyebrow {
+  color: var(--orange);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.hero h2 {
+  font-size: clamp(39px, 5.7vw, 65px);
+  line-height: 1.05;
+  letter-spacing: -2px;
+  margin: 16px 0;
+}
+
+.hero h2 span {
+  color: var(--orange);
+}
+
+.hero-copy {
+  color: var(--muted);
+  line-height: 1.8;
+  font-size: 16px;
+  max-width: 430px;
+}
+
+.search {
+  display: flex;
+  gap: 8px;
+  padding: 7px;
+  background: white;
+  border: 1px solid #eee2d8;
+  border-radius: 15px;
+  margin-top: 25px;
+  max-width: 460px;
+  box-shadow: 0 8px 28px rgba(70,40,20,.04);
+}
+
+.search input {
+  border: none;
+  outline: none;
+  padding: 9px;
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+}
+
+.search button {
+  background: var(--orange);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 11px 17px;
+  font-weight: 900;
+}
+
+.hero-photo {
+  position: relative;
+}
+
+.hero-photo img {
+  height: 390px;
+  border-radius: 30px;
+  box-shadow: 0 20px 45px rgba(60,30,10,.13);
+}
+
+.photo-badge {
+  position: absolute;
+  bottom: 18px;
+  left: 18px;
+  background: white;
+  padding: 14px 18px;
+  border-radius: 15px;
+  font-weight: 900;
+  box-shadow: 0 5px 25px #0002;
+}
+
+.photo-badge small {
+  display: block;
+  color: var(--muted);
+  font-weight: 600;
+  margin-top: 3px;
+}
+
+/* PROMOTIONS */
+
+.promo-section {
+  padding: 10px 0 40px;
+}
+
+.promo-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 18px;
+}
+
+.promo {
+  min-height: 205px;
+  padding: 28px;
+  border-radius: 23px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.promo-one {
+  background: #ff641f;
+  color: white;
+}
+
+.promo-two {
+  background: #ffe2bf;
+  color: #412417;
+}
+
+.promo-label {
+  font-size: 11px;
+  letter-spacing: 2px;
+  font-weight: 900;
+  margin-bottom: 12px;
+}
+
+.promo h3 {
+  font-size: clamp(24px, 3.5vw, 36px);
+  line-height: 1.1;
+  max-width: 350px;
+}
+
+.promo p {
+  font-size: 13px;
+  margin-top: 10px;
+  max-width: 270px;
+  line-height: 1.6;
+}
+
+.promo button {
+  width: fit-content;
+  border: none;
+  background: white;
+  color: var(--orange);
+  font-weight: 900;
+  padding: 11px 16px;
+  border-radius: 10px;
+  margin-top: 16px;
+}
+
+.promo-two button {
+  background: var(--dark);
+  color: white;
+}
+
+.promo-decoration {
+  position: absolute;
+  right: -5px;
+  bottom: -20px;
+  font-size: 115px;
+  opacity: .23;
+  transform: rotate(-15deg);
+  pointer-events: none;
+}
+
+/* GENERAL SECTIONS */
+
+section.content-section {
+  padding: 35px 0;
+}
+
+.section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 23px;
+}
+
+.section-heading h2 {
+  font-size: clamp(25px, 4vw, 34px);
+  letter-spacing: -1px;
+}
+
+.section-heading p {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.text-link {
+  color: var(--orange);
+  background: none;
+  border: none;
+  font-weight: 900;
+}
+
+/* CATEGORIES */
+
+.categories {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 14px;
+}
+
+.category {
+  border: 1px solid #f0e4da;
+  border-radius: 17px;
+  background: white;
+  padding: 17px 5px;
+  text-align: center;
+  transition: .2s;
+}
+
+.category:hover,
+.category.active {
+  border-color: var(--orange);
+  background: #fff0e7;
+  transform: translateY(-3px);
+}
+
+.category .emoji {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.category strong {
+  font-size: 12px;
+}
+
+/* RESTAURANTS */
+
+.restaurant-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.restaurant {
+  background: white;
+  border: 1px solid #f0e4da;
+  border-radius: 20px;
+  overflow: hidden;
+  transition: .2s;
+}
+
+.restaurant:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 15px 30px #4a29120c;
+}
+
+.restaurant-image {
+  height: 190px;
+  position: relative;
+  overflow: hidden;
+}
+
+.restaurant-image img {
+  height: 100%;
+  transition: transform .3s;
+}
+
+.restaurant:hover .restaurant-image img {
+  transform: scale(1.04);
+}
+
+.tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: white;
+  border-radius: 7px;
+  padding: 6px 9px;
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.restaurant-body {
+  padding: 17px;
+}
+
+.restaurant-body h3 {
+  font-size: 18px;
+}
+
+.restaurant-description {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 5px;
+}
+
+.restaurant-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  margin-top: 13px;
+  font-size: 12px;
+}
+
+.rating {
+  color: #a56b00;
+  font-weight: 900;
+}
+
+.restaurant-meta .delivery {
+  color: var(--green);
+  font-weight: 800;
+}
+
+.menu-list {
+  border-top: 1px solid #f2e9e2;
+  margin-top: 15px;
+  padding-top: 12px;
+}
+
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.menu-item strong {
+  font-size: 13px;
+}
+
+.menu-item small {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+.add-btn {
+  background: #fff0e7;
+  color: var(--orange);
+  border: 1px solid #ffd5c0;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-weight: 900;
+}
+
+.add-btn:hover {
+  background: var(--orange);
+  color: white;
+}
+
+/* EMPTY SEARCH */
+
+.empty {
+  background: white;
+  padding: 35px;
+  border-radius: 18px;
+  text-align: center;
+  color: var(--muted);
+}
+
+/* BOTTOM CTA */
+
+.bottom-cta {
+  margin: 40px auto;
+  background: var(--dark);
+  color: white;
+  border-radius: 25px;
+  padding: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.bottom-cta h2 {
+  font-size: clamp(24px, 4vw, 36px);
+}
+
+.bottom-cta p {
+  color: #c9c0bb;
+  font-size: 13px;
+  margin-top: 8px;
+}
+
+/* FOOTER */
+
+footer {
+  background: #211b17;
+  color: white;
+  padding: 35px 0;
+  margin-top: 50px;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+footer p {
+  color: #c9c0bb;
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+.footer-note {
+  max-width: 350px;
+  line-height: 1.7;
+}
+
+/* CART MODAL */
+
+.cart-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: #0008;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+}
+
+.cart-modal {
+  background: var(--cream);
+  width: min(470px, 100%);
+  max-height: 85vh;
+  overflow: auto;
+  border-radius: 22px;
+  padding: 23px;
+}
+
+.cart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.close-btn {
+  border: none;
+  background: #eee2d8;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  font-size: 20px;
+}
+
+.cart-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 0;
+  border-bottom: 1px solid #e9ded4;
+}
+
+.cart-line small {
+  display: block;
+  color: var(--muted);
+  margin-top: 5px;
+}
+
+.cart-total {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.checkout-btn {
+  width: 100%;
+  padding: 14px;
+}
+
+.cart-note {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-top: 12px;
+}
+
+.toast {
+  position: fixed;
+  z-index: 11000;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--dark);
+  color: white;
+  padding: 13px 18px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px #0002;
+  font-size: 13px;
+  font-weight: 800;
+  max-width: 90%;
+  text-align: center;
+}
+
+/* MOBILE */
+
+@media (max-width: 760px) {
+  .hero {
+    padding-top: 35px;
+  }
+
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+
+  .hero-photo img {
+    height: 260px;
+  }
+
+  .promo-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .promo {
+    min-height: 190px;
+  }
+
+  .categories {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .restaurant-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .restaurant-image {
+    height: 220px;
+  }
+
+  .bottom-cta {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 27px;
+  }
+
+  .welcome h1 {
+    font-size: clamp(42px, 12vw, 62px);
+  }
+
+  .welcome-tag {
+    margin-top: 40px;
+  }
+
+  .nav-location {
+    display: none;
+  }
+
+  .nav .logo {
+    font-size: 29px;
+  }
+
+  .cart-btn {
+    padding: 10px 12px;
+  }
+}
+
+@media (min-width: 761px) and (max-width: 1000px) {
+  .restaurant-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .categories {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+</style>
 </head>
 
 <body>
-  <div class="topbar">
-    GOOD FOOD. GREAT MOOD. &nbsp;🍔&nbsp; MADE FOR YOUR TOWN.
+
+<!-- WELCOME ADVERTISEMENT -->
+
+<div class="welcome" id="welcome">
+  <div class="welcome-bg"></div>
+
+  <div class="welcome-content">
+    <div class="logo">foo<span>zy</span>.</div>
+
+    <div class="welcome-tag">A NEW FOOD EXPERIENCE</div>
+
+    <h1>
+      UKHRUL,<br>
+      YOUR CRAVINGS<br>
+      <span>HAVE ARRIVED.</span>
+    </h1>
+
+    <p>
+      Your favourite flavours, local favourites and
+      delicious moments — all in one place.
+      Your next craving starts here.
+    </p>
+
+    <div class="welcome-actions">
+      <button class="primary-btn" onclick="enterFoozy()">
+        Discover Deliciousness →
+      </button>
+
+      <button class="skip-btn" onclick="enterFoozy()">
+        Skip Ad
+      </button>
+    </div>
+
+    <div class="welcome-bottom">
+      MADE FOR FOOD LOVERS. MADE FOR UKHRUL. 🧡
+    </div>
   </div>
+</div>
 
-  <header>
-    <div class="container navbar">
-      <a href="#" class="logo" aria-label="Foozy home">
-        <span class="logo-icon">🍔</span>
-        <span>foozy<span>.</span></span>
-      </a>
+<!-- HEADER -->
 
-      <div class="location">
-        YOUR DELIVERY LOCATION
-        <strong>📍 Ukhrul, Manipur ▾</strong>
-      </div>
-
-      <div class="nav-actions">
-        <a href="#restaurants" class="btn btn-light">Explore</a>
-        <button class="btn btn-orange" id="headerCart" type="button">
-          🛒 Cart <span id="headerCount">0</span>
-        </button>
+<header>
+  <div class="container nav">
+    <div>
+      <div class="logo">foo<span>zy</span>.</div>
+      <div class="nav-location">
+        YOUR LOCAL FOOD DESTINATION · <strong>Ukhrul</strong>
       </div>
     </div>
-  </header>
 
-  <main>
-    <section class="hero">
-      <div class="container hero-grid">
-        <div>
-          <div class="eyebrow">❤️ Your local food companion</div>
+    <button class="cart-btn" onclick="openCart()">
+      🛒 Cart <span class="cart-count" id="cartCount">0</span>
+    </button>
+  </div>
+</header>
 
-          <h1>Good food.<br>Great mood.<br><span>Delivered.</span></h1>
+<main>
 
-          <p class="hero-copy">
-            Craving something delicious? Discover tasty meals,
-            explore local favourites, and find your next favourite bite
-            with Foozy.
-          </p>
+<!-- HERO -->
 
-          <form class="search-box" id="searchForm">
-            <input
-              id="searchInput"
-              type="search"
-              placeholder="🔍 Search dishes or food categories..."
-              aria-label="Search food"
-            >
-            <button class="btn btn-orange" type="submit">Find food →</button>
-          </form>
+<section class="hero">
+  <div class="container hero-grid">
 
-          <div class="hero-notes">
-            <span>🍽️ Local favourites</span>
-            <span>❤️ Made for food lovers</span>
-            <span>📱 Easy ordering</span>
-          </div>
-        </div>
+    <div>
+      <div class="eyebrow">GOOD FOOD. GOOD MOOD.</div>
 
-        <div class="hero-visual">
-          <div class="hero-circle"></div>
+      <h2>
+        Your cravings.<br>
+        Our <span>mission.</span>
+      </h2>
+
+      <p class="hero-copy">
+        Discover delicious food from local restaurants
+        and find something worth craving today.
+        Your next favourite meal is waiting.
+      </p>
+
+      <form class="search" id="searchForm">
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="Search food or restaurant..."
+          aria-label="Search food or restaurant"
+        >
+        <button type="submit">Search</button>
+      </form>
+    </div>
+
+    <div class="hero-photo">
+      <img
+        src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1000&q=85"
+        alt="Delicious burger"
+      >
+
+      <div class="photo-badge">
+        🍔 Good food, great mood!
+        <small>Discover something delicious</small>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ADVERTISEMENT BANNERS -->
+
+<section class="promo-section">
+  <div class="container promo-grid">
+
+    <div class="promo promo-one">
+      <div class="promo-label">🔥 THE FOOZY EXPERIENCE</div>
+      <h3>Your next favourite meal is calling.</h3>
+      <p>Explore delicious options and discover local favourites.</p>
+
+      <button onclick="scrollToRestaurants()">
+        Explore Food →
+      </button>
+
+      <div class="promo-decoration">🍔</div>
+    </div>
+
+    <div class="promo promo-two">
+      <div class="promo-label">🧡 SUPPORT LOCAL</div>
+      <h3>Local flavours. Big love.</h3>
+      <p>Discover the food and restaurants around your community.</p>
+
+      <button onclick="scrollToRestaurants()">
+        Discover Restaurants →
+      </button>
+
+      <div class="promo-decoration">🍕</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+
+<section class="content-section" id="categoriesSection">
+  <div class="container">
+
+    <div class="section-heading">
+      <div>
+        <h2>What are you craving?</h2>
+        <p>Pick your mood. Find your food.</p>
+      </div>
+    </div>
+
+    <div class="categories">
+
+      <button class="category active" data-category="All">
+        <div class="emoji">🍽️</div>
+        <strong>Everything</strong>
+      </button>
+
+      <button class="category" data-category="Burgers">
+        <div class="emoji">🍔</div>
+        <strong>Burgers</strong>
+      </button>
+
+      <button class="category" data-category="Pizza">
+        <div class="emoji">🍕</div>
+        <strong>Pizza</strong>
+      </button>
+
+      <button class="category" data-category="Chicken">
+        <div class="emoji">🍗</div>
+        <strong>Chicken</strong>
+      </button>
+
+      <button class="category" data-category="Snacks">
+        <div class="emoji">🍟</div>
+        <strong>Snacks</strong>
+      </button>
+
+      <button class="category" data-category="Drinks">
+        <div class="emoji">🥤</div>
+        <strong>Drinks</strong>
+      </button>
+
+    </div>
+  </div>
+</section>
+
+<!-- RESTAURANTS -->
+
+<section class="content-section" id="restaurantsSection">
+  <div class="container">
+
+    <div class="section-heading">
+      <div>
+        <h2>Explore the menu</h2>
+        <p>Sample menu items to demonstrate how Foozy works.</p>
+      </div>
+
+      <button class="text-link" onclick="resetFilters()">
+        View all
+      </button>
+    </div>
+
+    <div class="restaurant-grid" id="restaurantGrid">
+
+      <!-- RESTAURANT 1 -->
+
+      <article
+        class="restaurant"
+        data-category="Burgers Snacks"
+        data-search="burger classic cheeseburger fries"
+      >
+        <div class="restaurant-image">
           <img
-            class="hero-food"
-            src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=800&q=85"
-            alt="Freshly prepared pizza"
+            src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?auto=format&fit=crop&w=900&q=80"
+            alt="Burger and fries"
+            loading="lazy"
           >
-          <div class="floating-card floating-one">
-            🍕 Made for cravings
-            <small>Your next favourite bite</small>
+          <span class="tag">FOOZY FAVOURITE</span>
+        </div>
+
+        <div class="restaurant-body">
+          <h3>Classic Burger Corner</h3>
+          <p class="restaurant-description">Burgers · Snacks</p>
+
+          <div class="restaurant-meta">
+            <span class="rating">★ 4.8</span>
+            <span>Menu demo</span>
           </div>
-          <div class="floating-card floating-two">
-            🧡 Welcome to Foozy
-            <small>Good food starts here</small>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <section id="categories-section">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <h2>What are you craving? 😋</h2>
-            <p>Find something you'll love.</p>
-          </div>
-        </div>
-
-        <div class="categories" id="categories">
-          <button class="category active" data-category="All">
-            <span class="category-icon">🍽️</span>
-            <strong>Everything</strong>
-          </button>
-          <button class="category" data-category="Meals">
-            <span class="category-icon">🍚</span>
-            <strong>Meals</strong>
-          </button>
-          <button class="category" data-category="Chicken">
-            <span class="category-icon">🍗</span>
-            <strong>Chicken</strong>
-          </button>
-          <button class="category" data-category="Fast Food">
-            <span class="category-icon">🍔</span>
-            <strong>Fast Food</strong>
-          </button>
-          <button class="category" data-category="Noodles">
-            <span class="category-icon">🍜</span>
-            <strong>Noodles</strong>
-          </button>
-          <button class="category" data-category="Snacks">
-            <span class="category-icon">🍟</span>
-            <strong>Snacks</strong>
-          </button>
-          <button class="category" data-category="Drinks">
-            <span class="category-icon">🥤</span>
-            <strong>Drinks</strong>
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <section class="restaurants-section" id="restaurants">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <h2>Explore restaurants 🏪</h2>
-            <p>Discover places to eat and find your next meal.</p>
-          </div>
-          <button class="text-link" id="showFood">Explore food →</button>
-        </div>
-
-        <div class="restaurant-grid">
-          <article class="restaurant-card">
-            <img
-              class="restaurant-image"
-              src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=700&q=80"
-              alt="Restaurant dining area"
-              loading="lazy"
-            >
-            <div class="restaurant-info">
-              <div class="restaurant-title">
-                <h3>Discover Local Eats</h3>
-                <span class="rating">♥ Local</span>
+          <div class="menu-list">
+            <div class="menu-item">
+              <div>
+                <strong>Classic Cheeseburger</strong>
+                <small>₹149</small>
               </div>
-              <p>Find delicious meals in your area.</p>
-              <div class="restaurant-meta">
-                <span>🍽️ Local favourites</span>
-                <span>Explore ↓</span>
-              </div>
-            </div>
-          </article>
 
-          <article class="restaurant-card">
-            <img
-              class="restaurant-image"
-              src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=700&q=80"
-              alt="Restaurant serving area"
-              loading="lazy"
-            >
-            <div class="restaurant-info">
-              <div class="restaurant-title">
-                <h3>Food & Friends</h3>
-                <span class="rating">♥ Tasty</span>
-              </div>
-              <p>Find a meal for every kind of craving.</p>
-              <div class="restaurant-meta">
-                <span>🍴 Something for everyone</span>
-                <span>Explore ↓</span>
-              </div>
+              <button class="add-btn"
+                onclick="addToCart('Classic Cheeseburger',149)">
+                + Add
+              </button>
             </div>
-          </article>
 
-          <article class="restaurant-card">
-            <img
-              class="restaurant-image"
-              src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=700&q=80"
-              alt="Cosy restaurant interior"
-              loading="lazy"
-            >
-            <div class="restaurant-info">
-              <div class="restaurant-title">
-                <h3>Your Next Favourite</h3>
-                <span class="rating">♥ Yum</span>
+            <div class="menu-item">
+              <div>
+                <strong>Crispy Fries</strong>
+                <small>₹79</small>
               </div>
-              <p>Explore food and discover new tastes.</p>
-              <div class="restaurant-meta">
-                <span>🥘 More to discover</span>
-                <span>Explore ↓</span>
-              </div>
-            </div>
-          </article>
-        </div>
-        <p style="margin-top:16px;color:#777;font-size:11px;">
-          These are design previews, not verified restaurant listings.
-        </p>
-      </div>
-    </section>
 
-    <section id="food-section">
-      <div class="container">
-        <div class="section-head">
-          <div>
-            <h2>Popular cravings 🔥</h2>
-            <p>Explore our sample menu. Prices and items are for demonstration.</p>
-          </div>
-          <button class="text-link" id="clearFilters">Show all food ↗</button>
-        </div>
-
-        <div class="food-grid" id="foodGrid">
-          <article class="food-card" data-category="Fast Food" data-search="classic burger fast food">
-            <div class="food-image-wrap">
-              <img class="food-image"
-                src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80"
-                alt="Classic burger" loading="lazy">
-              <span class="food-tag">🍔 Crowd favourite</span>
+              <button class="add-btn"
+                onclick="addToCart('Crispy Fries',79)">
+                + Add
+              </button>
             </div>
-            <div class="food-info">
-              <h3>Classic Burger</h3>
-              <p class="food-description">A delicious burger for your cravings.</p>
-              <div class="food-bottom">
-                <span class="price">₹149</span>
-                <button class="add-btn" data-name="Classic Burger" data-price="149">+ Add</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="food-card" data-category="Meals" data-search="rice meal bowl">
-            <div class="food-image-wrap">
-              <img class="food-image"
-                src="https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80"
-                alt="Rice meal bowl" loading="lazy">
-              <span class="food-tag">🍚 Comfort food</span>
-            </div>
-            <div class="food-info">
-              <h3>Rice Meal Bowl</h3>
-              <p class="food-description">A hearty bowl for a satisfying meal.</p>
-              <div class="food-bottom">
-                <span class="price">₹129</span>
-                <button class="add-btn" data-name="Rice Meal Bowl" data-price="129">+ Add</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="food-card" data-category="Chicken" data-search="crispy chicken fried chicken">
-            <div class="food-image-wrap">
-              <img class="food-image"
-                src="https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=600&q=80"
-                alt="Crispy fried chicken" loading="lazy">
-              <span class="food-tag">🍗 Crispy bite</span>
-            </div>
-            <div class="food-info">
-              <h3>Crispy Chicken</h3>
-              <p class="food-description">Crunchy, savoury and satisfying.</p>
-              <div class="food-bottom">
-                <span class="price">₹179</span>
-                <button class="add-btn" data-name="Crispy Chicken" data-price="179">+ Add</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="food-card" data-category="Noodles" data-search="noodles noodles bowl">
-            <div class="food-image-wrap">
-              <img class="food-image"
-                src="https://images.unsplash.com/photo-1569718212165-3a8278d5f624?auto=format&fit=crop&w=600&q=80"
-                alt="Bowl of noodles" loading="lazy">
-              <span class="food-tag">🍜 Noodle time</span>
-            </div>
-            <div class="food-info">
-              <h3>Noodle Bowl</h3>
-              <p class="food-description">A comforting bowl packed with flavour.</p>
-              <div class="food-bottom">
-                <span class="price">₹119</span>
-                <button class="add-btn" data-name="Noodle Bowl" data-price="119">+ Add</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="food-card" data-category="Fast Food" data-search="pizza cheese fast food">
-            <div class="food-image-wrap">
-              <img class="food-image"
-                src="https://images.unsplash.com/photo-1579751626657-72bc17010498?auto=format&fit=crop&w=600&q=80"
-                alt="Cheesy pizza" loading="lazy">
-              <span class="food-tag">🍕 Pizza love</span>
-            </div>
-            <div class="food-info">
-              <h3>Cheese Pizza</h3>
-              <p class="food-description">A cheesy classic for sharing.</p>
-              <div class="food-bottom">
-                <span class="price">₹199</span>
-                <button class="add-btn" data-name="Cheese Pizza" data-price="199">+ Add</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="food-card" data-category="Snacks" data-search="fries french fries potato snacks">
-            <div class="food-image-wrap">
-              <img class="food-image"
-                src="https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=600&q=80"
-                alt="Golden french fries" loading="lazy">
-              <span class="food-tag">🍟 Snack attack</span>
-            </div>
-            <div class="food-info">
-              <h3>Golden Fries</h3>
-              <p class="food-description">Crispy fries for any time of day.</p>
-              <div class="food-bottom">
-                <span class="price">₹89</span>
-                <button class="add-btn" data-name="Golden Fries" data-price="89">+ Add</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="food-card" data-category="Drinks" data-search="iced coffee cold coffee drink">
-            <div class="food-image-wrap">
-              <img class="food-image"
-                src="https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=600&q=80"
-                alt="Iced coffee" loading="lazy">
-              <span class="food-tag">🥤 Chill time</span>
-            </div>
-            <div class="food-info">
-              <h3>Iced Coffee</h3>
-              <p class="food-description">A cool sip for your coffee break.</p>
-              <div class="food-bottom">
-                <span class="price">₹99</span>
-                <button class="add-btn" data-name="Iced Coffee" data-price="99">+ Add</button>
-              </div>
-            </div>
-          </article>
-
-          <article class="food-card" data-category="Snacks" data-search="sandwich snack">
-            <div class="food-image-wrap">
-              <img class="food-image"
-                src="https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=600&q=80"
-                alt="Fresh sandwich" loading="lazy">
-              <span class="food-tag">🥪 Quick bite</span>
-            </div>
-            <div class="food-info">
-              <h3>Fresh Sandwich</h3>
-              <p class="food-description">A simple and tasty little treat.</p>
-              <div class="food-bottom">
-                <span class="price">₹109</span>
-                <button class="add-btn" data-name="Fresh Sandwich" data-price="109">+ Add</button>
-              </div>
-            </div>
-          </article>
-
-          <div class="empty-state" id="emptyState">
-            No matching dishes found. Try another search! 🍽️
           </div>
         </div>
-      </div>
-    </section>
+      </article>
 
-    <div class="promo">
-      <div class="container">
-        <div class="promo-box">
-          <div>
-            <h2>Your next favourite meal<br>is waiting for you. 🧡</h2>
-            <p>Explore the menu and discover something delicious.</p>
-          </div>
-          <a href="#food-section" class="btn">Explore the menu →</a>
+      <!-- RESTAURANT 2 -->
+
+      <article
+        class="restaurant"
+        data-category="Pizza"
+        data-search="pizza margherita cheese pizza"
+      >
+        <div class="restaurant-image">
+          <img
+            src="https://images.unsplash.com/photo-1579751626657-72bc17010498?auto=format&fit=crop&w=900&q=80"
+            alt="Fresh pizza"
+            loading="lazy"
+          >
+          <span class="tag">PIZZA LOVERS</span>
         </div>
-      </div>
+
+        <div class="restaurant-body">
+          <h3>Pizza Paradise</h3>
+          <p class="restaurant-description">Pizza · Italian-inspired</p>
+
+          <div class="restaurant-meta">
+            <span class="rating">★ 4.7</span>
+            <span>Menu demo</span>
+          </div>
+
+          <div class="menu-list">
+            <div class="menu-item">
+              <div>
+                <strong>Classic Cheese Pizza</strong>
+                <small>₹199</small>
+              </div>
+
+              <button class="add-btn"
+                onclick="addToCart('Classic Cheese Pizza',199)">
+                + Add
+              </button>
+            </div>
+
+            <div class="menu-item">
+              <div>
+                <strong>Veggie Pizza</strong>
+                <small>₹229</small>
+              </div>
+
+              <button class="add-btn"
+                onclick="addToCart('Veggie Pizza',229)">
+                + Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- RESTAURANT 3 -->
+
+      <article
+        class="restaurant"
+        data-category="Chicken Snacks"
+        data-search="chicken fried chicken crispy wings"
+      >
+        <div class="restaurant-image">
+          <img
+            src="https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=900&q=80"
+            alt="Crispy fried chicken"
+            loading="lazy"
+          >
+          <span class="tag">CRISPY & DELICIOUS</span>
+        </div>
+
+        <div class="restaurant-body">
+          <h3>Crispy Chicken House</h3>
+          <p class="restaurant-description">Chicken · Snacks</p>
+
+          <div class="restaurant-meta">
+            <span class="rating">★ 4.6</span>
+            <span>Menu demo</span>
+          </div>
+
+          <div class="menu-list">
+            <div class="menu-item">
+              <div>
+                <strong>Crispy Chicken</strong>
+                <small>₹179</small>
+              </div>
+
+              <button class="add-btn"
+                onclick="addToCart('Crispy Chicken',179)">
+                + Add
+              </button>
+            </div>
+
+            <div class="menu-item">
+              <div>
+                <strong>Chicken Wings</strong>
+                <small>₹159</small>
+              </div>
+
+              <button class="add-btn"
+                onclick="addToCart('Chicken Wings',159)">
+                + Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- RESTAURANT 4 -->
+
+      <article
+        class="restaurant"
+        data-category="Drinks"
+        data-search="drinks lemonade cold coffee"
+      >
+        <div class="restaurant-image">
+          <img
+            src="https://images.unsplash.com/photo-1513558161293-cdaf765edfd7?auto=format&fit=crop&w=900&q=80"
+            alt="Refreshing drinks"
+            loading="lazy"
+          >
+          <span class="tag">REFRESH YOUR DAY</span>
+        </div>
+
+        <div class="restaurant-body">
+          <h3>Fresh Sip Station</h3>
+          <p class="restaurant-description">Drinks · Refreshments</p>
+
+          <div class="restaurant-meta">
+            <span class="rating">★ 4.5</span>
+            <span>Menu demo</span>
+          </div>
+
+          <div class="menu-list">
+            <div class="menu-item">
+              <div>
+                <strong>Fresh Lemonade</strong>
+                <small>₹69</small>
+              </div>
+
+              <button class="add-btn"
+                onclick="addToCart('Fresh Lemonade',69)">
+                + Add
+              </button>
+            </div>
+
+            <div class="menu-item">
+              <div>
+                <strong>Cold Coffee</strong>
+                <small>₹99</small>
+              </div>
+
+              <button class="add-btn"
+                onclick="addToCart('Cold Coffee',99)">
+                + Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- RESTAURANT 5 -->
+
+      <article
+        class="restaurant"
+        data-category="Snacks"
+        data-search="snacks sandwich grilled sandwich"
+      >
+        <div class="restaurant-image">
+          <img
+            src="https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=900&q=80"
+            alt="Grilled sandwich"
+            loading="lazy"
+          >
+          <span class="tag">QUICK BITES</span>
+        </div>
+
+        <div class="restaurant-body">
+          <h3>Quick Bite Kitchen</h3>
+          <p class="restaurant-description">Sandwiches · Snacks</p>
+
+          <div class="restaurant-meta">
+            <span class="rating">★ 4.5</span>
+            <span>Menu demo</span>
+          </div>
+
+          <div class="menu-list">
+            <div class="menu-item">
+              <div>
+                <strong>Grilled Sandwich</strong>
+                <small>₹99</small>
+              </div>
+
+              <button class="add-btn"
+                onclick="addToCart('Grilled Sandwich',99)">
+                + Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- RESTAURANT 6 -->
+
+      <article
+        class="restaurant"
+        data-category="Burgers Chicken"
+        data-search="chicken burger spicy chicken burger"
+      >
+        <div class="restaurant-image">
+          <img
+            src="https://images.unsplash.com/photo-1606755962773-d324e0a13086?auto=format&fit=crop&w=900&q=80"
+            alt="Chicken burger"
+            loading="lazy"
+          >
+          <span class="tag">BIG FLAVOUR</span>
+        </div>
+
+        <div class="restaurant-body">
+          <h3>Big Bite Burgers</h3>
+          <p class="restaurant-description">Burgers · Chicken</p>
+
+          <div class="restaurant-meta">
+            <span class="rating">★ 4.7</span>
+            <span>Menu demo</span>
+          </div>
+
+          <div class="menu-list">
+            <div class="menu-item">
+              <div>
+                <strong>Chicken Burger</strong>
+                <small>₹169</small>
+              </div>
+
+              <button class="add-btn"
+                onclick="addToCart('Chicken Burger',169)">
+                + Add
+              </button>
+            </div>
+          </div>
+        </div>
+      </article>
+
     </div>
-  </main>
 
-  <footer>
-    <div class="container">
-      <div class="footer-grid">
-        <div>
-          <a href="#" class="logo">
-            <span class="logo-icon">🍔</span>
-            <span style="color:white">foozy<span>.</span></span>
-          </a>
-          <p class="footer-description">
-            Bringing food lovers closer to great food.
-            Foozy is being built to help people discover local food
-            and make ordering easier.
-          </p>
-        </div>
-
-        <div>
-          <h3 class="footer-heading">Explore</h3>
-          <div class="footer-links">
-            <a href="#restaurants">Restaurants</a>
-            <a href="#food-section">Popular food</a>
-            <a href="#categories-section">Categories</a>
-          </div>
-        </div>
-
-        <div>
-          <h3 class="footer-heading">Foozy</h3>
-          <div class="footer-links">
-            <a href="#about">About us</a>
-            <a href="mailto:hello@foozy.online">Contact</a>
-            <a href="#help" id="helpLink">Help & support</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="copyright">
-        <span>© <span id="year"></span> Foozy. Made with 🧡</span>
-        <span>Good food. Great mood.</span>
-      </div>
+    <div id="emptyMessage" class="empty hidden">
+      <h3>No matching food found 🍽️</h3>
+      <p style="margin-top:8px">
+        Try another search or choose a different category.
+      </p>
+      <button class="primary-btn" style="margin-top:15px"
+        onclick="resetFilters()">
+        Show all food
+      </button>
     </div>
-  </footer>
 
-  <button class="cart-fab" id="floatingCart" type="button">
-    🛒 Your cart <span class="cart-count" id="cartCount">0</span>
-  </button>
+  </div>
+</section>
 
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<!-- FINAL PROMOTION -->
 
-  <script>
-    const cart = new Map();
-    let activeCategory = "All";
-    let searchQuery = "";
-    let toastTimer;
+<div class="container">
+  <div class="bottom-cta">
+    <div>
+      <h2>Ukhrul, let's eat! 🧡</h2>
+      <p>Discover local food and support your community.</p>
+    </div>
 
-    const money = amount =>
-      new Intl.NumberFormat("en-IN", {
-        style: "currency",
-        currency: "INR",
-        maximumFractionDigits: 0
-      }).format(amount);
+    <button class="primary-btn" onclick="scrollToRestaurants()">
+      Explore the Menu →
+    </button>
+  </div>
+</div>
 
-    function showToast(message) {
-      const toast = document.getElementById("toast");
-      toast.textContent = message;
-      toast.classList.add("show");
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => toast.classList.remove("show"), 2600);
-    }
+</main>
 
-    function updateCart() {
-      let count = 0;
-      let total = 0;
+<!-- FOOTER -->
 
-      cart.forEach(item => {
-        count += item.quantity;
-        total += item.price * item.quantity;
-      });
+<footer>
+  <div class="container footer-content">
 
-      document.getElementById("cartCount").textContent = count;
-      document.getElementById("headerCount").textContent = count;
-      document.getElementById("floatingCart").setAttribute(
-        "aria-label",
-        `Your cart, ${count} items, subtotal ${money(total)}`
-      );
+    <div>
+      <div class="logo">foo<span>zy</span>.</div>
+      <p>Good food. Good mood. Always.</p>
+    </div>
 
-      try {
-        localStorage.setItem("foozy-demo-cart", JSON.stringify([...cart]));
-      } catch (error) {
-        // Cart remains usable for this page session if storage is unavailable.
-      }
-    }
+    <div class="footer-note">
+      <p>
+        Built with love for Ukhrul, Manipur. Restaurant listings,
+        menu items, prices and ratings on this demo page are examples.
+      </p>
+      <p>© <span id="year"></span> Foozy. All rights reserved.</p>
+    </div>
 
-    function addToCart(name, price) {
-      const current = cart.get(name) || { name, price, quantity: 0 };
-      current.quantity += 1;
-      cart.set(name, current);
-      updateCart();
-      showToast(`${name} added to your cart! 🛒`);
-    }
+  </div>
+</footer>
 
-    function showCart() {
-      if (cart.size === 0) {
-        showToast("Your cart is empty. Add something delicious first! 🍔");
-        return;
-      }
+<!-- CART -->
 
-      let lines = [];
-      let total = 0;
+<div class="cart-overlay hidden" id="cartOverlay"
+     onclick="outsideCart(event)">
 
-      cart.forEach(item => {
-        const lineTotal = item.price * item.quantity;
-        total += lineTotal;
-        lines.push(`${item.name} × ${item.quantity} — ${money(lineTotal)}`);
-      });
+  <div class="cart-modal" role="dialog" aria-modal="true"
+       aria-label="Your cart">
 
-      lines.push(`\nSubtotal: ${money(total)}`);
-      lines.push("\nDemo cart only — checkout is not connected yet.");
+    <div class="cart-header">
+      <h2>🛒 Your Cart</h2>
+      <button class="close-btn" onclick="closeCart()"
+              aria-label="Close cart">×</button>
+    </div>
 
-      alert(lines.join("\n"));
-    }
+    <div id="cartItems"></div>
 
-    function filterFood() {
-      const cards = [...document.querySelectorAll(".food-card")];
-      let visible = 0;
+    <div class="cart-total">
+      <span>Total</span>
+      <span id="cartTotal">₹0</span>
+    </div>
 
-      cards.forEach(card => {
-        const category = card.dataset.category;
-        const searchText = (
-          card.dataset.search + " " + card.querySelector("h3").textContent
-        ).toLowerCase();
+    <button class="primary-btn checkout-btn"
+            onclick="checkoutDemo()">
+      Continue →
+    </button>
 
-        const categoryMatch =
-          activeCategory === "All" || category === activeCategory;
-        const searchMatch = searchText.includes(searchQuery.toLowerCase());
-        const matches = categoryMatch && searchMatch;
+    <p class="cart-note">
+      Demo only: this cart does not place real orders or process payments.
+    </p>
 
-        card.style.display = matches ? "" : "none";
-        if (matches) visible++;
-      });
+  </div>
+</div>
 
-      document.getElementById("emptyState").style.display =
-        visible ? "none" : "block";
-    }
+<div id="toast" class="toast hidden" role="status"></div>
 
-    document.querySelectorAll(".add-btn").forEach(button => {
-      button.addEventListener("click", () => {
-        addToCart(button.dataset.name, Number(button.dataset.price));
-      });
+<script>
+/* WELCOME ADVERTISEMENT */
+
+function enterFoozy() {
+  const welcome = document.getElementById('welcome');
+  welcome.style.opacity = '0';
+  welcome.style.transition = 'opacity .35s ease';
+
+  setTimeout(() => {
+    welcome.classList.add('hidden');
+  }, 350);
+}
+
+/* SEARCH AND CATEGORIES */
+
+let selectedCategory = 'All';
+
+const searchInput = document.getElementById('searchInput');
+const restaurants = [...document.querySelectorAll('.restaurant')];
+
+function filterRestaurants() {
+  const query = searchInput.value.trim().toLowerCase();
+  let visibleCount = 0;
+
+  restaurants.forEach(card => {
+    const categories = card.dataset.category.split(' ');
+    const searchText = (
+      card.dataset.search + ' ' + card.innerText
+    ).toLowerCase();
+
+    const categoryMatch =
+      selectedCategory === 'All' ||
+      categories.includes(selectedCategory);
+
+    const searchMatch = searchText.includes(query);
+    const show = categoryMatch && searchMatch;
+
+    card.classList.toggle('hidden', !show);
+
+    if (show) visibleCount++;
+  });
+
+  document.getElementById('emptyMessage')
+    .classList.toggle('hidden', visibleCount !== 0);
+}
+
+document.getElementById('searchForm')
+  .addEventListener('submit', event => {
+    event.preventDefault();
+    filterRestaurants();
+
+    document.getElementById('restaurantsSection')
+      .scrollIntoView({ behavior: 'smooth' });
+  });
+
+searchInput.addEventListener('input', filterRestaurants);
+
+document.querySelectorAll('.category').forEach(button => {
+  button.addEventListener('click', () => {
+    document.querySelectorAll('.category')
+      .forEach(item => item.classList.remove('active'));
+
+    button.classList.add('active');
+    selectedCategory = button.dataset.category;
+    filterRestaurants();
+
+    document.getElementById('restaurantsSection')
+      .scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+function resetFilters() {
+  selectedCategory = 'All';
+  searchInput.value = '';
+
+  document.querySelectorAll('.category')
+    .forEach(item => item.classList.remove('active'));
+
+  document.querySelector('[data-category="All"]')
+    .classList.add('active');
+
+  filterRestaurants();
+}
+
+function scrollToRestaurants() {
+  document.getElementById('restaurantsSection')
+    .scrollIntoView({ behavior: 'smooth' });
+}
+
+/* DEMO SHOPPING CART */
+
+const cart = {};
+
+function addToCart(name, price) {
+  if (!cart[name]) {
+    cart[name] = { price: price, quantity: 0 };
+  }
+
+  cart[name].quantity++;
+
+  updateCart();
+  showToast(name + ' added to your cart!');
+}
+
+function changeQuantity(name, amount) {
+  if (!cart[name]) return;
+
+  cart[name].quantity += amount;
+
+  if (cart[name].quantity <= 0) {
+    delete cart[name];
+  }
+
+  updateCart();
+}
+
+function updateCart() {
+  const count = Object.values(cart).reduce(
+    (sum, item) => sum + item.quantity, 0
+  );
+
+  const total = Object.values(cart).reduce(
+    (sum, item) => sum + item.price * item.quantity, 0
+  );
+
+  document.getElementById('cartCount').textContent = count;
+  document.getElementById('cartTotal').textContent = '₹' + total;
+
+  const cartItems = document.getElementById('cartItems');
+  cartItems.innerHTML = '';
+
+  if (count === 0) {
+    cartItems.innerHTML =
+      '<p class="empty">Your cart is empty. Add something delicious!</p>';
+  } else {
+    Object.entries(cart).forEach(([name, item]) => {
+      const row = document.createElement('div');
+      row.className = 'cart-line';
+
+      const details = document.createElement('div');
+      const title = document.createElement('strong');
+      const price = document.createElement('small');
+
+      title.textContent = name;
+      price.textContent = '₹' + item.price + ' each';
+
+      details.append(title, price);
+
+      const controls = document.createElement('div');
+      controls.style.display = 'flex';
+      controls.style.alignItems = 'center';
+      controls.style.gap = '9px';
+
+      const minus = document.createElement('button');
+      minus.className = 'add-btn';
+      minus.textContent = '−';
+      minus.setAttribute('aria-label', 'Remove one ' + name);
+      minus.addEventListener('click', () => changeQuantity(name, -1));
+
+      const quantity = document.createElement('strong');
+      quantity.textContent = item.quantity;
+
+      const plus = document.createElement('button');
+      plus.className = 'add-btn';
+      plus.textContent = '+';
+      plus.setAttribute('aria-label', 'Add one ' + name);
+      plus.addEventListener('click', () => changeQuantity(name, 1));
+
+      controls.append(minus, quantity, plus);
+      row.append(details, controls);
+      cartItems.appendChild(row);
     });
+  }
+}
 
-    document.querySelectorAll(".category").forEach(button => {
-      button.addEventListener("click", () => {
-        activeCategory = button.dataset.category;
+function openCart() {
+  document.getElementById('cartOverlay').classList.remove('hidden');
+}
 
-        document.querySelectorAll(".category").forEach(categoryButton => {
-          categoryButton.classList.toggle(
-            "active",
-            categoryButton === button
-          );
-        });
+function closeCart() {
+  document.getElementById('cartOverlay').classList.add('hidden');
+}
 
-        filterFood();
-        document.getElementById("food-section").scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
-      });
-    });
+function outsideCart(event) {
+  if (event.target.id === 'cartOverlay') {
+    closeCart();
+  }
+}
 
-    document.getElementById("searchForm").addEventListener("submit", event => {
-      event.preventDefault();
-      searchQuery = document.getElementById("searchInput").value.trim();
-      activeCategory = "All";
+function checkoutDemo() {
+  const count = Object.values(cart).reduce(
+    (sum, item) => sum + item.quantity, 0
+  );
 
-      document.querySelectorAll(".category").forEach(button => {
-        button.classList.toggle(button.dataset.category === "All", button.dataset.category === "All");
-      });
+  if (count === 0) {
+    showToast('Your cart is empty. Add food first!');
+    return;
+  }
 
-      filterFood();
-      document.getElementById("food-section").scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
-    });
+  showToast(
+    'Demo mode: real ordering and checkout are not connected yet.'
+  );
+}
 
-    document.getElementById("clearFilters").addEventListener("click", () => {
-      searchQuery = "";
-      activeCategory = "All";
-      document.getElementById("searchInput").value = "";
+/* NOTIFICATIONS */
 
-      document.querySelectorAll(".category").forEach(button => {
-        button.classList.toggle("active", button.dataset.category === "All");
-      });
+let toastTimer;
 
-      filterFood();
-    });
+function showToast(message) {
+  const toast = document.getElementById('toast');
 
-    document.getElementById("showFood").addEventListener("click", () => {
-      document.getElementById("food-section").scrollIntoView({
-        behavior: "smooth"
-      });
-    });
+  toast.textContent = message;
+  toast.classList.remove('hidden');
 
-    document.getElementById("floatingCart").addEventListener("click", showCart);
-    document.getElementById("headerCart").addEventListener("click", showCart);
+  clearTimeout(toastTimer);
 
-    document.getElementById("helpLink").addEventListener("click", event => {
-      event.preventDefault();
-      showToast("Customer support will be added in a future update.");
-    });
+  toastTimer = setTimeout(() => {
+    toast.classList.add('hidden');
+  }, 2600);
+}
 
-    document.getElementById("year").textContent = new Date().getFullYear();
+/* FOOTER YEAR */
 
-    try {
-      const savedCart = JSON.parse(localStorage.getItem("foozy-demo-cart") || "[]");
-      savedCart.forEach(([name, item]) => {
-        if (
-          typeof name === "string" &&
-          item &&
-          typeof item.price === "number" &&
-          typeof item.quantity === "number"
-        ) {
-          cart.set(name, item);
-        }
-      });
-    } catch (error) {
-      // Start with an empty cart if stored demo data is invalid.
-    }
+document.getElementById('year').textContent =
+  new Date().getFullYear();
 
-    updateCart();
-    filterFood();
-  </script>
+updateCart();
+</script>
+
 </body>
 </html>
