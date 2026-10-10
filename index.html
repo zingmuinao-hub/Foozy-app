@@ -1650,10 +1650,18 @@ updateCart();
   const status = document.getElementById("foozy-menu-status");
   const grid = document.getElementById("foozy-menu-grid");
 
-  if (!window.foozySupabase) {
-    status.textContent = "Database connection not found. Please refresh the page.";
-    return;
-  }
+  let attempts = 0;
+
+while (!window.foozySupabase && attempts < 50) {
+  await new Promise(resolve => setTimeout(resolve, 100));
+  attempts++;
+}
+
+if (!window.foozySupabase) {
+  status.textContent =
+    "Database connection not found. Please try again later.";
+  return;
+}
 
   try {
     const [menuResult, restaurantResult] = await Promise.all([
