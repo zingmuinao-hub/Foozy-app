@@ -620,17 +620,35 @@ color: #241a15;
 }
 
 .add-btn {
-  background: #fff0e7;
-  color: var(--orange);
-  border: 1px solid #ffd5c0;
-  padding: 7px 12px;
-  border-radius: 8px;
-  font-weight: 900;
+background: var(--orange);
+color: #fff;
+border: 1px solid var(--orange);
+padding: 9px 15px;
+border-radius: 10px;
+font-size: 12px;
+font-weight: 900;
+letter-spacing: .4px;
+cursor: pointer;
+transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+box-shadow: 0 4px 10px rgba(255, 107, 53, .18);
 }
 
 .add-btn:hover {
-  background: var(--orange);
-  color: white;
+background: #e95a20;
+border-color: #e95a20;
+color: #fff;
+transform: translateY(-2px);
+box-shadow: 0 7px 16px rgba(255, 107, 53, .25);
+}
+
+.add-btn:active {
+transform: scale(.97);
+}
+
+@media (prefers-reduced-motion: reduce) {
+.add-btn {
+transition: none;
+}
 }
 
 /* EMPTY SEARCH */
