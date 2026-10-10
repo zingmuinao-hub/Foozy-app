@@ -814,6 +814,87 @@ footer p {
     grid-template-columns: repeat(3, 1fr);
   }
 }
+  /* FOOZY 2026 — DARK PREMIUM HERO */
+
+.hero-showcase {
+  padding: 0;
+  margin: 0;
+  color: #fff;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(13, 10, 9, .94) 0%,
+      rgba(13, 10, 9, .78) 52%,
+      rgba(13, 10, 9, .30) 100%
+    ),
+    url('https://images.unsplash.com/photo-1571091718767-18b5b1457add?auto=format&fit=crop&w=1800&q=90')
+    center / cover;
+  border-radius: 0 0 28px 28px;
+  overflow: hidden;
+}
+
+.hero-showcase-inner {
+  min-height: 480px;
+  display: flex;
+  align-items: center;
+}
+
+.hero-showcase-content {
+  width: 100%;
+  max-width: 680px;
+  padding: 65px 0;
+}
+
+.hero-showcase .eyebrow {
+  color: #ff9a6c;
+  font-size: 13px;
+  letter-spacing: 3px;
+}
+
+.hero-showcase h2 {
+  color: #fff;
+  font-size: clamp(44px, 7vw, 78px);
+  line-height: 1.03;
+  letter-spacing: -2px;
+  margin: 20px 0;
+}
+
+.hero-showcase h2 span {
+  color: #ff6b35;
+}
+
+.hero-showcase .hero-copy {
+  color: #f0e6df;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.hero-showcase .search {
+  margin-top: 28px;
+  max-width: 480px;
+  border: none;
+  box-shadow: 0 12px 35px #0005;
+}
+
+.logo .logo-mark {
+  font-size: .8em;
+  letter-spacing: 0;
+  margin-right: 4px;
+}
+
+@media (max-width: 760px) {
+  .hero-showcase-inner {
+    min-height: 460px;
+  }
+
+  .hero-showcase-content {
+    padding: 50px 0;
+  }
+
+  .hero-showcase h2 {
+    font-size: clamp(43px, 11vw, 62px);
+  }
+}
 </style>
 </head>
 
