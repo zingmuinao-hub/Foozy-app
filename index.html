@@ -1493,16 +1493,18 @@ function scrollToRestaurants() {
 
 /* DEMO SHOPPING CART */
 
-const cart = {};
+  const cart = JSON.parse(localStorage.getItem('foozyCart') || '{}');
 
 function addToCart(name, price) {
   if (!cart[name]) {
     cart[name] = { price: price, quantity: 0 };
   }
+cart[name].quantity++;
 
-  cart[name].quantity++;
+localStorage.setItem('foozyCart', JSON.stringify(cart));
 
-  updateCart();
+updateCart();
+  
   showToast(name + ' added to your cart!');
 }
 
