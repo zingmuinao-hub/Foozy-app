@@ -1946,18 +1946,6 @@ if (!window.foozySupabase) {
   );
 
   window.foozySupabase = foozySupabase;
-  foozySupabase
-  .from("restaurants")
-  .select("id")
-  .limit(1)
-  .then(({ data, error }) => {
-    if (error) {
-      alert("Foozy connection failed: " + error.message);
-    } else {
-      alert("Welcome to Foozy 🍔
-Ukhrul, on your table. ! 🧡");
-    }
-  });
 
   console.log("Foozy database connection initialized!");
 </script>
