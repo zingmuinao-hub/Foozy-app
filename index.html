@@ -1644,6 +1644,17 @@ updateCart();
   );
 
   window.foozySupabase = foozySupabase;
+  foozySupabase
+  .from("restaurants")
+  .select("id")
+  .limit(1)
+  .then(({ data, error }) => {
+    if (error) {
+      alert("Foozy connection failed: " + error.message);
+    } else {
+      alert("SUCCESS! Foozy is connected to Supabase! 🧡");
+    }
+  });
 
   console.log("Foozy database connection initialized!");
 </script>
