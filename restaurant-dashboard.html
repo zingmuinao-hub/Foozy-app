@@ -328,7 +328,7 @@ $("loginForm").onsubmit=e=>{e.preventDefault();login();};
 
 async function startApp(){
   const {data,error}=await db.from("restaurants").select("*")
-    ..eq("owner_id", ownerId).limit(1).maybeSingle();
+   .eq("owner_id", ownerId).limit(1).maybeSingle();
   if(error)throw error;
   if(!data){
     $("app").classList.add("hidden");
