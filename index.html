@@ -589,15 +589,27 @@ transition: none;
 }
 
 .menu-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  margin-top: 10px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 12px;
+margin-top: 14px;
+padding: 10px;
+background: #fffaf6;
+border: 1px solid #f4e8df;
+border-radius: 12px;
+transition: border-color .2s ease, background .2s ease;
+}
+
+.menu-item:hover {
+background: #fff3e9;
+border-color: #ffd4bd;
 }
 
 .menu-item strong {
-  font-size: 13px;
+font-size: 14px;
+font-weight: 800;
+color: #241a15;
 }
 
 .menu-item small {
