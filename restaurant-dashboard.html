@@ -341,7 +341,11 @@ async function startApp(){
   $("app").classList.remove("hidden");
   $("bottomNav").classList.remove("hidden");
   renderProfile();
-  await Promise.all([loadMenu(),loadOffers()]);
+  await Promise.all([
+  loadMenu(),
+  loadOffers(),
+  loadOrders()
+]);
   go("overview");
   say("Welcome to "+restaurant.name+"!");
 }
