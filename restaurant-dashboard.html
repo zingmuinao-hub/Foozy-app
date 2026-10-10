@@ -511,9 +511,10 @@ async function loadDashboardOrders(){
   const box = $("dashboardOrders");
   box.innerHTML = '<p class="help">Loading orders...</p>';
 
-  const {data, error} = await db
     console.log("Restaurant ID:", restaurant.id);
-console.log("Loading dashboard orders...");
+  console.log("Loading dashboard orders...");
+
+  const {data, error} = await db
     .from("Order")
     .select("*")
     .eq("restaurant_id", restaurant.id)
