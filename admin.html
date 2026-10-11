@@ -821,5 +821,40 @@ show("restaurantPerformance", "Actual error: " + message + " | Details: " + JSON
 
 loadFoozyBusinessDashboard();
   </script>
+<script>
+document.querySelectorAll(".sidebar button[data-section]")
+  .forEach(button => {
+    button.addEventListener("click", function () {
+      const section = this.dataset.section;
+
+      const targets = {
+        dashboardSection: "dashboardSection",
+        applicationsSection: "applications",
+        pricingSection: "pricingForm"
+      };
+
+      const targetId = targets[section];
+
+      if (!targetId) {
+        alert("This section is not built yet. We'll add it next!");
+        return;
+      }
+
+      const target = document.getElementById(targetId);
+
+      if (target) {
+        target.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+
+        document.querySelectorAll(".sidebar button")
+          .forEach(btn => btn.classList.remove("active"));
+
+        this.classList.add("active");
+      }
+    });
+  });
+</script>
 </body>
 </html>
