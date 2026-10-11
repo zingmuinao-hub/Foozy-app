@@ -354,6 +354,89 @@ window.location.replace(
         message.textContent = "";
         message.style.display = "none";
       }
+      async function handleRestaurantGoogleReturn() {
+  const action = sessionStorage.getItem("foozy_google_login");
+
+  if (
+    action !== "restaurant_application" &&
+    action !== "restaurant"
+  ) {
+    return;
+  }
+
+  const { data, error } = await db.auth.getSession();
+
+  if (error || !data.session) {
+    return;
+  }
+
+  if (action === "restaurant") {
+    return;
+  }
+
+  const applicationText = sessionStorage.getItem(
+    "foozy_restaurant_application"
+  );
+
+  if (!applicationText) {
+    say("Please enter your restaurant details and submit your application again.");
+    sessionStorage.removeItem("foozy_google_login");
+    return;
+  }
+
+  try {
+    const application = JSON.parse(applicationText);
+    const user = data.session.user;
+
+    const { data: existing, error: lookupError } = await db
+      .from("partner_applications")
+      .select("id, status")
+      .eq("user_id", user.id)
+      .eq("application_type", "restaurant")
+      .limit(1);
+
+    if (lookupError) throw lookupError;
+
+    if (existing && existing.length > 0) {
+      say(
+        "Your restaurant application is already on file. Its current status is: " +
+        existing[0].status +
+        ". Please wait for the Foozy team to review it."
+      );
+    } else {
+      const { error: insertError } = await db
+        .from("partner_applications")
+        .insert({
+          user_id: user.id,
+          application_type: "restaurant",
+          full_name: application.full_name,
+          phone: application.phone,
+          restaurant_name: application.restaurant_name,
+          restaurant_address: application.restaurant_address,
+          status: "pending"
+        });
+
+      if (insertError) throw insertError;
+
+      say(
+        "✅ Application submitted successfully! Our team is reviewing your restaurant application. Please allow us a few moment for review. You'll be notified once a decision has been made."
+      );
+    }
+
+    sessionStorage.removeItem("foozy_google_login");
+    sessionStorage.removeItem("foozy_restaurant_application");
+
+    setMode("login");
+  } catch (error) {
+    console.error("Restaurant application error:", error);
+
+    say(
+      "We couldn't confirm your application was saved. Please try again or contact Foozy Admin. Your Google account remains signed in."
+    );
+  }
+}
+
+handleRestaurantGoogleReturn();
 
       function setMode(nextMode) {
         mode = nextMode;
