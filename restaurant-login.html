@@ -407,13 +407,14 @@
               email,
               password: password.value,
               options: {
-                data: {
-                  full_name: fullName,
-                  phone: phone,
-                  account_type: "restaurant"
+                options: {
+  emailRedirectTo: "https://zingmuinao-hub.github.io/Foozy-app/restaurant-login.html",
+  data: {
+    full_name: fullName,
+    phone: phone,
+    account_type: "restaurant"
+  }
                 }
-              }
-            });
 
             if (error) throw error;
 
