@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#fff8f2">
+
+  <title>Join Foozy | Good Food, Delivered</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #fff8f2;
+      color: #202020;
+      min-height: 100vh;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 620px;
+      margin: auto;
+      padding: 24px 20px 36px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 8px 0 35px;
+    }
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 15px;
+      background: #ff6b24;
+      color: white;
+      display: grid;
+      place-items: center;
+      font-size: 27px;
+    }
+
+    .brand-name {
+      font-size: 27px;
+      font-weight: 800;
+      color: #ff6b24;
+      letter-spacing: -1px;
+    }
+
+    .hero {
+      margin-bottom: 28px;
+    }
+
+    .tag {
+      display: inline-block;
+      color: #d94c0d;
+      background: #ffeadc;
+      padding: 8px 12px;
+      border-radius: 30px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    h1 {
+      font-size: clamp(34px, 9vw, 48px);
+      line-height: 1.08;
+      letter-spacing: -1.8px;
+      margin: 18px 0 14px;
+    }
+
+    h1 span {
+      color: #ff6b24;
+    }
+
+    .subtitle {
+      color: #6d6d6d;
+      font-size: 16px;
+      line-height: 1.7;
+      margin: 0;
+    }
+
+    .choices-title {
+      font-size: 19px;
+      margin: 30px 0 15px;
+    }
+
+    .choice {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 18px 15px;
+      margin-bottom: 13px;
+      border: 1px solid #f0e4db;
+      background: white;
+      border-radius: 18px;
+      color: inherit;
+      text-decoration: none;
+      transition: transform 0.15s, border-color 0.15s;
+    }
+
+    .choice:active {
+      transform: scale(0.98);
+    }
+
+    .choice:hover {
+      border-color: #ff6b24;
+    }
+
+    .choice-icon {
+      flex-shrink: 0;
+      width: 55px;
+      height: 55px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      font-size: 28px;
+      background: #fff0e5;
+    }
+
+    .restaurant .choice-icon {
+      background: #e9f7eb;
+    }
+
+    .delivery .choice-icon {
+      background: #eaf2ff;
+    }
+
+    .choice-text {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .choice-text h3 {
+      margin: 0 0 6px;
+      font-size: 17px;
+    }
+
+    .choice-text p {
+      margin: 0;
+      color: #777;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .arrow {
+      color: #ff6b24;
+      font-size: 25px;
+      font-weight: bold;
+    }
+
+    .footer {
+      text-align: center;
+      color: #888;
+      font-size: 12px;
+      line-height: 1.7;
+      margin-top: 30px;
+    }
+
+    .back {
+      display: inline-block;
+      margin-top: 20px;
+      color: #d94c0d;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    a:focus-visible {
+      outline: 3px solid #ff6b24;
+      outline-offset: 4px;
+    }
+
+    @media (min-width: 600px) {
+      .page {
+        padding-top: 35px;
+      }
+
+      .hero {
+        margin-top: 25px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+
+    <header class="brand">
+      <div class="logo" aria-hidden="true">🍔</div>
+      <div class="brand-name">Foozy</div>
+    </header>
+
+    <section class="hero">
+      <span class="tag">GOOD FOOD, GOOD MOOD</span>
+
+      <h1>
+        Your next<br>
+        favourite meal<br>
+        is <span>closer.</span>
+      </h1>
+
+      <p class="subtitle">
+        Delicious food, local favourites and convenient delivery.
+        Welcome to a better way to enjoy your meals.
+      </p>
+    </section>
+
+    <section aria-labelledby="choicesHeading">
+      <h2 class="choices-title" id="choicesHeading">
+        How would you like to continue?
+      </h2>
+
+      <a class="choice customer" href="customer.html">
+        <div class="choice-icon" aria-hidden="true">🍽️</div>
+        <div class="choice-text">
+          <h3>I'm a Customer</h3>
+          <p>Discover food, order your favourites and enjoy.</p>
+        </div>
+        <span class="arrow" aria-hidden="true">›</span>
+      </a>
+
+      <a class="choice restaurant" href="restaurant-login.html">
+        <div class="choice-icon" aria-hidden="true">🏪</div>
+        <div class="choice-text">
+          <h3>Restaurant Partner</h3>
+          <p>Register your restaurant and grow with Foozy.</p>
+        </div>
+        <span class="arrow" aria-hidden="true">›</span>
+      </a>
+
+      <a class="choice delivery" href="delivery-login.html">
+        <div class="choice-icon" aria-hidden="true">🛵</div>
+        <div class="choice-text">
+          <h3>Delivery Partner</h3>
+          <p>Join our delivery network and get started.</p>
+        </div>
+        <span class="arrow" aria-hidden="true">›</span>
+      </a>
+    </section>
+
+    <footer class="footer">
+      Made for food lovers. Built for our community. ❤️
+      <br>
+      © 2026 Foozy. All rights reserved.
+
+      <br>
+      <a class="back" href="index.html">← Back to Foozy Home</a>
+    </footer>
+
+  </main>
+</body>
+</html>
