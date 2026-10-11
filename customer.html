@@ -436,6 +436,23 @@
       }
 
       loginTab.addEventListener("click", () => setMode("login"));
+      document.getElementById("googleButton").addEventListener("click", async () => {
+  clearMessage();
+
+  try {
+    const { error } = await db.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: "https://zingmuinao-hub.github.io/Foozy-app/customer.html"
+      }
+    });
+
+    if (error) throw error;
+  } catch (error) {
+    console.error("Google sign-in error:", error);
+    showMessage(error.message || "Google sign-in failed. Please try again.");
+  }
+});
       signupTab.addEventListener("click", () => setMode("signup"));
 
       showPassword.addEventListener("click", () => {
