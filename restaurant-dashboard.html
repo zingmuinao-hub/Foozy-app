@@ -333,6 +333,10 @@ async function startApp(){
     return;
   }
   restaurant=data;
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+window.OneSignalDeferred.push(async function(OneSignal) {
+  await OneSignal.login(ownerId);
+});
   $("loginPage").classList.add("hidden");
   $("app").classList.remove("hidden");
   $("bottomNav").classList.remove("hidden");
