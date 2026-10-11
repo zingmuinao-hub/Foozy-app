@@ -866,5 +866,51 @@ document.querySelectorAll(".sidebar button[data-section]")
     });
   });
 </script>
+<script>
+async function loadFoozyRestaurants() {
+  const list = document.getElementById("restaurantList");
+  list.textContent = "Loading restaurants...";
+
+  try {
+    const { data, error } = await window.db
+      .from("restaurants")
+      .select("id, name, approval_status")
+      .order("name");
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      list.textContent = "No restaurants found.";
+      return;
+    }
+
+    list.replaceChildren();
+
+    data.forEach(restaurant => {
+      const card = document.createElement("div");
+      card.className = "panel";
+
+      const name = document.createElement("h3");
+      name.textContent = restaurant.name || "Unnamed restaurant";
+
+      const status = document.createElement("p");
+      status.textContent =
+        "Approval status: " + (restaurant.approval_status || "Unknown");
+
+      card.append(name, status);
+      list.appendChild(card);
+    });
+  } catch (error) {
+    console.error("Restaurant loading error:", error);
+    list.textContent =
+      "Could not load restaurants: " + (error.message || String(error));
+  }
+}
+
+document.getElementById("refreshRestaurants")
+  .addEventListener("click", loadFoozyRestaurants);
+
+loadFoozyRestaurants();
+</script>
 </body>
 </html>
