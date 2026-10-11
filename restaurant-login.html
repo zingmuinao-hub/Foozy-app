@@ -376,7 +376,32 @@ style="margin-top:0;margin-bottom:18px;background:#fff;color:#242424;border:1px 
 
       loginTab.addEventListener("click", () => setMode("login"));
       registerTab.addEventListener("click", () => setMode("register"));
+document.getElementById("googleButton").addEventListener("click", async () => {
+clearMessage();
 
+if (mode === "register") {
+say("Please complete restaurant registration using the form first. Google sign-in is for existing accounts.");
+return;
+}
+
+try {
+sessionStorage.setItem("foozy_google_login", "restaurant");
+
+const { error } = await db.auth.signInWithOAuth({
+  provider: "google",
+  options: {
+    redirectTo: "https://zingmuinao-hub.github.io/Foozy-app/restaurant-login.html"
+  }
+});
+
+if (error) throw error;
+
+} catch (error) {
+sessionStorage.removeItem("foozy_google_login");
+console.error("Restaurant Google sign-in error:", error);
+say(error.message || "Google sign-in failed. Please try again.");
+}
+});
       showPassword.addEventListener("click", () => {
         const showing = password.type === "text";
         password.type = showing ? "password" : "text";
