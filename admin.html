@@ -572,16 +572,13 @@ window.db = window.supabase.createClient(
     showMessage("Saving your decision...");
 
     try {
-      const { error } = await db
-        .from("partner_applications")
-        .update({
-          status,
-          admin_notes: note || null,
-          reviewed_at: status === "pending" ? null : new Date().toISOString()
-        })
-        .eq("id", id);
+      const { error } = await db.rpc("review_partner_application", {
+  p_application_id: id,
+  p_status: status,
+  p_admin_notes: note || null
+});
 
-      if (error) throw error;
+if (error) throw error;
 
       showMessage("Application updated successfully.");
       await loadApplications();
