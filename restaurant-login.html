@@ -591,9 +591,13 @@ document.getElementById("googleButton").addEventListener("click", async () => {
               return;
             }
 
-            say(
-              "Your restaurant application has been submitted for review. You can log in again to check your account."
-            );
+            say("Application submitted! Redirecting to your application status page...");
+
+setTimeout(() => {
+  window.location.replace(
+    "https://zingmuinao-hub.github.io/Foozy-app/restaurant-pending.html"
+  );
+}, 1000);
           } else {
             const { error } = await db.auth.signInWithPassword({
               email,
