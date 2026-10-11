@@ -870,41 +870,113 @@ document.querySelectorAll(".sidebar button[data-section]")
 <script>
 async function loadFoozyRestaurants() {
   const list = document.getElementById("restaurantList");
-  list.textContent = "Loading restaurants...";
+  list.textContent = "Loading restaurant performance...";
 
   try {
-    const { data, error } = await window.db
-      .from("restaurants")
-      .select("id, name, approval_status")
-      .order("name");
+    const { data: restaurants, error: restaurantError } =
+      await window.db
+        .from("restaurants")
+        .select("id, name, approval_status")
+        .order("name");
 
-    if (error) throw error;
+    if (restaurantError) throw restaurantError;
 
-    if (!data || data.length === 0) {
+    const { data: orders, error: orderError } =
+      await window.db
+        .from("Order")
+        .select(
+          "restaurant_id, total_amount, order_status, created_at"
+        );
+
+    if (orderError) throw orderError;
+
+    if (!restaurants || restaurants.length === 0) {
       list.textContent = "No restaurants found.";
       return;
     }
 
+    const today = new Date().toLocaleDateString("en-CA", {
+      timeZone: "Asia/Kolkata"
+    });
+
     list.replaceChildren();
 
-    data.forEach(restaurant => {
+    restaurants.forEach(restaurant => {
+      const restaurantOrders = (orders || []).filter(order =>
+        order.restaurant_id === restaurant.id
+      );
+
+      const deliveredOrders = restaurantOrders.filter(order =>
+        String(order.order_status || "").toLowerCase() === "delivered"
+      );
+
+      const totalSales = deliveredOrders.reduce(
+        (sum, order) => sum + Number(order.total_amount || 0),
+        0
+      );
+
+      const todaySales = deliveredOrders
+        .filter(order => {
+          if (!order.created_at) return false;
+
+          return new Date(order.created_at).toLocaleDateString(
+            "en-CA",
+            { timeZone: "Asia/Kolkata" }
+          ) === today;
+        })
+        .reduce(
+          (sum, order) => sum + Number(order.total_amount || 0),
+          0
+        );
+
+      const totalOrders = restaurantOrders.length;
+      const deliveredCount = deliveredOrders.length;
+      const commission = totalSales * 0.02;
+
       const card = document.createElement("div");
       card.className = "panel";
 
-      const name = document.createElement("h3");
-      name.textContent = restaurant.name || "Unnamed restaurant";
+      const heading = document.createElement("h3");
+      heading.textContent = restaurant.name || "Unnamed restaurant";
 
       const status = document.createElement("p");
       status.textContent =
-        "Approval status: " + (restaurant.approval_status || "Unknown");
+        "Approval status: " +
+        (restaurant.approval_status || "Unknown");
 
-      card.append(name, status);
+      const stats = document.createElement("p");
+      stats.textContent =
+        "Total orders: " + totalOrders +
+        " | Delivered: " + deliveredCount;
+
+      const sales = document.createElement("p");
+      sales.textContent =
+        "Total sales: ₹" + totalSales.toFixed(2);
+
+      const todaySalesText = document.createElement("p");
+      todaySalesText.textContent =
+        "Today's sales: ₹" + todaySales.toFixed(2);
+
+      const earnings = document.createElement("p");
+      earnings.textContent =
+        "Foozy commission (2%): ₹" + commission.toFixed(2);
+
+      card.append(
+        heading,
+        status,
+        stats,
+        sales,
+        todaySalesText,
+        earnings
+      );
+
       list.appendChild(card);
     });
   } catch (error) {
-    console.error("Restaurant loading error:", error);
+    console.error("Restaurant performance error:", error);
     list.textContent =
-      "Could not load restaurants: " + (error.message || String(error));
+      "Could not load restaurant performance: " +
+      (error.message || String(error));
   }
 }
 
