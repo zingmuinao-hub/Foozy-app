@@ -740,7 +740,10 @@ async function loadFoozyBusinessDashboard() {
 
   } catch (error) {
     console.error("Foozy dashboard error:", error);
-
+show(
+  "restaurantPerformance",
+  "Error: " + (error.message || String(error))
+);
     [
       "totalSales",
       "todaySales",
