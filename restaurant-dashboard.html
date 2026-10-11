@@ -863,10 +863,22 @@ $("toggleRestaurant").onclick=async()=>{
 };
 
 async function logout(){
-  await db.auth.signOut();
-  ownerId=null;restaurant=null;
-  $("app").classList.add("hidden");$("bottomNav").classList.add("hidden");
-  $("loginPage").classList.remove("hidden");$("password").value="";
+  const { error } = await db.auth.signOut();
+
+  if (error) {
+    alert("Logout failed: " + error.message);
+    return;
+  }
+
+  ownerId = null;
+  restaurant = null;
+  menuItems = [];
+  offers = [];
+  editingId = null;
+
+  window.location.replace(
+    "https://zingmuinao-hub.github.io/Foozy-app/restaurant-login.html"
+  );
 }
 $("logoutSide").onclick=logout;
 
