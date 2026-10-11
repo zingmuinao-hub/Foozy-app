@@ -745,8 +745,7 @@ async function loadFoozyBusinessDashboard() {
 
     ["totalSales", "todaySales", "totalOrders", "todayOrders", "restaurantEarnings"]
       .forEach(id => show(id, "Dashboard error"));
-
-    show("restaurantPerformance", "Actual error: " + message);
+show("restaurantPerformance", "Actual error: " + message + " | Details: " + JSON.stringify(error));
   }
 }
 
