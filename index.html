@@ -2016,18 +2016,19 @@ if (!window.foozySupabase) {
 
   window.foozySupabase = foozySupabase;
   
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("/Foozy-app/sw.js")
-      .then(() => {
-        console.log("Foozy background worker registered!");
-      })
-      .catch(error => {
-        console.error("Foozy worker error:", error);
-      });
+<script>
+window.OneSignalDeferred = window.OneSignalDeferred || [];
+
+window.OneSignalDeferred.push(async function (OneSignal) {
+  await OneSignal.init({
+    appId: "099711e5-7d3b-48f8-9f69-a4b75ad3f1cb",
+    serviceWorkerPath: "/Foozy-app/OneSignalSDKWorker.js",
+    serviceWorkerParam: {
+      scope: "/Foozy-app/"
+    }
   });
-}
+});
+</script>
   console.log("Foozy database connection initialized!");
 </script>
 </html>
