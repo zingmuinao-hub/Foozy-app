@@ -266,16 +266,12 @@
 
 <script>
 (() => {
-  const SUPABASE_URL =
-    "https://snmufxscviahmmsdbess.supabase.co";
-
-  const SUPABASE_KEY =
-    "sb_publishable_Ix1rMiMTqPQIsBEM708shg_POK6_JM8";
-
-  const db = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+  window.SUPABASE_URL = "https://snmufxscviahmmsdbess.supabase.co";
+window.SUPABASE_KEY = "sb_publishable_Ix1rMiMTqPQIsBEM708shg_POK6_JM8";
+window.db = window.supabase.createClient(
+  window.SUPABASE_URL,
+  window.SUPABASE_KEY
+);
 
   const $ = id => document.getElementById(id);
 
