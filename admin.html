@@ -1016,5 +1016,67 @@ document.getElementById("refreshRestaurants")
 
 loadFoozyRestaurants();
 </script>
+<script>
+async function loadDeliveryApplications() {
+  const list = document.getElementById("deliveryList");
+  list.textContent = "Loading delivery applications...";
+
+  try {
+    const { data, error } = await window.db
+      .from("partner_applications")
+      .select(
+        "id, full_name, phone, vehicle_details, status, created_at"
+      )
+      .eq("application_type", "delivery")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    list.replaceChildren();
+
+    if (!data || data.length === 0) {
+      list.textContent = "No delivery partner applications found.";
+      return;
+    }
+
+    data.forEach(application => {
+      const card = document.createElement("div");
+      card.className = "panel";
+
+      const name = document.createElement("h3");
+      name.textContent = application.full_name || "Unnamed applicant";
+
+      const phone = document.createElement("p");
+      phone.textContent = "Phone: " + (application.phone || "Not provided");
+
+      const vehicle = document.createElement("p");
+      vehicle.textContent =
+        "Vehicle: " + (application.vehicle_details || "Not provided");
+
+      const status = document.createElement("p");
+      status.textContent =
+        "Application status: " + (application.status || "Unknown");
+
+      const date = document.createElement("p");
+      date.textContent = application.created_at
+        ? "Applied: " + new Date(application.created_at).toLocaleDateString()
+        : "Application date unavailable";
+
+      card.append(name, phone, vehicle, status, date);
+      list.appendChild(card);
+    });
+  } catch (error) {
+    console.error("Delivery applications error:", error);
+    list.textContent =
+      "Could not load applications: " +
+      (error.message || String(error));
+  }
+}
+
+document.getElementById("refreshDelivery")
+  .addEventListener("click", loadDeliveryApplications);
+
+loadDeliveryApplications();
+</script>
 </body>
 </html>
