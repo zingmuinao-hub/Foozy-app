@@ -599,21 +599,21 @@ setTimeout(() => {
 }, 1000);
 }
           } else {
-            const { error } = await db.auth.signInWithPassword({
-              email,
-              password: password.value
-            });
+  const { error } = await db.auth.signInWithPassword({
+    email,
+    password: password.value
+  });
 
-            if (error) throw error;
+  if (error) throw error;
 
-            say("Login successful! Checking your restaurant application status...");
+  say("Login successful! Checking your application status...");
 
-setTimeout(() => {
-  window.location.replace(
-    "https://zingmuinao-hub.github.io/Foozy-app/restaurant-pending.html"
-  );
-}, 1000);
-}
+  setTimeout(() => {
+    window.location.replace(
+      "https://zingmuinao-hub.github.io/Foozy-app/restaurant-pending.html"
+    );
+  }, 1000);
+  }
 } catch (error) {
           console.error("Restaurant partner error:", error);
           say(error.message || "Something went wrong. Please try again.");
