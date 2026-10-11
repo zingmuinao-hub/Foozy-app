@@ -961,14 +961,30 @@ async function loadFoozyRestaurants() {
       earnings.textContent =
         "Foozy commission (2%): ₹" + commission.toFixed(2);
 
-      card.append(
-        heading,
-        status,
-        stats,
-        sales,
-        todaySalesText,
-        earnings
-      );
+      const detailsButton = document.createElement("button");
+detailsButton.type = "button";
+detailsButton.textContent = "View Details";
+
+detailsButton.addEventListener("click", function () {
+  alert(
+    "Restaurant: " + (restaurant.name || "Unnamed restaurant") +
+    "\nTotal orders: " + totalOrders +
+    "\nDelivered orders: " + deliveredCount +
+    "\nTotal sales: ₹" + totalSales.toFixed(2) +
+    "\nToday's sales: ₹" + todaySales.toFixed(2) +
+    "\nFoozy commission (2%): ₹" + commission.toFixed(2)
+  );
+});
+
+card.append(
+  heading,
+  status,
+  stats,
+  sales,
+  todaySalesText,
+  earnings,
+  detailsButton
+);
 
       list.appendChild(card);
     });
