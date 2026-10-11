@@ -620,5 +620,139 @@ document.getElementById("pricingForm")
 
 loadFoozyPricing();
       </script>
+<script>
+async function loadFoozyBusinessDashboard() {
+  const money = value =>
+    "₹" + Number(value || 0).toLocaleString("en-IN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+
+  const show = (id, value) => {
+    const element = document.getElementById(id);
+    if (element) element.textContent = value;
+  };
+
+  try {
+    show("totalSales", "Loading...");
+    show("todaySales", "Loading...");
+    show("totalOrders", "Loading...");
+    show("todayOrders", "Loading...");
+    show("restaurantEarnings", "Loading...");
+    show("restaurantPerformance", "Loading...");
+
+    const [ordersResult, restaurantsResult, settingsResult] =
+      await Promise.all([
+        db.from("Order").select(
+          "id,created_at,total_amount,order_status,restaurant_id"
+        ),
+        db.from("restaurants").select(
+          "id,name,approval_status"
+        ),
+        db.from("foozy_settings").select(
+          "restaurant_commission_percent"
+        ).eq("id", 1).single()
+      ]);
+
+    if (ordersResult.error) throw ordersResult.error;
+    if (restaurantsResult.error) throw restaurantsResult.error;
+    if (settingsResult.error) throw settingsResult.error;
+
+    const orders = ordersResult.data || [];
+    const restaurants = restaurantsResult.data || [];
+    const commissionRate =
+      Number(settingsResult.data.restaurant_commission_percent) / 100;
+
+    const now = new Date();
+    const today = [
+      now.getFullYear(),
+      String(now.getMonth() + 1).padStart(2, "0"),
+      String(now.getDate()).padStart(2, "0")
+    ].join("-");
+
+    const isCompleted = order =>
+      ["completed", "delivered"].includes(
+        String(order.order_status || "").toLowerCase()
+      );
+
+    const completedOrders = orders.filter(isCompleted);
+    const todaysOrders = orders.filter(order =>
+      order.created_at &&
+      new Date(order.created_at).toLocaleDateString("en-CA") === today
+    );
+
+    const todaysCompleted = todaysOrders.filter(isCompleted);
+
+    const sumSales = list => list.reduce(
+      (sum, order) => sum + Number(order.total_amount || 0), 0
+    );
+
+    const totalSales = sumSales(completedOrders);
+    const todaySales = sumSales(todaysCompleted);
+
+    show("totalSales", money(totalSales));
+    show("todaySales", money(todaySales));
+    show("totalOrders", String(orders.length));
+    show("todayOrders", String(todaysOrders.length));
+    show("restaurantEarnings", money(totalSales * commissionRate));
+
+    const container = document.getElementById("restaurantPerformance");
+
+    if (container) {
+      container.replaceChildren();
+
+      if (!restaurants.length) {
+        container.textContent = "No restaurants found.";
+      } else {
+        restaurants.forEach(restaurant => {
+          const restaurantOrders = completedOrders.filter(
+            order => order.restaurant_id === restaurant.id
+          );
+
+          const restaurantToday = todaysCompleted.filter(
+            order => order.restaurant_id === restaurant.id
+          );
+
+          const sales = sumSales(restaurantOrders);
+          const todayAmount = sumSales(restaurantToday);
+
+          const card = document.createElement("div");
+          card.className = "panel";
+
+          const title = document.createElement("h3");
+          title.textContent = restaurant.name || "Unnamed restaurant";
+
+          const details = document.createElement("p");
+          details.textContent =
+            "Status: " + (restaurant.approval_status || "Unknown") +
+            " | Total sales: " + money(sales) +
+            " | Today's sales: " + money(todayAmount) +
+            " | Orders: " + restaurantOrders.length +
+            " | Estimated 2% commission: " + money(sales * commissionRate);
+
+          card.append(title, details);
+          container.appendChild(card);
+        });
+      }
+    }
+
+    show("deliveryEarnings", "Delivery earnings data not connected yet");
+
+  } catch (error) {
+    console.error("Foozy dashboard error:", error);
+
+    [
+      "totalSales",
+      "todaySales",
+      "totalOrders",
+      "todayOrders",
+      "restaurantEarnings",
+      "restaurantPerformance"
+    ].forEach(id => show(id, "Unable to load data — check permissions"));
+  }
+}
+
+loadFoozyBusinessDashboard();
+  </script>
 </body>
 </html>
