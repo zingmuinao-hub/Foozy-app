@@ -1,332 +1,445 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Foozy Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111827">
+  <title>Foozy Admin Panel</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      min-height: 100vh;
-      background: #fff7ed;
-      color: #29231f;
+      padding: 20px;
       font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      color: #111827;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
     }
 
     header {
-      background: white;
-      padding: 18px 20px;
-      box-shadow: 0 2px 10px #0000000d;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .logo {
-      color: #e66b24;
-      font-size: 26px;
-      font-weight: bold;
-    }
-
-    main {
-      max-width: 650px;
-      margin: 35px auto;
-      padding: 20px;
-    }
-
-    .card {
-      background: white;
-      padding: 25px;
+      background: #111827;
+      color: white;
+      padding: 24px;
       border-radius: 18px;
-      box-shadow: 0 5px 25px #0000000c;
       margin-bottom: 20px;
     }
 
-    h1 {
-      font-size: 25px;
-      margin-top: 0;
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
     }
 
-    h2 {
-      font-size: 19px;
+    header p {
+      margin: 0;
+      color: #d1d5db;
     }
 
-    p {
-      color: #777;
-      line-height: 1.5;
+    .panel, .application {
+      background: white;
+      padding: 20px;
+      border-radius: 14px;
+      margin-bottom: 16px;
+      border: 1px solid #e5e7eb;
     }
 
-    input, button {
+    input, textarea {
       width: 100%;
-      padding: 14px;
-      margin-top: 12px;
-      border-radius: 10px;
+      padding: 13px;
+      margin: 8px 0 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 9px;
       font-size: 16px;
     }
 
-    input {
-      border: 1px solid #ddd;
-      background: white;
-    }
-
     button {
-      border: none;
-      background: #e66b24;
-      color: white;
-      font-weight: bold;
+      padding: 12px 16px;
+      border: 0;
+      border-radius: 9px;
       cursor: pointer;
+      font-size: 15px;
+      font-weight: bold;
+      margin: 4px 4px 4px 0;
     }
 
-    button:disabled {
-      opacity: 0.6;
-      cursor: wait;
+    .primary { background: #f97316; color: white; }
+    .approve { background: #15803d; color: white; }
+    .reject { background: #b91c1c; color: white; }
+    .secondary { background: #e5e7eb; color: #111827; }
+
+    .hidden { display: none; }
+
+    .muted { color: #6b7280; font-size: 14px; }
+
+    .status {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 20px;
+      background: #fef3c7;
+      color: #92400e;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
     }
 
-    .secondary {
-      background: #29231f;
+    .status.approved {
+      background: #dcfce7;
+      color: #166534;
     }
 
-    .hidden {
-      display: none !important;
+    .status.rejected {
+      background: #fee2e2;
+      color: #991b1b;
     }
 
     #message {
+      padding: 12px;
+      border-radius: 9px;
+      margin: 12px 0;
       overflow-wrap: anywhere;
-      font-size: 14px;
     }
 
-    .status {
-      padding: 14px;
-      background: #fff7ed;
-      border-radius: 10px;
-      margin-top: 12px;
-    }
-
-    a {
-      color: #e66b24;
-      text-decoration: none;
-    }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 13px;
+    @media (max-width: 480px) {
+      body { padding: 12px; }
+      header, .panel, .application { padding: 16px; }
     }
   </style>
 </head>
 
 <body>
+<div class="container">
 
-<header>
-  <div class="logo">🍔 Foozy Admin</div>
-  <button id="logout" class="secondary hidden"
-          style="width:auto;margin:0;padding:10px 16px">
-    Log out
-  </button>
-</header>
+  <header>
+    <h1>🍔 Foozy Admin</h1>
+    <p>Manage restaurant and delivery partner applications.</p>
+  </header>
 
-<main>
+  <div id="message" role="status" aria-live="polite">
+    Initializing Foozy Admin...
+  </div>
 
-  <section id="login-card" class="card">
-    <h1>Welcome back 👋</h1>
-    <p>Sign in to manage your Foozy platform.</p>
+  <section id="loginPanel" class="panel hidden">
+    <h2>Admin Login</h2>
+    <form id="loginForm">
+      <label for="email">Email address</label>
+      <input id="email" type="email" autocomplete="username"
+             required placeholder="Your admin email">
 
-    <form id="login-form">
-      <input
-        id="email"
-        type="email"
-        placeholder="Admin email address"
-        autocomplete="username"
-        required
-      >
+      <label for="password">Password</label>
+      <input id="password" type="password"
+             autocomplete="current-password" required
+             placeholder="Your password">
 
-      <input
-        id="password"
-        type="password"
-        placeholder="Password"
-        autocomplete="current-password"
-        required
-      >
-
-      <button id="login-button" type="submit">
-        Sign In
-      </button>
+      <button class="primary" type="submit">Sign In</button>
     </form>
-
-    <p id="message" role="status" aria-live="polite"></p>
-
-    <p><a href="./">← Back to Foozy homepage</a></p>
   </section>
 
   <section id="dashboard" class="hidden">
-    <div class="card">
-      <h1>Dashboard 🧡</h1>
-      <p id="welcome"></p>
-      <div class="status">
-        ✅ Admin access verified.
-      </div>
+    <div class="panel">
+      <strong>Administrator</strong>
+      <p id="adminEmail" class="muted"></p>
+      <button id="refreshButton" class="secondary" type="button">
+        Refresh Applications
+      </button>
+      <button id="logoutButton" class="secondary" type="button">
+        Sign Out
+      </button>
     </div>
 
-    <div class="card">
-      <h2>🍔 Food & Restaurants</h2>
-      <p>Your admin login is working! The next step is connecting your restaurant and menu management tools.</p>
+    <div class="panel">
+      <h2>Applications</h2>
+      <p class="muted">
+        Review each application before making a decision.
+      </p>
+
+      <label for="filter">Filter applications</label>
+      <select id="filter" style="width:100%;padding:12px;border-radius:9px;">
+        <option value="pending">Pending</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
+        <option value="all">All applications</option>
+      </select>
     </div>
 
-    <div class="card">
-      <h2>📦 Orders</h2>
-      <p>Order management will be added after we confirm your order database structure.</p>
-    </div>
+    <div id="applications"></div>
   </section>
 
-</main>
-
-<footer>
-  Foozy Admin · Made with 🧡
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</div>
 
 <script>
-  const SUPABASE_URL = "https://snmufxscviahmmsdbess.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_Ix1rMiMTqPQIsBEM708shg_POK6_JM8"
+(() => {
+  const SUPABASE_URL =
+    "https://snmufxscviahmmsdbess.supabase.co";
 
-  const supabaseClient = window.supabase.createClient(
+  const SUPABASE_KEY =
+    "sb_publishable_Ix1rMiMTqPQIsBEM708shg_POK6_JM8";
+
+  const db = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_KEY
   );
 
-  const loginCard = document.getElementById("login-card");
-  const dashboard = document.getElementById("dashboard");
-  const loginForm = document.getElementById("login-form");
-  const loginButton = document.getElementById("login-button");
-  const logoutButton = document.getElementById("logout");
-  const message = document.getElementById("message");
+  const $ = id => document.getElementById(id);
 
-  let checkingSession = false;
-
-  function showLogin(text = "") {
-    loginCard.classList.remove("hidden");
-    dashboard.classList.add("hidden");
-    logoutButton.classList.add("hidden");
-    message.textContent = text;
+  function showMessage(text) {
+    $("message").textContent = text;
+    $("message").classList.remove("hidden");
   }
 
-  function showDashboard(email) {
-    loginCard.classList.add("hidden");
-    dashboard.classList.remove("hidden");
-    logoutButton.classList.remove("hidden");
-    document.getElementById("welcome").textContent =
-      "Signed in as " + email;
+  function hideMessage() {
+    $("message").classList.add("hidden");
   }
 
-  async function verifyAdmin(session) {
-    if (!session) {
+  function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[char]);
+  }
+
+  function showLogin() {
+    $("loginPanel").classList.remove("hidden");
+    $("dashboard").classList.add("hidden");
+  }
+
+  function showDashboard(user) {
+    $("loginPanel").classList.add("hidden");
+    $("dashboard").classList.remove("hidden");
+    $("adminEmail").textContent = user.email || "Signed in";
+  }
+
+  async function checkAdmin(user) {
+    const { data, error } = await db.rpc("is_foozy_admin");
+
+    if (error) {
+      throw new Error(
+        "Could not verify admin permissions. Check the Supabase function and permissions."
+      );
+    }
+
+    if (data !== true) {
+      await db.auth.signOut();
       showLogin();
+      throw new Error(
+        "This account is not authorized to access Foozy Admin."
+      );
+    }
+
+    showDashboard(user);
+    await loadApplications();
+  }
+
+  async function loadApplications() {
+    $("applications").textContent = "Loading applications...";
+
+    const { data, error } = await db
+      .from("partner_applications")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      $("applications").textContent = "";
+      showMessage(
+        "Unable to load applications. Check table permissions and RLS."
+      );
       return;
     }
 
-    if (checkingSession) return;
-    checkingSession = true;
+    const filter = $("filter").value;
+    const rows = (data || []).filter(app =>
+      filter === "all" || app.status === filter
+    );
 
-    loginButton.disabled = true;
-    message.textContent = "Checking admin permissions...";
-
-    try {
-      const { data, error } = await supabaseClient
-        .from("admin_users")
-        .select("user_id")
-        .eq("user_id", session.user.id)
-        .maybeSingle();
-
-      if (error) throw error;
-
-      if (!data) {
-        await supabaseClient.auth.signOut();
-        showLogin("This account is not authorized to access Foozy Admin.");
-        return;
-      }
-
-      showDashboard(session.user.email || "Admin");
-
-    } catch (error) {
-      showLogin(
-        "Could not verify admin access. Please try again. " +
-        error.message
-      );
-    } finally {
-      checkingSession = false;
-      loginButton.disabled = false;
+    if (rows.length === 0) {
+      $("applications").textContent =
+        "No applications found for this filter.";
+      hideMessage();
+      return;
     }
+
+    $("applications").innerHTML = rows.map(app => {
+      const isRestaurant = app.application_type === "restaurant";
+
+      return `
+        <article class="application">
+          <h3>${escapeHTML(
+            isRestaurant ? "🍽️ Restaurant application" :
+                           "🛵 Delivery partner application"
+          )}</h3>
+
+          <p><strong>Applicant:</strong>
+            ${escapeHTML(app.full_name)}</p>
+
+          <p><strong>Phone:</strong>
+            ${escapeHTML(app.phone)}</p>
+
+          ${isRestaurant ? `
+            <p><strong>Restaurant:</strong>
+              ${escapeHTML(app.restaurant_name || "Not provided")}</p>
+            <p><strong>Address:</strong>
+              ${escapeHTML(app.restaurant_address || "Not provided")}</p>
+          ` : `
+            <p><strong>Vehicle details:</strong>
+              ${escapeHTML(app.vehicle_details || "Not provided")}</p>
+          `}
+
+          <p><strong>Submitted:</strong>
+            ${escapeHTML(new Date(app.created_at).toLocaleString())}</p>
+
+          <p><strong>Status:</strong>
+            <span class="status ${escapeHTML(app.status)}">
+              ${escapeHTML(app.status)}
+            </span>
+          </p>
+
+          ${app.admin_notes ? `
+            <p><strong>Admin notes:</strong>
+              ${escapeHTML(app.admin_notes)}</p>
+          ` : ""}
+
+          <label for="note-${escapeHTML(app.id)}">
+            Admin note or rejection reason
+          </label>
+          <textarea id="note-${escapeHTML(app.id)}"
+            maxlength="1000"
+            placeholder="Optional note for the applicant">${escapeHTML(app.admin_notes || "")}</textarea>
+
+          <div>
+            <button class="approve" type="button"
+              data-action="approved" data-id="${escapeHTML(app.id)}">
+              Approve
+            </button>
+
+            <button class="reject" type="button"
+              data-action="rejected" data-id="${escapeHTML(app.id)}">
+              Reject
+            </button>
+
+            <button class="secondary" type="button"
+              data-action="pending" data-id="${escapeHTML(app.id)}">
+              Set Pending
+            </button>
+          </div>
+        </article>
+      `;
+    }).join("");
+
+    hideMessage();
   }
 
-  loginForm.addEventListener("submit", async function(event) {
+  $("loginForm").addEventListener("submit", async event => {
     event.preventDefault();
 
-    loginButton.disabled = true;
-    loginButton.textContent = "Signing in...";
-    message.textContent = "";
-
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
+    const button = event.submitter;
+    button.disabled = true;
+    showMessage("Signing in...");
 
     try {
-      const { data, error } = await supabaseClient.auth.signInWithPassword({
-        email,
-        password
+      const { data, error } = await db.auth.signInWithPassword({
+        email: $("email").value.trim(),
+        password: $("password").value
       });
 
       if (error) throw error;
 
-      await verifyAdmin(data.session);
-
+      await checkAdmin(data.user);
+      showMessage("Welcome to Foozy Admin!");
     } catch (error) {
-      showLogin("Sign-in failed: " + error.message);
+      showMessage(error.message || "Sign-in failed.");
     } finally {
-      loginButton.disabled = false;
-      loginButton.textContent = "Sign In";
+      button.disabled = false;
     }
   });
 
-  logoutButton.addEventListener("click", async function() {
-    logoutButton.disabled = true;
+  $("applications").addEventListener("click", async event => {
+    const button = event.target.closest("button[data-action]");
+    if (!button) return;
 
-    const { error } = await supabaseClient.auth.signOut();
+    const id = button.dataset.id;
+    const status = button.dataset.action;
+    const note = $("note-" + id).value.trim();
 
-    logoutButton.disabled = false;
-
-    if (error) {
-      message.textContent = "Could not log out: " + error.message;
+    if (status === "rejected" && !note) {
+      showMessage("Please enter a reason before rejecting.");
+      $("note-" + id).focus();
       return;
     }
 
-    showLogin("You have been signed out.");
+    const label = status === "approved" ? "approve" :
+                  status === "rejected" ? "reject" : "return to pending";
+
+    if (!confirm(`Are you sure you want to ${label} this application?`)) {
+      return;
+    }
+
+    button.disabled = true;
+    showMessage("Saving your decision...");
+
+    try {
+      const { error } = await db
+        .from("partner_applications")
+        .update({
+          status,
+          admin_notes: note || null,
+          reviewed_at: status === "pending" ? null : new Date().toISOString()
+        })
+        .eq("id", id);
+
+      if (error) throw error;
+
+      showMessage("Application updated successfully.");
+      await loadApplications();
+    } catch (error) {
+      showMessage(
+        error.message || "Could not update the application."
+      );
+    } finally {
+      button.disabled = false;
+    }
   });
 
-  supabaseClient.auth.onAuthStateChange((event, session) => {
-    if (event === "SIGNED_OUT") {
-      showLogin();
-    }
+  $("refreshButton").addEventListener("click", loadApplications);
+  $("filter").addEventListener("change", loadApplications);
+
+  $("logoutButton").addEventListener("click", async () => {
+    await db.auth.signOut();
+    $("dashboard").classList.add("hidden");
+    showLogin();
+    showMessage("You have signed out.");
   });
 
   async function initialize() {
-    const { data, error } = await supabaseClient.auth.getSession();
+    try {
+      const { data, error } = await db.auth.getSession();
 
-    if (error) {
-      showLogin("Could not check your session. Please sign in again.");
-      return;
+      if (error) throw error;
+
+      if (!data.session) {
+        showLogin();
+        showMessage("Please sign in with your Foozy admin account.");
+        return;
+      }
+
+      await checkAdmin(data.session.user);
+      showMessage("Welcome to Foozy Admin!");
+    } catch (error) {
+      showLogin();
+      showMessage(error.message || "Could not initialize admin panel.");
     }
-
-    await verifyAdmin(data.session);
   }
 
   initialize();
+})();
 </script>
-
 </body>
 </html>
