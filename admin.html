@@ -20,9 +20,65 @@
     }
 
     .container {
-      max-width: 900px;
-      margin: auto;
-    }
+  max-width: 1200px;
+  margin: auto;
+}
+
+.admin-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: #111827;
+  color: white;
+  padding: 16px;
+  border-radius: 14px;
+  position: sticky;
+  top: 12px;
+}
+
+.sidebar h3 {
+  margin-top: 0;
+}
+
+.sidebar button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  color: white;
+  margin: 4px 0;
+}
+
+.sidebar button:hover,
+.sidebar button.active {
+  background: #f97316;
+}
+
+.admin-main {
+  flex: 1;
+  min-width: 0;
+}
+
+@media (max-width: 700px) {
+  .admin-layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    position: static;
+  }
+
+  .sidebar button {
+    display: inline-block;
+    width: auto;
+  }
+}
 
     header {
       background: #111827;
