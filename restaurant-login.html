@@ -391,30 +391,51 @@ window.location.replace(
       loginTab.addEventListener("click", () => setMode("login"));
       registerTab.addEventListener("click", () => setMode("register"));
 document.getElementById("googleButton").addEventListener("click", async () => {
-clearMessage();
+  clearMessage();
 
-if (mode === "register") {
-say("Please complete restaurant registration using the form first. Google sign-in is for existing accounts.");
-return;
-}
+  if (mode === "register") {
+    const application = {
+      full_name: document.getElementById("fullName").value.trim(),
+      phone: document.getElementById("phone").value.trim(),
+      restaurant_name: document.getElementById("restaurantName").value.trim(),
+      restaurant_address: document.getElementById("restaurantAddress").value.trim()
+    };
 
-try {
-sessionStorage.setItem("foozy_google_login", "restaurant");
+    if (Object.values(application).some(value => !value)) {
+      say("Please complete all restaurant and owner details first.");
+      return;
+    }
 
-const { error } = await db.auth.signInWithOAuth({
-  provider: "google",
-  options: {
-    redirectTo: "https://zingmuinao-hub.github.io/Foozy-app/restaurant-login.html"
+    sessionStorage.setItem(
+      "foozy_restaurant_application",
+      JSON.stringify(application)
+    );
+
+    sessionStorage.setItem(
+      "foozy_google_login",
+      "restaurant_application"
+    );
+  } else {
+    sessionStorage.setItem("foozy_google_login", "restaurant");
   }
-});
 
-if (error) throw error;
+  try {
+    const { error } = await db.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo:
+          "https://zingmuinao-hub.github.io/Foozy-app/restaurant-login.html"
+      }
+    });
 
-} catch (error) {
-sessionStorage.removeItem("foozy_google_login");
-console.error("Restaurant Google sign-in error:", error);
-say(error.message || "Google sign-in failed. Please try again.");
-}
+    if (error) throw error;
+  } catch (error) {
+    sessionStorage.removeItem("foozy_google_login");
+    sessionStorage.removeItem("foozy_restaurant_application");
+
+    console.error(error);
+    say(error.message || "Google sign-in failed. Please try again.");
+  }
 });
       showPassword.addEventListener("click", () => {
         const showing = password.type === "text";
