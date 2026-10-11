@@ -377,6 +377,19 @@
         SUPABASE_URL,
         SUPABASE_KEY
       );
+      db.auth.onAuthStateChange((event, session) => {
+  if (
+    event === "SIGNED_IN" &&
+    session &&
+    sessionStorage.getItem("foozy_google_login") === "customer"
+  ) {
+    sessionStorage.removeItem("foozy_google_login");
+
+    window.location.replace(
+      "https://zingmuinao-hub.github.io/Foozy-app/"
+    );
+  }
+});
 
       const form = document.getElementById("customerForm");
       const loginTab = document.getElementById("loginTab");
