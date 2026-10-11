@@ -404,17 +404,17 @@
               document.getElementById("restaurantAddress").value.trim();
 
             const { data, error } = await db.auth.signUp({
-              email,
-              password: password.value,
-              options: {
-                options: {
-  emailRedirectTo: "https://zingmuinao-hub.github.io/Foozy-app/restaurant-login.html",
-  data: {
-    full_name: fullName,
-    phone: phone,
-    account_type: "restaurant"
+  email,
+  password: password.value,
+  options: {
+    emailRedirectTo: "https://zingmuinao-hub.github.io/Foozy-app/restaurant-login.html",
+    data: {
+      full_name: fullName,
+      phone: phone,
+      account_type: "restaurant"
+    }
   }
-                }
+});
 
             if (error) throw error;
 
