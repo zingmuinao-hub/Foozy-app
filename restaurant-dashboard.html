@@ -121,6 +121,19 @@ textarea{min-height:80px;resize:vertical}
   .menu-grid,.offer-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 </style>
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+window.OneSignalDeferred = window.OneSignalDeferred || [];
+window.OneSignalDeferred.push(async function(OneSignal) {
+  await OneSignal.init({
+    appId: "099711e5-7d3b-48f8-9f69-a4b75ad3f1cb",
+    serviceWorkerPath: "/Foozy-app/OneSignalSDKWorker.js",
+    serviceWorkerParam: {
+      scope: "/Foozy-app/"
+    }
+  });
+});
+</script>
 </head>
 <body>
 
