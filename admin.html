@@ -491,5 +491,93 @@
   initialize();
 })();
 </script>
+  <script>
+async function loadFoozyPricing() {
+  const message = document.getElementById("pricingMessage");
+
+  const { data, error } = await db
+    .from("foozy_settings")
+    .select("*")
+    .eq("id", 1)
+    .single();
+
+  if (error) {
+    message.textContent = "Could not load pricing. Please try again.";
+    return;
+  }
+
+  document.getElementById("monthlyFee").value =
+    data.monthly_platform_fee;
+
+  document.getElementById("restaurantCommission").value =
+    data.restaurant_commission_percent;
+
+  document.getElementById("deliveryCommission").value =
+    data.delivery_partner_commission_percent;
+
+  message.textContent = "Pricing loaded successfully.";
+}
+
+document.getElementById("pricingForm")
+  .addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const message = document.getElementById("pricingMessage");
+    const button = this.querySelector('button[type="submit"]');
+
+    const monthlyFee = Number(
+      document.getElementById("monthlyFee").value
+    );
+
+    const restaurantCommission = Number(
+      document.getElementById("restaurantCommission").value
+    );
+
+    const deliveryCommission = Number(
+      document.getElementById("deliveryCommission").value
+    );
+
+    if (
+      !Number.isFinite(monthlyFee) ||
+      monthlyFee < 0 ||
+      !Number.isFinite(restaurantCommission) ||
+      restaurantCommission < 0 ||
+      restaurantCommission > 100 ||
+      !Number.isFinite(deliveryCommission) ||
+      deliveryCommission < 0 ||
+      deliveryCommission > 100
+    ) {
+      message.textContent = "Please enter valid pricing values.";
+      return;
+    }
+
+    button.disabled = true;
+    message.textContent = "Saving pricing...";
+
+    try {
+      const { error } = await db
+        .from("foozy_settings")
+        .update({
+          monthly_platform_fee: monthlyFee,
+          restaurant_commission_percent: restaurantCommission,
+          delivery_partner_commission_percent: deliveryCommission,
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", 1);
+
+      if (error) throw error;
+
+      message.textContent = "✅ Foozy pricing saved successfully!";
+    } catch (error) {
+      console.error(error);
+      message.textContent =
+        "❌ Could not save pricing. Check your admin login and permissions.";
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+loadFoozyPricing();
+      </script>
 </body>
 </html>
