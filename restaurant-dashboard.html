@@ -322,32 +322,102 @@ async function login(){
 }
 $("loginForm").onsubmit=e=>{e.preventDefault();login();};
 
-async function startApp(){
-  const {data,error}=await db.from("restaurants").select("*")
-   .eq("owner_id", ownerId).limit(1).maybeSingle();
-  if(error)throw error;
-  if(!data){
+async function startApp() {
+  try {
+    // 1. Confirm that a user is logged in.
+    const { data: sessionData, error: sessionError } =
+      await db.auth.getSession();
+
+    if (sessionError) throw sessionError;
+
+    const session = sessionData.session;
+
+    if (!session) {
+      window.location.replace(
+        "https://zingmuinao-hub.github.io/Foozy-app/restaurant-login.html"
+      );
+      return;
+    }
+
+    ownerId = session.user.id;
+
+    // 2. Check the restaurant application's approval status.
+    const { data: applications, error: applicationError } = await db
+      .from("partner_applications")
+      .select("status")
+      .eq("user_id", ownerId)
+      .eq("application_type", "restaurant")
+      .order("created_at", { ascending: false })
+      .limit(1);
+
+    if (applicationError) throw applicationError;
+
+    const status = applications?.[0]?.status
+      ?.trim()
+      .toLowerCase();
+
+    // Only approved applicants may continue.
+    if (status !== "approved") {
+      window.location.replace(
+        "https://zingmuinao-hub.github.io/Foozy-app/restaurant-pending.html"
+      );
+      return;
+    }
+
+    // 3. Confirm that an approved restaurant is linked to this owner.
+    const { data, error } = await db
+      .from("restaurants")
+      .select("*")
+      .eq("owner_id", ownerId)
+      .limit(1)
+      .maybeSingle();
+
+    if (error) throw error;
+
+    if (!data) {
+      $("app").classList.add("hidden");
+      $("loginPage").classList.remove("hidden");
+
+      alert(
+        "Your application is approved, but your restaurant dashboard has not been set up yet. Please contact Foozy Admin."
+      );
+      return;
+    }
+
+    // 4. Load the dashboard for the approved restaurant.
+    restaurant = data;
+
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    window.OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.login(ownerId);
+    });
+
+    $("loginPage").classList.add("hidden");
+    $("app").classList.remove("hidden");
+    $("bottomNav").classList.remove("hidden");
+
+    renderProfile();
+
+    await Promise.all([
+      loadMenu(),
+      loadOffers(),
+      loadDashboardOrders()
+    ]);
+
+    go("overview");
+    say("Welcome to " + restaurant.name + "!");
+
+  } catch (error) {
+    console.error("Dashboard access check failed:", error);
+
     $("app").classList.add("hidden");
     $("loginPage").classList.remove("hidden");
-    alert("No approved restaurant is linked to this account yet.");
-    return;
+
+    alert(
+      "We couldn't verify your restaurant approval. Please try again or contact Foozy Admin."
+    );
   }
-  restaurant=data;
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-window.OneSignalDeferred.push(async function(OneSignal) {
-  await OneSignal.login(ownerId);
-});
-  $("loginPage").classList.add("hidden");
-  $("app").classList.remove("hidden");
-  $("bottomNav").classList.remove("hidden");
-  renderProfile();
-  await Promise.all([
-  loadMenu(),
-  loadOffers(),
-  loadDashboardOrders()
-]);
-  go("overview");
-  say("Welcome to "+restaurant.name+"!");
+        }
 }
 
 function renderProfile(){
