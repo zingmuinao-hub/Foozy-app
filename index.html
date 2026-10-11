@@ -2034,6 +2034,34 @@ if (!window.foozySupabase) {
   });
 </script>
 
+  <div style="text-align:center; padding:20px;">
+  <button id="foozy-notifications"
+    style="padding:14px 20px; background:#16a34a; color:white; border:0; border-radius:10px; font-size:16px;">
+    🔔 Enable Foozy Notifications
+  </button>
+  <p id="foozy-notification-message"></p>
+</div>
+
+<script>
+document.getElementById("foozy-notifications").addEventListener("click", async function () {
+  const message = document.getElementById("foozy-notification-message");
+
+  try {
+    if (!window.OneSignal) {
+      message.textContent = "Notifications are still loading. Refresh and try again.";
+      return;
+    }
+
+    await window.OneSignalDeferred.push(async function (OneSignal) {
+      await OneSignal.User.PushSubscription.optIn();
+      message.textContent = "Notification request sent! Check your browser permission.";
+    });
+  } catch (error) {
+    message.textContent = "Could not enable notifications. Please try again.";
+    console.error(error);
+  }
+});
+</script>
   
 </body>
 </html>
