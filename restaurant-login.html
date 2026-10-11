@@ -316,7 +316,21 @@ style="margin-top:0;margin-bottom:18px;background:#fff;color:#242424;border:1px 
         "https://snmufxscviahmmsdbess.supabase.co",
         "sb_publishable_Ix1rMiMTqPQIsBEM708shg_POK6_JM8"
       );
+db.auth.onAuthStateChange((event, session) => {
+if (
+event === "SIGNED_IN" &&
+session &&
+sessionStorage.getItem("foozy_google_login") === "restaurant"
+) {
+sessionStorage.removeItem("foozy_google_login");
 
+window.location.replace(
+  "https://zingmuinao-hub.github.io/Foozy-app/restaurant-dashboard.html"
+);
+
+}
+});
+      
       const form = document.getElementById("partnerForm");
       const loginTab = document.getElementById("loginTab");
       const registerTab = document.getElementById("registerTab");
