@@ -2002,33 +2002,38 @@ if (!window.foozySupabase) {
   }
 })();
           </script>
-</body>
-  <!-- Supabase connection -->
+<!-- OneSignal SDK -->
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+<!-- Supabase connection -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
   const FOOZY_SUPABASE_URL = "https://snmufxscviahmmsdbess.supabase.co";
   const FOOZY_SUPABASE_KEY = "sb_publishable_Ix1rMiMTqPQIsBEM708shg_POK6_JM8";
+
   const foozySupabase = window.supabase.createClient(
     FOOZY_SUPABASE_URL,
     FOOZY_SUPABASE_KEY
   );
 
   window.foozySupabase = foozySupabase;
-  
-<script>
-window.OneSignalDeferred = window.OneSignalDeferred || [];
+</script>
 
-window.OneSignalDeferred.push(async function (OneSignal) {
-  await OneSignal.init({
-    appId: "099711e5-7d3b-48f8-9f69-a4b75ad3f1cb",
-    serviceWorkerPath: "/Foozy-app/OneSignalSDKWorker.js",
-    serviceWorkerParam: {
-      scope: "/Foozy-app/"
-    }
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+
+  window.OneSignalDeferred.push(async function (OneSignal) {
+    await OneSignal.init({
+      appId: "099711e5-7d3b-48f8-9f69-a4b75ad3f1cb",
+      serviceWorkerPath: "/Foozy-app/OneSignalSDKWorker.js",
+      serviceWorkerParam: {
+        scope: "/Foozy-app/"
+      }
+    });
   });
-});
 </script>
-  console.log("Foozy database connection initialized!");
-</script>
+
+  
+</body>
 </html>
