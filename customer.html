@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fff8f2">
+  <title>Customer Login | Foozy</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #fff8f2;
+      color: #222;
+      min-height: 100vh;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .visual {
+      background: linear-gradient(145deg, #ff6b24, #e94812);
+      color: white;
+      padding: 45px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .brand {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .visual h1 {
+      font-size: clamp(38px, 5vw, 64px);
+      line-height: 1.05;
+      margin: 0 0 20px;
+      letter-spacing: -2px;
+    }
+
+    .visual p {
+      font-size: 17px;
+      line-height: 1.7;
+      max-width: 420px;
+    }
+
+    .food-art {
+      font-size: clamp(70px, 10vw, 130px);
+      margin: 25px 0;
+    }
+
+    .visual small {
+      opacity: .85;
+    }
+
+    .form-side {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 35px 22px;
+    }
+
+    .form-box {
+      width: 100%;
+      max-width: 430px;
+    }
+
+    .mobile-brand {
+      display: none;
+      color: #ff6b24;
+      font-weight: 800;
+      font-size: 27px;
+      margin-bottom: 28px;
+    }
+
+    h2 {
+      font-size: 32px;
+      margin: 0 0 10px;
+      letter-spacing: -1px;
+    }
+
+    .subtitle {
+      color: #777;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      background: #f2e9e2;
+      padding: 5px;
+      border-radius: 12px;
+      margin-bottom: 23px;
+    }
+
+    .tabs button {
+      flex: 1;
+      padding: 13px 8px;
+      border: 0;
+      border-radius: 9px;
+      background: transparent;
+      font-weight: 700;
+      font-size: 14px;
+      color: #666;
+      cursor: pointer;
+    }
+
+    .tabs button.active {
+      background: white;
+      color: #ed5b1c;
+      box-shadow: 0 2px 8px #0000000d;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin: 15px 0 7px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #e2d8d0;
+      border-radius: 10px;
+      background: white;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #ff6b24;
+      box-shadow: 0 0 0 3px #ff6b241c;
+    }
+
+    .password-wrap {
+      display: flex;
+      gap: 8px;
+    }
+
+    .password-wrap input {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .show-password {
+      border: 1px solid #e2d8d0;
+      background: white;
+      border-radius: 10px;
+      padding: 0 12px;
+      cursor: pointer;
+    }
+
+    .forgot {
+      display: block;
+      text-align: right;
+      margin-top: 12px;
+      color: #e65316;
+      font-size: 13px;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .submit {
+      width: 100%;
+      padding: 15px;
+      border: 0;
+      border-radius: 11px;
+      background: #ff6b24;
+      color: white;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 23px;
+    }
+
+    .submit:disabled {
+      opacity: .65;
+      cursor: wait;
+    }
+
+    .message {
+      display: none;
+      padding: 12px;
+      border-radius: 10px;
+      background: #fff0e5;
+      color: #963b12;
+      font-size: 14px;
+      line-height: 1.5;
+      margin-top: 16px;
+      overflow-wrap: anywhere;
+    }
+
+    .back {
+      display: inline-block;
+      margin-top: 25px;
+      color: #777;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 760px) {
+      .page {
+        display: block;
+      }
+
+      .visual {
+        display: none;
+      }
+
+      .form-side {
+        min-height: 100vh;
+        padding: 30px 22px;
+      }
+
+      .mobile-brand {
+        display: block;
+      }
+
+      h2 {
+        font-size: 29px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <section class="visual">
+      <div class="brand">🍔 Foozy</div>
+
+      <div>
+        <div class="food-art" aria-hidden="true">🍔 🍕 🍟</div>
+        <h1>Good food.<br>Good mood.</h1>
+        <p>
+          Discover local favourites, order what you love,
+          and enjoy food made for your community.
+        </p>
+      </div>
+
+      <small>Made for food lovers. ❤️</small>
+    </section>
+
+    <section class="form-side">
+      <div class="form-box">
+        <div class="mobile-brand">🍔 Foozy</div>
+
+        <h2 id="heading">Welcome back!</h2>
+        <p class="subtitle" id="subtitle">
+          Log in to continue your food journey.
+        </p>
+
+        <div class="tabs">
+          <button type="button" id="loginTab" class="active">
+            Log In
+          </button>
+          <button type="button" id="signupTab">
+            Create Account
+          </button>
+        </div>
+
+        <form id="customerForm">
+          <div id="signupFields" class="hidden">
+            <label for="fullName">Full name</label>
+            <input
+              id="fullName"
+              type="text"
+              autocomplete="name"
+              maxlength="100"
+              required
+              disabled
+            >
+
+            <label for="phone">Mobile number</label>
+            <input
+              id="phone"
+              type="tel"
+              autocomplete="tel"
+              maxlength="20"
+              required
+              disabled
+            >
+
+            <label for="address">Delivery address</label>
+            <input
+              id="address"
+              type="text"
+              autocomplete="street-address"
+              maxlength="250"
+              placeholder="House, street or locality"
+              required
+              disabled
+            >
+
+            <label for="locality">Town or locality</label>
+            <input
+              id="locality"
+              type="text"
+              autocomplete="address-level2"
+              maxlength="100"
+              required
+              disabled
+            >
+          </div>
+
+          <label for="email">Email address</label>
+          <input
+            id="email"
+            type="email"
+            autocomplete="email"
+            maxlength="254"
+            placeholder="you@example.com"
+            required
+          >
+
+          <label for="password">Password</label>
+          <div class="password-wrap">
+            <input
+              id="password"
+              type="password"
+              autocomplete="current-password"
+              minlength="8"
+              placeholder="At least 8 characters"
+              required
+            >
+            <button
+              type="button"
+              class="show-password"
+              id="showPassword"
+              aria-label="Show password"
+            >Show</button>
+          </div>
+
+          <a href="#" id="forgot" class="forgot">
+            Forgot password?
+          </a>
+
+          <button class="submit" id="submitButton" type="submit">
+            Log In
+          </button>
+        </form>
+
+        <div id="message" class="message" role="status"></div>
+
+        <a href="signup.html" class="back">← Back to account options</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    (() => {
+      const SUPABASE_URL =
+        "https://snmufxscviahmmsdbess.supabase.co";
+
+      const SUPABASE_KEY =
+        "sb_publishable_Ix1rMiMTqPQIsBEM708shg_POK6_JM8";
+
+      const db = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+      const form = document.getElementById("customerForm");
+      const loginTab = document.getElementById("loginTab");
+      const signupTab = document.getElementById("signupTab");
+      const signupFields = document.getElementById("signupFields");
+      const heading = document.getElementById("heading");
+      const subtitle = document.getElementById("subtitle");
+      const submitButton = document.getElementById("submitButton");
+      const message = document.getElementById("message");
+      const forgot = document.getElementById("forgot");
+      const password = document.getElementById("password");
+      const showPassword = document.getElementById("showPassword");
+
+      let mode = "login";
+
+      function showMessage(text) {
+        message.textContent = text;
+        message.style.display = "block";
+      }
+
+      function clearMessage() {
+        message.textContent = "";
+        message.style.display = "none";
+      }
+
+      function setMode(nextMode) {
+        mode = nextMode;
+        const signingUp = mode === "signup";
+
+        loginTab.classList.toggle("active", !signingUp);
+        signupTab.classList.toggle("active", signingUp);
+        signupFields.classList.toggle("hidden", !signingUp);
+
+        signupFields.querySelectorAll("input").forEach(input => {
+          input.disabled = !signingUp;
+          input.required = signingUp;
+        });
+
+        heading.textContent = signingUp
+          ? "Create your account"
+          : "Welcome back!";
+
+        subtitle.textContent = signingUp
+          ? "Join Foozy and discover your local favourites."
+          : "Log in to continue your food journey.";
+
+        submitButton.textContent = signingUp
+          ? "Create Account"
+          : "Log In";
+
+        password.autocomplete = signingUp
+          ? "new-password"
+          : "current-password";
+
+        forgot.classList.toggle("hidden", signingUp);
+        clearMessage();
+      }
+
+      loginTab.addEventListener("click", () => setMode("login"));
+      signupTab.addEventListener("click", () => setMode("signup"));
+
+      showPassword.addEventListener("click", () => {
+        const showing = password.type === "text";
+        password.type = showing ? "password" : "text";
+        showPassword.textContent = showing ? "Show" : "Hide";
+        showPassword.setAttribute(
+          "aria-label",
+          showing ? "Show password" : "Hide password"
+        );
+      });
+
+      form.addEventListener("submit", async event => {
+        event.preventDefault();
+        clearMessage();
+
+        if (!form.reportValidity()) return;
+
+        submitButton.disabled = true;
+        submitButton.textContent = "Please wait...";
+
+        try {
+          const email = document.getElementById("email").value
+            .trim()
+            .toLowerCase();
+
+          if (mode === "signup") {
+            const fullName =
+              document.getElementById("fullName").value.trim();
+            const phone =
+              document.getElementById("phone").value.trim();
+            const address =
+              document.getElementById("address").value.trim();
+            const locality =
+              document.getElementById("locality").value.trim();
+
+            const { data, error } = await db.auth.signUp({
+              email,
+              password: password.value,
+              options: {
+                data: {
+                  full_name: fullName,
+                  phone: phone,
+                  delivery_address: address,
+                  locality: locality,
+                  account_type: "customer"
+                },
+                emailRedirectTo: window.location.href
+              }
+            });
+
+            if (error) throw error;
+
+            if (data.session) {
+              showMessage(
+                "Your account has been created! You can now continue to Foozy."
+              );
+              submitButton.textContent = "Continue to Foozy";
+              submitButton.disabled = false;
+
+              submitButton.onclick = event => {
+                event.preventDefault();
+                window.location.href = "index.html";
+              };
+            } else {
+              showMessage(
+                "Account submitted! Check your email for a confirmation link before logging in."
+              );
+            }
+          } else {
+            const { error } = await db.auth.signInWithPassword({
+              email,
+              password: password.value
+            });
+
+            if (error) throw error;
+
+            showMessage("Login successful! Opening Foozy...");
+            window.location.href = "index.html";
+          }
+        } catch (error) {
+          console.error("Customer authentication error:", error);
+          showMessage(
+            error.message || "Something went wrong. Please try again."
+          );
+        } finally {
+          if (submitButton.textContent !== "Continue to Foozy") {
+            submitButton.disabled = false;
+            submitButton.textContent =
+              mode === "signup" ? "Create Account" : "Log In";
+          }
+        }
+      });
+
+      forgot.addEventListener("click", async event => {
+        event.preventDefault();
+        clearMessage();
+
+        const email = document.getElementById("email").value
+          .trim()
+          .toLowerCase();
+
+        if (!email) {
+          showMessage("Enter your email address first.");
+          document.getElementById("email").focus();
+          return;
+        }
+
+        try {
+          const { error } = await db.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.href
+          });
+
+          if (error) throw error;
+
+          showMessage(
+            "If an account exists for this email, a password-reset link will be sent."
+          );
+        } catch (error) {
+          console.error("Password reset error:", error);
+          showMessage(
+            error.message || "Could not request a password reset."
+          );
+        }
+      });
+    })();
+  </script>
+</body>
+  </html>
