@@ -740,18 +740,13 @@ async function loadFoozyBusinessDashboard() {
 
   } catch (error) {
     console.error("Foozy dashboard error:", error);
-show(
-  "restaurantPerformance",
-  "Error: " + (error.message || String(error))
-);
-    [
-      "totalSales",
-      "todaySales",
-      "totalOrders",
-      "todayOrders",
-      "restaurantEarnings",
-      "restaurantPerformance"
-    ].forEach(id => show(id, "Unable to load data — check permissions"));
+
+    const message = error?.message || String(error);
+
+    ["totalSales", "todaySales", "totalOrders", "todayOrders", "restaurantEarnings"]
+      .forEach(id => show(id, "Dashboard error"));
+
+    show("restaurantPerformance", "Actual error: " + message);
   }
 }
 
