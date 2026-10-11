@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#fff8ed">
+  <title>Application Status | Foozy</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 24px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, sans-serif;
+      color: #242424;
+      background: #fff8ed;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      text-align: center;
+      background: white;
+      padding: 36px 26px;
+      border-radius: 24px;
+      box-shadow: 0 12px 40px rgba(60, 40, 15, 0.08);
+    }
+
+    .logo {
+      font-size: 34px;
+      font-weight: 900;
+      color: #f07824;
+      letter-spacing: -1px;
+    }
+
+    .icon {
+      width: 88px;
+      height: 88px;
+      margin: 26px auto 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 43px;
+      background: #fff0d9;
+      border-radius: 50%;
+    }
+
+    h1 {
+      margin: 0 0 14px;
+      font-size: 27px;
+      line-height: 1.25;
+    }
+
+    .description {
+      color: #666;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      margin: 22px 0;
+      padding: 12px 18px;
+      border-radius: 30px;
+      background: #fff2d8;
+      color: #925600;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #e7a126;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      50% { opacity: 0.35; }
+    }
+
+    .steps {
+      margin: 20px 0;
+      padding: 18px;
+      text-align: left;
+      border-radius: 16px;
+      background: #fffaf3;
+    }
+
+    .step {
+      display: flex;
+      gap: 12px;
+      margin: 13px 0;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .step-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .note {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f7f7f7;
+      border-radius: 12px;
+      color: #555;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .small {
+      margin-top: 22px;
+      color: #888;
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .button {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 13px 22px;
+      border: 0;
+      border-radius: 12px;
+      background: #f07824;
+      color: white;
+      font-size: 14px;
+      font-weight: bold;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    #message {
+      overflow-wrap: anywhere;
+    }
+
+    @media (max-width: 380px) {
+      .container {
+        padding: 28px 18px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <div class="logo">foozy<span style="color:#242424">.</span></div>
+
+    <div class="icon" id="mainIcon">⏳</div>
+
+    <h1 id="heading">Your application is under review</h1>
+
+    <p class="description" id="description">
+      Thank you for choosing Foozy! Your restaurant partner application
+      has been submitted successfully. Our team will review your
+      application before granting dashboard access.
+    </p>
+
+    <div class="status" id="statusBadge">
+      <span class="dot"></span>
+      <span id="statusText">PENDING REVIEW</span>
+    </div>
+
+    <section class="steps" id="steps">
+      <div class="step">
+        <span class="step-icon">📋</span>
+        <span><strong>Application received</strong><br>
+          Your restaurant details have been submitted.</span>
+      </div>
+
+      <div class="step">
+        <span class="step-icon">🔎</span>
+        <span><strong>Team review</strong><br>
+          Our team is reviewing your application. Please allow a few hours.</span>
+      </div>
+
+      <div class="step">
+        <span class="step-icon">🎉</span>
+        <span><strong>Approval and dashboard access</strong><br>
+          Once approved, you can access your restaurant dashboard.</span>
+      </div>
+    </section>
+
+    <div class="note" id="note">
+      <strong>What should you do now?</strong><br>
+      Nothing else is needed right now. Please keep this page open
+      or return to it later. We'll check your application status
+      automatically while this page is open.
+    </div>
+
+    <p class="description" id="message" role="status" aria-live="polite">
+      Checking your application status...
+    </p>
+
+    <a class="button hidden" id="dashboardButton"
+       href="https://zingmuinao-hub.github.io/Foozy-app/restaurant-dashboard.html">
+      Open Restaurant Dashboard
+    </a>
+
+    <a class="button hidden" id="loginButton"
+       href="https://zingmuinao-hub.github.io/Foozy-app/restaurant-login.html">
+      Return to Login
+    </a>
+
+    <p class="small" id="footer">
+      Thank you for your patience and for being part of Foozy. 🧡
+    </p>
+  </main>
+
+  <script>
+    const SUPABASE_URL = "https://snmufxscviahmmsdbess.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_Ix1rMiMTqPQIsBEM708shg_POK6_JM8";
+
+    const db = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    const LOGIN_URL =
+      "https://zingmuinao-hub.github.io/Foozy-app/restaurant-login.html";
+
+    const DASHBOARD_URL =
+      "https://zingmuinao-hub.github.io/Foozy-app/restaurant-dashboard.html";
+
+    let checking = false;
+    let redirecting = false;
+
+    const el = id => document.getElementById(id);
+
+    function showLogin(message) {
+      el("heading").textContent = "Please log in";
+      el("mainIcon").textContent = "🔐";
+      el("description").textContent =
+        "Log in with the account you used to apply as a Foozy restaurant partner.";
+      el("statusBadge").classList.add("hidden");
+      el("steps").classList.add("hidden");
+      el("note").classList.add("hidden");
+      el("dashboardButton").classList.add("hidden");
+      el("loginButton").classList.remove("hidden");
+      el("message").textContent = message;
+    }
+
+    function showPending() {
+      el("heading").textContent = "Your application is under review";
+      el("mainIcon").textContent = "⏳";
+      el("description").textContent =
+        "Your application is waiting for approval from the Foozy team. Your restaurant dashboard will remain locked until your application is approved.";
+      el("statusBadge").classList.remove("hidden");
+      el("statusText").textContent = "PENDING REVIEW";
+      el("steps").classList.remove("hidden");
+      el("note").classList.remove("hidden");
+      el("dashboardButton").classList.add("hidden");
+      el("loginButton").classList.add("hidden");
+      el("message").textContent =
+        "We're checking for updates automatically. Thank you for your patience!";
+    }
+
+    function showRejected() {
+      el("heading").textContent = "Application not approved";
+      el("mainIcon").textContent = "📄";
+      el("description").textContent =
+        "Unfortunately, your restaurant partner application was not approved.";
+      el("statusBadge").classList.remove("hidden");
+      el("statusText").textContent = "APPLICATION REJECTED";
+      el("statusBadge").style.background = "#ffe8e8";
+      el("statusBadge").style.color = "#a32626";
+      el("steps").classList.add("hidden");
+      el("note").classList.remove("hidden");
+      el("note").textContent =
+        "Please contact the Foozy team if you need clarification about this decision.";
+      el("dashboardButton").classList.add("hidden");
+      el("loginButton").classList.remove("hidden");
+      el("message").textContent =
+        "You cannot access the restaurant dashboard with this application.";
+    }
+
+    function showApproved() {
+      if (redirecting) return;
+      redirecting = true;
+
+      el("heading").textContent = "You're approved! 🎉";
+      el("mainIcon").textContent = "✅";
+      el("description").textContent =
+        "Congratulations! Your Foozy restaurant partner application has been approved.";
+      el("statusBadge").classList.remove("hidden");
+      el("statusBadge").style.background = "#e1f7e8";
+      el("statusBadge").style.color = "#176b37";
+      el("statusText").textContent = "APPLICATION APPROVED";
+      el("steps").classList.add("hidden");
+      el("note").classList.add("hidden");
+      el("dashboardButton").classList.remove("hidden");
+      el("loginButton").classList.add("hidden");
+      el("message").textContent =
+        "Your dashboard is now available. Redirecting shortly...";
+
+      setTimeout(() => {
+        window.location.replace(DASHBOARD_URL);
+      }, 2500);
+    }
+
+    async function checkApplication() {
+      if (checking || redirecting) return;
+      checking = true;
+
+      try {
+        const { data: sessionData, error: sessionError } =
+          await db.auth.getSession();
+
+        if (sessionError) throw sessionError;
+
+        const session = sessionData.session;
+
+        if (!session) {
+          showLogin("Your session has expired or you are not logged in.");
+          return;
+        }
+
+        const { data: applications, error } = await db
+          .from("partner_applications")
+          .select("status")
+          .eq("user_id", session.user.id)
+          .eq("application_type", "restaurant")
+          .order("created_at", { ascending: false })
+          .limit(1);
+
+        if (error) throw error;
+
+        if (!applications || applications.length === 0) {
+          el("message").textContent =
+            "We couldn't find an application linked to this account. Please log in with the account used to apply, or contact the Foozy team.";
+          el("loginButton").classList.remove("hidden");
+          return;
+        }
+
+        const status = String(applications[0].status || "")
+          .trim()
+          .toLowerCase();
+
+        if (status === "approved") {
+          showApproved();
+        } else if (status === "rejected") {
+          showRejected();
+        } else if (status === "pending") {
+          showPending();
+        } else {
+          el("message").textContent =
+            "Your application status is being checked. Please try again shortly.";
+        }
+
+      } catch (error) {
+        console.error("Application status check failed:", error);
+        el("message").textContent =
+          "We couldn't check your application status right now. Please try again shortly. If this continues, contact the Foozy team.";
+      } finally {
+        checking = false;
+      }
+    }
+
+    checkApplication();
+    setInterval(checkApplication, 10000);
+
+    db.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_OUT" || !session) {
+        showLogin("Please log in again to check your application.");
+      }
+    });
+  </script>
+</body>
+  </html>
