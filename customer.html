@@ -440,6 +440,7 @@
   clearMessage();
 
   try {
+    sessionStorage.setItem("foozy_google_login", "customer");
     const { error } = await db.auth.signInWithOAuth({
       provider: "google",
       options: {
