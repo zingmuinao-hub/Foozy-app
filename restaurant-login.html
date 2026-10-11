@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fff8f2">
+  <title>Restaurant Partner | Foozy</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #242424;
+      background: #fff8f2;
+    }
+
+    .layout {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+    }
+
+    .hero {
+      background: linear-gradient(145deg, #ff6b24, #df4710);
+      color: white;
+      padding: 42px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .brand {
+      font-size: 30px;
+      font-weight: 800;
+    }
+
+    .hero-content {
+      max-width: 470px;
+      margin: 40px 0;
+    }
+
+    .hero h1 {
+      font-size: clamp(38px, 5vw, 60px);
+      line-height: 1.06;
+      letter-spacing: -2px;
+      margin: 20px 0;
+    }
+
+    .hero p {
+      line-height: 1.8;
+      font-size: 16px;
+    }
+
+    .hero-art {
+      font-size: 82px;
+      margin-bottom: 15px;
+    }
+
+    .hero small { opacity: .85; }
+
+    .content {
+      padding: 35px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .box {
+      width: 100%;
+      max-width: 470px;
+    }
+
+    .mobile-brand {
+      display: none;
+      color: #ff6b24;
+      font-size: 27px;
+      font-weight: 800;
+      margin-bottom: 28px;
+    }
+
+    h2 {
+      margin: 0 0 10px;
+      font-size: 31px;
+      letter-spacing: -1px;
+    }
+
+    .sub {
+      color: #777;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .tabs {
+      display: flex;
+      padding: 5px;
+      gap: 5px;
+      background: #f1e7df;
+      border-radius: 12px;
+      margin-bottom: 22px;
+    }
+
+    .tabs button {
+      flex: 1;
+      border: 0;
+      padding: 13px 8px;
+      border-radius: 9px;
+      background: transparent;
+      color: #666;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tabs button.active {
+      background: white;
+      color: #e95519;
+    }
+
+    .section-title {
+      margin: 22px 0 4px;
+      font-size: 15px;
+      color: #d94c0d;
+    }
+
+    label {
+      display: block;
+      margin: 14px 0 7px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #e1d7cf;
+      border-radius: 10px;
+      background: white;
+      font-size: 16px;
+    }
+
+    input:focus {
+      outline: 2px solid #ffb38c;
+      border-color: #ff6b24;
+    }
+
+    .password-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .password-row input {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .show {
+      border: 1px solid #e1d7cf;
+      background: white;
+      border-radius: 10px;
+      padding: 0 12px;
+      cursor: pointer;
+    }
+
+    .forgot {
+      display: block;
+      text-align: right;
+      margin-top: 12px;
+      color: #d94c0d;
+      font-size: 13px;
+      text-decoration: none;
+    }
+
+    .submit {
+      width: 100%;
+      margin-top: 22px;
+      padding: 15px;
+      border: 0;
+      border-radius: 11px;
+      background: #ff6b24;
+      color: white;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .submit:disabled { opacity: .65; }
+
+    .message {
+      display: none;
+      margin-top: 16px;
+      padding: 13px;
+      border-radius: 10px;
+      background: #fff0e5;
+      color: #85360f;
+      line-height: 1.6;
+      font-size: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .back {
+      display: inline-block;
+      margin-top: 24px;
+      text-decoration: none;
+      color: #777;
+      font-size: 14px;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 760px) {
+      .layout { display: block; }
+      .hero { display: none; }
+
+      .content {
+        min-height: 100vh;
+        padding: 28px 21px;
+      }
+
+      .mobile-brand { display: block; }
+      h2 { font-size: 28px; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="layout">
+    <section class="hero">
+      <div class="brand">🍔 Foozy</div>
+
+      <div class="hero-content">
+        <div class="hero-art" aria-hidden="true">🍽️ 🥘</div>
+        <h1>Grow your<br>restaurant<br>with Foozy.</h1>
+        <p>
+          Bring your local favourites online, reach more customers,
+          and become part of a growing food community.
+        </p>
+      </div>
+
+      <small>Good food deserves to be discovered. ❤️</small>
+    </section>
+
+    <section class="content">
+      <div class="box">
+        <div class="mobile-brand">🍔 Foozy Partners</div>
+
+        <h2 id="heading">Restaurant Partner Login</h2>
+        <p class="sub" id="subtitle">
+          Sign in to manage your restaurant on Foozy.
+        </p>
+
+        <div class="tabs">
+          <button type="button" id="loginTab" class="active">Log In</button>
+          <button type="button" id="registerTab">Register Restaurant</button>
+        </div>
+
+        <form id="partnerForm">
+          <div id="registerFields" class="hidden">
+            <h3 class="section-title">Owner information</h3>
+
+            <label for="fullName">Owner's full name</label>
+            <input id="fullName" type="text" maxlength="100"
+              autocomplete="name" disabled>
+
+            <label for="phone">Contact number</label>
+            <input id="phone" type="tel" maxlength="20"
+              autocomplete="tel" disabled>
+
+            <h3 class="section-title">Restaurant information</h3>
+
+            <label for="restaurantName">Restaurant name</label>
+            <input id="restaurantName" type="text" maxlength="150"
+              autocomplete="organization" disabled>
+
+            <label for="restaurantAddress">Restaurant address</label>
+            <input id="restaurantAddress" type="text" maxlength="250"
+              autocomplete="street-address" disabled>
+          </div>
+
+          <label for="email">Email address</label>
+          <input id="email" type="email" maxlength="254"
+            autocomplete="email" placeholder="you@example.com" required>
+
+          <label for="password">Password</label>
+          <div class="password-row">
+            <input id="password" type="password" minlength="8"
+              autocomplete="current-password"
+              placeholder="At least 8 characters" required>
+            <button class="show" type="button" id="showPassword">
+              Show
+            </button>
+          </div>
+
+          <a class="forgot" href="#" id="forgot">Forgot password?</a>
+
+          <button class="submit" id="submitButton" type="submit">
+            Log In
+          </button>
+        </form>
+
+        <div class="message" id="message" role="status"></div>
+
+        <a class="back" href="signup.html">← Back to account options</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    (() => {
+      const db = window.supabase.createClient(
+        "https://snmufxscviahmmsdbess.supabase.co",
+        "sb_publishable_Ix1rMiMTqPQIsBEM708shg_POK6_JM8"
+      );
+
+      const form = document.getElementById("partnerForm");
+      const loginTab = document.getElementById("loginTab");
+      const registerTab = document.getElementById("registerTab");
+      const registerFields = document.getElementById("registerFields");
+      const heading = document.getElementById("heading");
+      const subtitle = document.getElementById("subtitle");
+      const password = document.getElementById("password");
+      const showPassword = document.getElementById("showPassword");
+      const submitButton = document.getElementById("submitButton");
+      const message = document.getElementById("message");
+      const forgot = document.getElementById("forgot");
+
+      let mode = "login";
+
+      function say(text) {
+        message.textContent = text;
+        message.style.display = "block";
+      }
+
+      function clearMessage() {
+        message.textContent = "";
+        message.style.display = "none";
+      }
+
+      function setMode(nextMode) {
+        mode = nextMode;
+        const registering = mode === "register";
+
+        loginTab.classList.toggle("active", !registering);
+        registerTab.classList.toggle("active", registering);
+        registerFields.classList.toggle("hidden", !registering);
+
+        registerFields.querySelectorAll("input").forEach(input => {
+          input.disabled = !registering;
+          input.required = registering;
+        });
+
+        heading.textContent = registering
+          ? "Register your restaurant"
+          : "Restaurant Partner Login";
+
+        subtitle.textContent = registering
+          ? "Create an account and submit your restaurant for review."
+          : "Sign in to manage your restaurant on Foozy.";
+
+        submitButton.textContent = registering
+          ? "Create Account & Apply"
+          : "Log In";
+
+        password.autocomplete = registering
+          ? "new-password"
+          : "current-password";
+
+        forgot.classList.toggle("hidden", registering);
+        clearMessage();
+      }
+
+      loginTab.addEventListener("click", () => setMode("login"));
+      registerTab.addEventListener("click", () => setMode("register"));
+
+      showPassword.addEventListener("click", () => {
+        const showing = password.type === "text";
+        password.type = showing ? "password" : "text";
+        showPassword.textContent = showing ? "Show" : "Hide";
+      });
+
+      form.addEventListener("submit", async event => {
+        event.preventDefault();
+        clearMessage();
+
+        if (!form.reportValidity()) return;
+
+        submitButton.disabled = true;
+        submitButton.textContent = "Please wait...";
+
+        try {
+          const email = document.getElementById("email").value
+            .trim().toLowerCase();
+
+          if (mode === "register") {
+            const fullName =
+              document.getElementById("fullName").value.trim();
+            const phone =
+              document.getElementById("phone").value.trim();
+            const restaurantName =
+              document.getElementById("restaurantName").value.trim();
+            const restaurantAddress =
+              document.getElementById("restaurantAddress").value.trim();
+
+            const { data, error } = await db.auth.signUp({
+              email,
+              password: password.value,
+              options: {
+                data: {
+                  full_name: fullName,
+                  phone: phone,
+                  account_type: "restaurant"
+                }
+              }
+            });
+
+            if (error) throw error;
+
+            if (!data.session || !data.user) {
+              say(
+                "Your account request was received. Check your email and confirm your account. Then return here, log in, and submit your restaurant application."
+              );
+              return;
+            }
+
+            const { error: applicationError } = await db
+              .from("partner_applications")
+              .insert({
+                user_id: data.user.id,
+                application_type: "restaurant",
+                full_name: fullName,
+                phone: phone,
+                restaurant_name: restaurantName,
+                restaurant_address: restaurantAddress,
+                status: "pending"
+              });
+
+            if (applicationError) {
+              console.error("Application submission error:", applicationError);
+              say(
+                "Your account was created, but the application could not be submitted. Please log in and contact Foozy Admin before trying again."
+              );
+              return;
+            }
+
+            say(
+              "Your restaurant application has been submitted for review. You can log in again to check your account."
+            );
+          } else {
+            const { error } = await db.auth.signInWithPassword({
+              email,
+              password: password.value
+            });
+
+            if (error) throw error;
+
+            say(
+              "Login successful. Your application and dashboard access will depend on your approval status."
+            );
+          }
+        } catch (error) {
+          console.error("Restaurant partner error:", error);
+          say(error.message || "Something went wrong. Please try again.");
+        } finally {
+          submitButton.disabled = false;
+          submitButton.textContent =
+            mode === "register" ? "Create Account & Apply" : "Log In";
+        }
+      });
+
+      forgot.addEventListener("click", async event => {
+        event.preventDefault();
+        clearMessage();
+
+        const email = document.getElementById("email").value
+          .trim().toLowerCase();
+
+        if (!email) {
+          say("Enter your email address first.");
+          document.getElementById("email").focus();
+          return;
+        }
+
+        try {
+          const { error } = await db.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.href
+          });
+
+          if (error) throw error;
+
+          say(
+            "If an account exists for this email, a password-reset link will be sent."
+          );
+        } catch (error) {
+          say(error.message || "Could not request a password reset.");
+        }
+      });
+    })();
+  </script>
+</body>
+            </html>
