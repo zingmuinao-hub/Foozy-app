@@ -2929,5 +2929,34 @@ try {
   }
 })();
 </script>
+<script>
+(function () {
+  function fixWelcomeButtons() {
+    const welcome = document.getElementById("welcome");
+
+    if (!welcome) return;
+
+    window.enterFoozy = function () {
+      welcome.style.opacity = "0";
+      welcome.style.transition = "opacity 0.35s ease";
+
+      setTimeout(function () {
+        welcome.classList.add("hidden");
+      }, 350);
+    };
+
+    document.querySelectorAll(".welcome-actions button")
+      .forEach(function (button) {
+        button.addEventListener("click", window.enterFoozy);
+      });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", fixWelcomeButtons);
+  } else {
+    fixWelcomeButtons();
+  }
+})();
+</script>
 </body>
 </html>
