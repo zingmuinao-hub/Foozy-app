@@ -439,10 +439,28 @@ font-size:10px;padding:5px;display:grid;gap:4px;justify-items:center}
     toast("Notifications will work after the notification service is connected.");
   });
 
-  $("logoutBtn").addEventListener("click",()=>{
-    if(!confirm("Log out of your Foozy delivery partner account?"))return;
-    toast("Authentication isn't connected yet. No account was logged out.");
-  });
+  $("logoutBtn").addEventListener("click", async () => {
+  if (!confirm("Log out of your Foozy delivery partner account?")) {
+    return;
+  }
+
+  const db = window.foozyDb;
+
+  if (!db) {
+    toast("Unable to connect to your account. Please try again.");
+    return;
+  }
+
+  const { error } = await db.auth.signOut();
+
+  if (error) {
+    toast("Logout failed. Please try again.");
+    console.error("Logout error:", error);
+    return;
+  }
+
+  window.location.replace("./delivery-login.html");
+});
 
   $("saveAccount").addEventListener("click",()=>{
     const name=$("partnerName").value.trim();
