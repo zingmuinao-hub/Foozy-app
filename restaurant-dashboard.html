@@ -382,13 +382,18 @@ async function startApp() {
     if (error) throw error;
 
     if (!data) {
-      $("app").classList.add("hidden");
-      $("loginPage").classList.remove("hidden");
+  $("app").classList.add("hidden");
+  $("bottomNav").classList.add("hidden");
+  $("loginPage").classList.remove("hidden");
 
-      alert(
-        "Your application is approved, but your restaurant dashboard has not been set up yet. Please contact Foozy Admin."
-      );
-      return;
+  $("loginPage").querySelector("h2").textContent =
+    "Restaurant setup incomplete";
+
+  $("loginPage").querySelector("p").textContent =
+    "Your account is logged in, but no restaurant record is linked to it. Foozy Admin needs to finish your restaurant setup.";
+
+  return;
+    }
     }
 
     // 4. Load the dashboard for the approved restaurant.
