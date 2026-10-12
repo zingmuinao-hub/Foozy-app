@@ -406,16 +406,19 @@ async function startApp() {
 
     go("overview");
     say("Welcome to " + restaurant.name + "!");
-
   } catch (error) {
     console.error("Dashboard access check failed:", error);
 
     $("app").classList.add("hidden");
     $("loginPage").classList.remove("hidden");
+    $("loginForm").classList.add("hidden");
 
-    alert(
-      "We couldn't verify your restaurant approval. Please try again or contact Foozy Admin."
-    );
+    $("loginPage").querySelector("h2").textContent =
+      "Dashboard couldn't load";
+
+    $("loginPage").querySelector("p").textContent =
+      "Your session may still be active. Please refresh and try again. Error: " +
+      error.message;
   }
 }
 
