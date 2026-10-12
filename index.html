@@ -1196,6 +1196,121 @@ max-width: 100%;
 transition: none;
 }
                    }
+/* ===== FOOZY SPLASH SCREEN ANIMATION ===== */
+
+#foozySplash {
+  position: fixed;
+  inset: 0;
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ff641f;
+  opacity: 1;
+  visibility: visible;
+  overflow: hidden;
+}
+
+.foozy-splash-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  padding: 20px;
+}
+
+.foozy-splash-logo {
+  color: #ffffff;
+  font-size: clamp(54px, 15vw, 88px);
+  font-weight: 1000;
+  letter-spacing: 5px;
+  text-shadow: 0 7px 0 #d9440b, 0 12px 25px rgba(100, 30, 0, 0.25);
+  opacity: 0;
+  transform: scale(0.3) rotate(-8deg);
+  animation: foozyLogoBounce 0.8s cubic-bezier(.2, 1.6, .4, 1) 0.1s forwards;
+}
+
+.foozy-scooter {
+  font-size: 58px;
+  margin-top: 18px;
+  opacity: 0;
+  transform: translateX(-25px);
+  animation: foozyScooterDrive 1s ease-in 0.85s forwards;
+}
+
+.foozy-splash-tagline {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  margin-top: 12px;
+  opacity: 0;
+  animation: foozyTaglineAppear 0.5s ease 0.5s forwards;
+}
+
+#foozySplash.foozy-splash-hide {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.35s ease, visibility 0s linear 0.35s;
+}
+
+@keyframes foozyLogoBounce {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) rotate(-8deg);
+  }
+  65% {
+    opacity: 1;
+    transform: scale(1.15) rotate(3deg);
+  }
+  82% {
+    transform: scale(0.92) rotate(-2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes foozyScooterDrive {
+  0% {
+    opacity: 0;
+    transform: translateX(-25px);
+  }
+  15% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(110vw) rotate(-3deg);
+  }
+}
+
+@keyframes foozyTaglineAppear {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .foozy-splash-logo,
+  .foozy-scooter,
+  .foozy-splash-tagline {
+    animation-duration: 0.01ms;
+  }
+}
+
+/* ===== END FOOZY SPLASH ANIMATION ===== */
 </style>
 </head>
 
