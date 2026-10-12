@@ -339,6 +339,53 @@ font-size:10px;padding:5px;display:grid;gap:4px;justify-items:center}
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
+(async function () {
+  document.documentElement.style.visibility = "hidden";
+
+  const db = window.supabase.createClient(
+    "https://snmufxscviahmmsdbess.supabase.co",
+    "sb_publishable_Ix1rMiMTqPQIsBEM708shg_POK6_JM8"
+  );
+
+  window.foozyDb = db;
+
+  try {
+    const { data: sessionData, error: sessionError } =
+      await db.auth.getSession();
+
+    if (sessionError || !sessionData.session) {
+      window.location.replace("./delivery-login.html");
+      return;
+    }
+
+    const user = sessionData.session.user;
+
+    const { data: application, error: applicationError } =
+      await db
+        .from("partner_applications")
+        .select("status, application_type")
+        .eq("user_id", user.id)
+        .eq("application_type", "delivery")
+        .maybeSingle();
+
+    if (
+      applicationError ||
+      !application ||
+      String(application.status).toLowerCase() !== "approved"
+    ) {
+      await db.auth.signOut();
+      window.location.replace("./delivery-login.html");
+      return;
+    }
+
+    document.documentElement.style.visibility = "visible";
+  } catch (error) {
+    console.error("Dashboard authentication failed:", error);
+    window.location.replace("./delivery-login.html");
+  }
+})();
+</script>
+  <script>
 (function(){
   const $ = id => document.getElementById(id);
   const titles = {
