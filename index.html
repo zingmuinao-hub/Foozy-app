@@ -2637,5 +2637,221 @@ document.getElementById("foozy-notifications").addEventListener("click", async f
 })();
 </script>
 <!-- END FOOZY SPLASH SCREEN CONTROLLER -->
+<script>
+(async function loadFoozyRestaurants() {
+  const grid = document.getElementById("restaurantGrid");
+  const emptyMessage = document.getElementById("emptyMessage");
+
+  if (!grid || !window.foozySupabase) {
+    console.error("Foozy: restaurant grid or Supabase connection missing.");
+    return;
+  }
+
+  const originalContent = grid.innerHTML;
+
+  grid.innerHTML =
+    '<p style="color:#b5b5b5;padding:20px">Finding restaurants near you... 🧡</p>';
+
+  try {
+    const { data: restaurants, error } = await window.foozySupabase
+      .from("restaurants")
+      .select("*")
+      .eq("is_active", true);
+
+    if (error) throw error;
+
+    if (!restaurants || restaurants.length === 0) {
+      grid.innerHTML =
+        '<p style="color:#b5b5b5;padding:20px">Our restaurants are getting ready. Check back soon! 🧡</p>';
+      return;
+    }
+
+    const { data: menuItems, error: menuError } = await window.foozySupabase
+      .from("menu_items")
+      .select("id,name,description,price,image_url,category,restaurant_id,is_available")
+      .eq("is_available", true);
+
+    if (menuError) throw menuError;
+
+    const allItems = menuItems || [];
+    const fragment = document.createDocumentFragment();
+
+    restaurants.forEach(restaurant => {
+      const items = allItems.filter(
+        item => String(item.restaurant_id) === String(restaurant.id)
+      );
+
+      const cover =
+        restaurant.cover_photo_url ||
+        restaurant.cover_image_url ||
+        restaurant.cover_image ||
+        restaurant.banner_url ||
+        restaurant.image_url ||
+        restaurant.logo_url ||
+        restaurant.logo ||
+        (items.find(item => item.image_url)?.image_url) ||
+        "";
+
+      const description =
+        restaurant.description ||
+        restaurant.restaurant_description ||
+        "Discover delicious local favourites.";
+
+      const categories = [
+        ...new Set(items.map(item => {
+          const category = String(item.category || "").toLowerCase();
+
+          if (category.includes("burger")) return "Burgers";
+          if (category.includes("pizza")) return "Pizza";
+          if (category.includes("chicken")) return "Chicken";
+          if (category.includes("snack")) return "Snacks";
+          if (category.includes("drink")) return "Drinks";
+
+          return "";
+        }).filter(Boolean))
+      ];
+
+      const card = document.createElement("article");
+      card.className = "restaurant";
+      card.dataset.category = categories.join(" ") || "All";
+      card.dataset.search = [
+        restaurant.name || "",
+        description,
+        ...items.map(item => item.name || ""),
+        ...categories
+      ].join(" ").toLowerCase();
+
+      card.style.cursor = "pointer";
+      card.setAttribute("role", "link");
+      card.setAttribute(
+        "aria-label",
+        "View menu for " + (restaurant.name || "restaurant")
+      );
+
+      const imageBox = document.createElement("div");
+      imageBox.className = "restaurant-image";
+
+      if (cover && /^https?:\/\//i.test(cover)) {
+        const image = document.createElement("img");
+        image.src = cover;
+        image.alt = restaurant.name || "Restaurant cover";
+        image.loading = "lazy";
+        image.onerror = () => {
+          imageBox.replaceChildren();
+          imageBox.style.background =
+            "linear-gradient(135deg,#ff6b2c,#35190f)";
+          imageBox.style.display = "flex";
+          imageBox.style.alignItems = "center";
+          imageBox.style.justifyContent = "center";
+          imageBox.innerHTML =
+            '<span style="font-size:55px">🍽️</span>';
+        };
+        imageBox.appendChild(image);
+      } else {
+        imageBox.style.background =
+          "linear-gradient(135deg,#ff6b2c,#35190f)";
+        imageBox.style.display = "flex";
+        imageBox.style.alignItems = "center";
+        imageBox.style.justifyContent = "center";
+        imageBox.innerHTML =
+          '<span style="font-size:55px">🍽️</span>';
+      }
+
+      const tag = document.createElement("span");
+      tag.className = "tag";
+      tag.textContent = "LOCAL FAVOURITE";
+      imageBox.appendChild(tag);
+
+      const body = document.createElement("div");
+      body.className = "restaurant-body";
+
+      const name = document.createElement("h3");
+      name.textContent = restaurant.name || "Local Restaurant";
+
+      const details = document.createElement("p");
+      details.className = "restaurant-description";
+      details.textContent = description;
+
+      const meta = document.createElement("div");
+      meta.className = "restaurant-meta";
+
+      const menuCount = document.createElement("span");
+      menuCount.textContent =
+        items.length + (items.length === 1 ? " dish" : " dishes");
+
+      const arrow = document.createElement("span");
+      arrow.className = "delivery";
+      arrow.textContent = "View menu →";
+
+      meta.append(menuCount, arrow);
+      body.append(name, details, meta);
+      card.append(imageBox, body);
+
+      function openRestaurant() {
+        window.location.href =
+          "./restaurant.html?id=" + encodeURIComponent(restaurant.id);
+      }
+
+      card.addEventListener("click", openRestaurant);
+
+      card.addEventListener("keydown", event => {
+        if (event.key === "Enter") openRestaurant();
+      });
+
+      card.tabIndex = 0;
+      fragment.appendChild(card);
+    });
+
+    grid.replaceChildren(fragment);
+
+    // Update search and category filters for the live cards.
+    window.filterRestaurants = function() {
+      const searchInput = document.getElementById("searchInput");
+      const query = searchInput
+        ? searchInput.value.trim().toLowerCase()
+        : "";
+
+      const activeCategory =
+        document.querySelector(".category.active")?.dataset.category || "All";
+
+      let visibleCount = 0;
+
+      grid.querySelectorAll(".restaurant").forEach(card => {
+        const categories = (card.dataset.category || "").split(" ");
+        const matchesCategory =
+          activeCategory === "All" ||
+          categories.includes(activeCategory);
+
+        const matchesSearch =
+          (card.dataset.search || "").includes(query);
+
+        const visible = matchesCategory && matchesSearch;
+
+        card.classList.toggle("hidden", !visible);
+
+        if (visible) visibleCount++;
+      });
+
+      if (emptyMessage) {
+        emptyMessage.classList.toggle("hidden", visibleCount > 0);
+      }
+    };
+
+    window.filterRestaurants();
+
+  } catch (error) {
+    console.error("Foozy restaurant loading error:", error);
+
+    // Keep the demo cards if Supabase fails.
+    grid.innerHTML = originalContent;
+
+    const notice = document.createElement("p");
+    notice.style.cssText = "color:#ff9a6c;padding:12px 0";
+    notice.textContent =
+      "Couldn't load live restaurants. Showing the existing menu for now.";
+    grid.parentElement.appendChild(notice);
+  }
+})();
+</script>
 </body>
 </html>
