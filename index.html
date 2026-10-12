@@ -1969,8 +1969,7 @@ try {
 } catch {
   categories = (card.dataset.category || "").split(" ");
 }
-      .filter(Boolean);
-
+      
     const searchText = (
       (card.dataset.search || '') + ' ' + card.innerText
     ).toLowerCase();
