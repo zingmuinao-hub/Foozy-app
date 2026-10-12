@@ -746,57 +746,57 @@ console.log("Logged-in user ID:", user.id);
     `).join("");
 
     box.querySelectorAll("[data-save-order]").forEach(button => {
-      button.onclick = async () => {
-        const id = button.dataset.saveOrder;
-        const status = $("orderStatus-" + id).value;
+  button.onclick = async () => {
+    const id = button.dataset.saveOrder;
+    const status = $("orderStatus-" + id).value;
 
-        button.disabled = true;
-        button.textContent = "Saving...";
+    button.disabled = true;
+    button.textContent = "Saving...";
 
-        const { error } = await db
-          .from("Order")
-          .update({ order_status: status })
-          .eq("id", id)
-          .eq("restaurant_id", restaurant.id);
+    try {
+      const { error } = await db
+        .from("Order")
+        .update({ order_status: status })
+        .eq("id", id)
+        .eq("restaurant_id", restaurant.id);
 
-        if (error) {
-          alert("Could not update order: " + error.message);
-          button.disabled = false;
-          button.textContent = "Save Status";
-          return;
+      if (error) throw error;
+
+      if (status === "ready_for_pickup") {
+        const { data: result, error: requestError } =
+          await db.rpc("create_foozy_delivery_request", {
+            p_order_id: Number(id)
+          });
+
+        if (requestError) {
+          throw new Error(
+            "Order status saved, but assignment failed: " +
+            requestError.message
+          );
         }
 
-        if (status === "ready_for_pickup") {
-  const { data: result, error: requestError } = await db.rpc(
-    "create_foozy_delivery_request",
-    { p_order_id: Number(id) }
-  );
-
-  if (requestError) {
-    alert(
-      "Order status saved, but delivery assignment failed: " +
-      requestError.message
-    );
-    await loadDashboardOrders();
-    return;
-  }
-
-  if (result?.status === "no_partner_available") {
-    alert(
-      "Order is ready, but no eligible online delivery partner is available yet."
-    );
-  } else if (result?.status === "request_created") {
-    alert(
-      "Delivery request created! The delivery dashboard still needs to be connected."
-    );
-  } else if (result?.status === "already_exists") {
-    alert("An active delivery request already exists for this order.");
-  }
+        if (result?.status === "request_created") {
+          alert("Delivery request created!");
+        } else if (result?.status === "no_partner_available") {
+          alert("No eligible online delivery partner is available.");
+        } else if (result?.status === "already_exists") {
+          alert("This order already has an active delivery request.");
+        } else {
+          alert("Unexpected assignment response. Check the dashboard.");
         }
+      } else {
         alert("Order status updated!");
-        await loadDashboardOrders();
-      };
-    });
+      }
+
+      await loadDashboardOrders();
+
+    } catch (error) {
+      alert(error.message || "Could not update the order.");
+      button.disabled = false;
+      button.textContent = "Save Status";
+    }
+  };
+});
 
   } catch (error) {
     console.error("Dashboard orders error:", error);
