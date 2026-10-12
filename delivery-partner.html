@@ -398,6 +398,19 @@ font-size:10px;padding:5px;display:grid;gap:4px;justify-items:center}
       return;
     }
 
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+
+window.OneSignalDeferred.push(async function (OneSignal) {
+  await OneSignal.init({
+    appId: "099711e5-7d3b-48f8-9f69-a4b75ad3f1cb",
+    serviceWorkerPath: "/Foozy-app/OneSignalSDKWorker.js",
+    serviceWorkerParam: {
+      scope: "/Foozy-app/"
+    }
+  });
+
+  await OneSignal.login(user.id);
+});
     document.documentElement.style.visibility = "visible";
   } catch (error) {
     console.error("Dashboard authentication failed:", error);
