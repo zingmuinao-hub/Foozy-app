@@ -2105,44 +2105,169 @@ if (!window.foozySupabase) {
   );
 
   window.foozySupabase = foozySupabase;
-  // FOOZY LIVE PROMOTION
+// FOOZY PROMOTIONAL CAROUSEL
 async function loadFoozyPromotion() {
   const banner = document.getElementById("promoBanner");
-  const image = document.getElementById("promoImage");
-  const title = document.getElementById("promoTitle");
-  const description = document.getElementById("promoDescription");
 
-  if (!banner || !image || !title || !description) return;
+  if (!banner || !window.foozySupabase) return;
 
   try {
     const { data, error } = await window.foozySupabase
       .from("promotions")
-      .select("title, description, image_url")
+      .select("id, title, description, image_url, starts_at, ends_at")
       .eq("is_active", true)
       .order("display_order", { ascending: true })
-      .limit(1)
-      .maybeSingle();
+      .order("created_at", { ascending: false });
 
     if (error) throw error;
-    if (!data) return;
 
-    title.textContent = data.title || "";
-    description.textContent = data.description || "";
+    const now = Date.now();
 
-    if (data.image_url) {
-      image.src = data.image_url;
-      image.alt = data.title || "Foozy promotion";
-      image.onerror = () => {
-        image.style.display = "none";
-      };
-    } else {
-      image.style.display = "none";
+    const promotions = (data || []).filter(promo => {
+      const starts = promo.starts_at
+        ? new Date(promo.starts_at).getTime()
+        : null;
+
+      const ends = promo.ends_at
+        ? new Date(promo.ends_at).getTime()
+        : null;
+
+      return (!starts || starts <= now) &&
+             (!ends || ends >= now);
+    });
+
+    if (!promotions.length) {
+      banner.classList.remove("has-promo");
+      return;
     }
 
+    banner.replaceChildren();
+
+    const track = document.createElement("div");
+    track.className = "promo-track";
+
+    const dots = document.createElement("div");
+    dots.className = "promo-dots";
+
+    promotions.forEach((promo, index) => {
+      const slide = document.createElement("article");
+      slide.className = "promo-slide";
+
+      if (promo.image_url) {
+        const img = document.createElement("img");
+        img.src = promo.image_url;
+        img.alt = promo.title || "Foozy promotion";
+        img.loading = index === 0 ? "eager" : "lazy";
+        slide.appendChild(img);
+      }
+
+      const overlay = document.createElement("div");
+      overlay.className = "promo-overlay";
+
+      const label = document.createElement("span");
+      label.className = "promo-label";
+      label.textContent = "🔥 SPECIAL ON FOOZY";
+
+      const title = document.createElement("h3");
+      title.textContent = promo.title || "";
+
+      const description = document.createElement("p");
+      description.textContent = promo.description || "";
+
+      overlay.append(label, title, description);
+      slide.appendChild(overlay);
+      track.appendChild(slide);
+
+      const dot = document.createElement("button");
+      dot.type = "button";
+      dot.className = "promo-dot";
+      dot.setAttribute("aria-label", "Show promotion " + (index + 1));
+
+      dot.addEventListener("click", () => {
+        showSlide(index);
+      });
+
+      dots.appendChild(dot);
+    });
+
+    const previous = document.createElement("button");
+    previous.type = "button";
+    previous.className = "promo-arrow promo-prev";
+    previous.textContent = "‹";
+    previous.setAttribute("aria-label", "Previous promotion");
+
+    const next = document.createElement("button");
+    next.type = "button";
+    next.className = "promo-arrow promo-next";
+    next.textContent = "›";
+    next.setAttribute("aria-label", "Next promotion");
+
+    banner.append(track, previous, next, dots);
+
+    let current = 0;
+    let timer;
+    let touchStartX = 0;
+
+    function showSlide(index) {
+      current = (index + promotions.length) % promotions.length;
+
+      track.style.transform =
+        "translateX(-" + (current * 100) + "%)";
+
+      dots.querySelectorAll(".promo-dot").forEach((dot, i) => {
+        dot.classList.toggle("active", i === current);
+      });
+    }
+
+    function stopAutoScroll() {
+      clearInterval(timer);
+    }
+
+    function startAutoScroll() {
+      stopAutoScroll();
+
+      if (promotions.length > 1) {
+        timer = setInterval(() => {
+          showSlide(current + 1);
+        }, 4000);
+      }
+    }
+
+    previous.addEventListener("click", () => {
+      showSlide(current - 1);
+      startAutoScroll();
+    });
+
+    next.addEventListener("click", () => {
+      showSlide(current + 1);
+      startAutoScroll();
+    });
+
+    banner.addEventListener("touchstart", event => {
+      touchStartX = event.changedTouches[0].screenX;
+      stopAutoScroll();
+    }, { passive: true });
+
+    banner.addEventListener("touchend", event => {
+      const distance =
+        event.changedTouches[0].screenX - touchStartX;
+
+      if (Math.abs(distance) > 45) {
+        showSlide(current + (distance < 0 ? 1 : -1));
+      }
+
+      startAutoScroll();
+    }, { passive: true });
+
+    banner.addEventListener("mouseenter", stopAutoScroll);
+    banner.addEventListener("mouseleave", startAutoScroll);
+
+    showSlide(0);
     banner.classList.add("has-promo");
+    startAutoScroll();
 
   } catch (error) {
-    console.error("Foozy promotion error:", error);
+    console.error("Foozy carousel error:", error);
   }
 }
 
