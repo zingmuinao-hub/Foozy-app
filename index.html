@@ -2632,6 +2632,17 @@ document.getElementById("foozy-notifications").addEventListener("click", async f
 <script>
 (function () {
   const splash = document.getElementById("foozySplash");
+  const welcome = document.getElementById("welcome");
+
+  const skipIntro =
+    new URLSearchParams(window.location.search)
+      .get("skipIntro") === "1";
+
+  if (skipIntro) {
+    if (splash) splash.remove();
+    if (welcome) welcome.classList.add("hidden");
+    return;
+  }
 
   if (!splash) return;
 
