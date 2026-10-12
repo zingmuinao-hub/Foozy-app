@@ -404,6 +404,26 @@ async function startApp() {
     window.OneSignalDeferred = window.OneSignalDeferred || [];
     window.OneSignalDeferred.push(async function(OneSignal) {
       await OneSignal.login(ownerId);
+      const alertButton = document.getElementById("enableRestaurantNotifications");
+
+if (alertButton) {
+  alertButton.onclick = async () => {
+    alertButton.disabled = true;
+
+    try {
+      await OneSignal.Notifications.requestPermission();
+      await OneSignal.User.PushSubscription.optIn();
+      await OneSignal.login(ownerId);
+
+      alertButton.textContent = "✅ Order Alerts Enabled";
+      say("Restaurant notifications enabled on this device!");
+    } catch (error) {
+      say("Could not enable notifications: " + error.message);
+    } finally {
+      alertButton.disabled = false;
+    }
+  };
+}
     });
 
     $("loginPage").classList.add("hidden");
