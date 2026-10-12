@@ -2811,7 +2811,12 @@ document.getElementById("foozy-notifications").addEventListener("click", async f
       let visibleCount = 0;
 
       grid.querySelectorAll(".restaurant").forEach(card => {
-        const categories = (card.dataset.category || "").split(" ");
+        let categories = [];
+try {
+  categories = JSON.parse(card.dataset.category || "[]");
+} catch {
+  categories = (card.dataset.category || "").split(" ");
+}
         const matchesCategory =
           activeCategory === "All" ||
           categories.includes(activeCategory);
