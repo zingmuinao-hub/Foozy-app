@@ -2668,9 +2668,12 @@ loadFoozyPromotion();
 </script>
 
 <script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
+window.OneSignalDeferred = window.OneSignalDeferred || [];
 
-  window.OneSignalDeferred.push(async function (OneSignal) {
+window.OneSignalDeferred.push(async function (OneSignal) {
+  const button = document.getElementById("foozy-notifications");
+
+  try {
     await OneSignal.init({
       appId: "099711e5-7d3b-48f8-9f69-a4b75ad3f1cb",
       serviceWorkerPath: "/Foozy-app/OneSignalSDKWorker.js",
@@ -2678,7 +2681,56 @@ loadFoozyPromotion();
         scope: "/Foozy-app/"
       }
     });
-  });
+
+    function markEnabled() {
+      button.textContent = "✓";
+      button.title = "Foozy notifications enabled";
+      button.setAttribute(
+        "aria-label",
+        "Foozy notifications enabled"
+      );
+      button.disabled = true;
+      button.style.background = "#16a34a";
+    }
+
+    if (OneSignal.User.PushSubscription.optedIn) {
+      markEnabled();
+      return;
+    }
+
+    async function enableNotifications() {
+      if (Notification.permission === "denied") {
+        alert(
+          "Notifications are blocked. Please allow them in your browser settings."
+        );
+        return;
+      }
+
+      try {
+        await OneSignal.Slidedown.promptPush();
+
+        if (OneSignal.User.PushSubscription.optedIn) {
+          markEnabled();
+        }
+      } catch (error) {
+        console.error("Foozy notifications:", error);
+      }
+    }
+
+    button.addEventListener("click", enableNotifications);
+
+    // Ask on entry, without repeatedly prompting subscribed customers.
+    if (
+      "Notification" in window &&
+      Notification.permission !== "denied"
+    ) {
+      setTimeout(enableNotifications, 1500);
+    }
+
+  } catch (error) {
+    console.error("Foozy OneSignal initialization:", error);
+  }
+});
 </script>
 
   <div style="text-align:center; padding:20px;">
