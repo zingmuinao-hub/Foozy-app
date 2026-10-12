@@ -2155,7 +2155,24 @@ function syncFoozyCart() {
 window.addEventListener('pageshow', syncFoozyCart);
 window.addEventListener('focus', syncFoozyCart);
   
-function openCart() {
+function syncFoozyCart() {
+  try {
+    const savedCart = JSON.parse(
+      localStorage.getItem('foozyCart') || '{}'
+    );
+
+    Object.keys(cart).forEach(key => delete cart[key]);
+    Object.assign(cart, savedCart);
+
+    updateCart();
+  } catch (error) {
+    console.error('Cart sync failed:', error);
+  }
+}
+
+window.addEventListener('pageshow', syncFoozyCart);
+window.addEventListener('focus', syncFoozyCart);
+  function openCart() {
   document.getElementById('cartOverlay').classList.remove('hidden');
 }
 
