@@ -1953,8 +1953,13 @@ function filterRestaurants() {
   );
 
   restaurantCards.forEach(card => {
-    const categories = (card.dataset.category || '')
-      .split(/\s+/)
+    let categories = [];
+
+try {
+  categories = JSON.parse(card.dataset.category || "[]");
+} catch {
+  categories = (card.dataset.category || "").split(" ");
+}
       .filter(Boolean);
 
     const searchText = (
