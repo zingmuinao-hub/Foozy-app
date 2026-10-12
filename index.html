@@ -2705,7 +2705,18 @@ document.getElementById("foozy-notifications").addEventListener("click", async f
       const categories = [
   ...new Set(
     items
-      .map(item => String(item.category || "").trim())
+      .map(item => {
+        const category = String(item.category || "").trim();
+        const lower = category.toLowerCase();
+
+        if (lower.includes("burger")) return "Burgers";
+        if (lower.includes("pizza")) return "Pizza";
+        if (lower.includes("chicken")) return "Chicken";
+        if (lower.includes("snack")) return "Snacks";
+        if (lower.includes("drink")) return "Drinks";
+
+        return category;
+      })
       .filter(Boolean)
   )
 ];
