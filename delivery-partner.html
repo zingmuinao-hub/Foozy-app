@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#171714">
+<title>Foozy | Delivery Partner</title>
+<style>
+:root {
+  --bg:#f8f5ee;
+  --card:#fffdf8;
+  --dark:#191916;
+  --orange:#f47721;
+  --muted:#77776e;
+  --border:#e9e4d9;
+  --green:#238653;
+  --red:#c84335;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--dark);
+font-family:Arial,Helvetica,sans-serif}
+button,input{font:inherit}
+button{cursor:pointer}
+.app{min-height:100vh;display:flex}
+.sidebar{width:248px;background:var(--dark);color:white;padding:25px 17px;
+display:flex;flex-direction:column;flex-shrink:0}
+.brand{font-size:29px;font-weight:900;letter-spacing:-1px;padding:0 12px}
+.brand span{color:var(--orange)}
+.tagline{font-size:11px;color:#aaa99e;padding:5px 12px 28px}
+.profile{display:flex;align-items:center;gap:11px;padding:14px 10px;
+border:1px solid #383832;border-radius:14px;margin-bottom:25px}
+.avatar{width:43px;height:43px;border-radius:50%;background:#39362e;
+display:grid;place-items:center;font-size:22px}
+.profile strong{display:block;font-size:13px}
+.profile small{display:block;color:#aaa99e;margin-top:5px;font-size:11px}
+.nav-title{font-size:10px;color:#85857b;letter-spacing:1.5px;
+padding:0 12px 10px}
+.nav{display:grid;gap:6px}
+.nav button{width:100%;border:0;background:transparent;color:#c4c2b9;
+text-align:left;padding:13px 12px;border-radius:10px;font-size:13px;
+display:flex;align-items:center;gap:12px}
+.nav button:hover,.nav button.active{background:var(--orange);color:white}
+.nav .icon{width:19px;text-align:center;font-size:17px}
+.side-bottom{margin-top:auto;padding-top:25px}
+.helpbox{background:#292923;padding:15px;border-radius:12px;margin-bottom:15px}
+.helpbox strong{font-size:12px}
+.helpbox p{font-size:11px;line-height:1.6;color:#bbb9ae}
+.helpbox button{background:transparent;color:#ff9b5a;border:0;padding:0}
+.logout{width:100%;text-align:left;background:transparent;border:1px solid #48483f;
+color:white;padding:13px;border-radius:10px}
+.main{min-width:0;flex:1}
+.topbar{height:78px;padding:0 30px;background:var(--card);
+border-bottom:1px solid var(--border);display:flex;align-items:center;
+justify-content:space-between;gap:15px}
+.top-left{display:flex;align-items:center;gap:12px}
+.topbar h2{font-size:19px;margin:0}
+.topbar p{margin:5px 0 0;font-size:12px;color:var(--muted)}
+.top-actions{display:flex;align-items:center;gap:10px}
+.icon-btn{height:41px;width:41px;background:white;border:1px solid var(--border);
+border-radius:12px;font-size:18px;position:relative}
+.dot{width:7px;height:7px;background:var(--orange);border-radius:50%;
+position:absolute;right:8px;top:7px}
+.menu-toggle{display:none}
+.content{max-width:1200px;margin:auto;padding:28px}
+.welcome{display:flex;align-items:center;justify-content:space-between;
+gap:15px;margin-bottom:23px}
+.welcome h1{font-size:26px;letter-spacing:-.7px;margin:0}
+.welcome p{color:var(--muted);font-size:13px;margin:8px 0 0}
+.availability{display:flex;align-items:center;gap:11px;padding:12px 15px;
+background:var(--card);border:1px solid var(--border);border-radius:13px}
+.availability small{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.switch{width:45px;height:25px;border:0;border-radius:20px;
+background:#aaa99e;padding:3px;transition:.2s}
+.switch:after{content:"";display:block;width:19px;height:19px;
+background:white;border-radius:50%;transition:.2s}
+.switch.on{background:var(--green)}
+.switch.on:after{transform:translateX(20px)}
+.notice{display:none;background:#fff1df;border:1px solid #f6d3a9;
+border-radius:12px;padding:14px;margin-bottom:18px;font-size:12px;line-height:1.6}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+gap:15px;margin-bottom:22px}
+.card{background:var(--card);border:1px solid var(--border);
+border-radius:16px;padding:20px;min-width:0}
+.stat-head{display:flex;justify-content:space-between;align-items:center;
+font-size:12px;color:var(--muted);gap:8px}
+.stat-icon{width:36px;height:36px;background:#fff0e4;border-radius:11px;
+display:grid;place-items:center;font-size:17px}
+.stat-value{font-size:27px;font-weight:800;margin-top:19px;letter-spacing:-.6px}
+.stat-foot{font-size:11px;color:var(--muted);margin-top:7px}
+.section-head{display:flex;justify-content:space-between;align-items:center;
+gap:12px;margin-bottom:15px}
+.section-head h3{margin:0;font-size:16px}
+.pill{font-size:10px;font-weight:bold;padding:6px 9px;border-radius:20px;
+background:#f0eee6;color:#69685e}
+.layout-grid{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(250px,1fr);
+gap:18px;margin-bottom:22px}
+.request{border:1px solid var(--border);border-radius:13px;padding:16px;
+margin-top:12px}
+.request-top{display:flex;justify-content:space-between;gap:10px;align-items:start}
+.request h4{margin:0;font-size:14px}
+.request p{font-size:12px;color:var(--muted);margin:7px 0;line-height:1.6}
+.money{font-size:17px;font-weight:800;white-space:nowrap}
+.request-meta{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.tag{background:#f3f0e7;border-radius:8px;padding:7px 9px;font-size:11px}
+.countdown{font-size:12px;color:#b64b17;font-weight:bold;margin:12px 0}
+.actions{display:flex;gap:9px}
+.btn{border:0;border-radius:10px;padding:11px 14px;font-size:12px;font-weight:bold}
+.btn-primary{background:var(--orange);color:white}
+.btn-primary:hover{background:#dc6414}
+.btn-secondary{background:#f0eee6;color:var(--dark)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.empty{text-align:center;padding:28px 12px;color:var(--muted);font-size:12px;line-height:1.8}
+.empty .big{font-size:30px;margin-bottom:8px}
+.order-row{border-top:1px solid var(--border);padding:15px 0}
+.order-row:first-of-type{border-top:0}
+.order-row strong{font-size:12px}
+.order-row p{font-size:11px;color:var(--muted);margin:6px 0}
+.status{display:inline-block;font-size:10px;border-radius:20px;padding:6px 9px;
+background:#e5f4e9;color:#247447;margin-top:6px}
+.progress{height:6px;background:#eee9de;border-radius:8px;margin:14px 0}
+.progress div{height:100%;width:0;background:var(--orange);border-radius:8px}
+.steps{display:grid;gap:12px}
+.step{display:flex;align-items:center;gap:11px;font-size:12px}
+.step-icon{height:30px;width:30px;background:#f0eee6;border-radius:9px;
+display:grid;place-items:center}
+.muted{color:var(--muted);font-size:12px;line-height:1.7}
+.page{display:none}
+.page.active{display:block}
+.field{display:grid;gap:7px;margin:16px 0}
+.field label{font-size:12px;font-weight:bold}
+.field input{width:100%;padding:12px;border:1px solid var(--border);
+border-radius:10px;background:white}
+.setting-row{padding:16px 0;border-bottom:1px solid var(--border);
+display:flex;justify-content:space-between;align-items:center;gap:12px}
+.setting-row strong{font-size:13px}
+.setting-row p{font-size:11px;color:var(--muted);margin:5px 0 0}
+.mobile-nav{display:none}
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+background:var(--dark);color:white;padding:13px 18px;border-radius:12px;
+font-size:12px;z-index:20;display:none;max-width:90%;text-align:center}
+footer{text-align:center;color:var(--muted);font-size:10px;padding:25px 0 5px}
+@media(max-width:1050px){
+.stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+.sidebar{position:fixed;z-index:15;top:0;bottom:0;left:0;
+transform:translateX(-105%);transition:.22s;width:270px}
+.sidebar.open{transform:translateX(0)}
+.main{width:100%}
+.topbar{height:70px;padding:0 16px}
+.menu-toggle{display:block}
+.content{padding:21px 15px 90px}
+.welcome{align-items:flex-start;flex-direction:column}
+.welcome h1{font-size:23px}
+.availability{width:100%;justify-content:space-between}
+.layout-grid{grid-template-columns:1fr}
+.mobile-nav{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:10;
+background:var(--card);border-top:1px solid var(--border);
+justify-content:space-around;padding:8px 2px calc(8px + env(safe-area-inset-bottom))}
+.mobile-nav button{border:0;background:transparent;color:var(--muted);
+font-size:10px;padding:5px;display:grid;gap:4px;justify-items:center}
+.mobile-nav button span{font-size:19px}
+.mobile-nav button.active{color:var(--orange)}
+.topbar p{font-size:11px}
+}
+@media(max-width:390px){
+.stats{gap:9px}
+.card{padding:14px}
+.stat-value{font-size:23px}
+.topbar h2{font-size:16px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+  <div class="brand">foo<span>zy</span>.</div>
+  <div class="tagline">DELIVER WITH PURPOSE</div>
+
+  <div class="profile">
+    <div class="avatar">🛵</div>
+    <div><strong id="sideName">Delivery Partner</strong>
+    <small id="sideStatus">Currently offline</small></div>
+  </div>
+
+  <div class="nav-title">WORKSPACE</div>
+  <nav class="nav" id="sideNav">
+    <button class="active" data-page="dashboard"><span class="icon">▦</span>Dashboard</button>
+    <button data-page="orders"><span class="icon">🛵</span>My Deliveries</button>
+    <button data-page="earnings"><span class="icon">₹</span>Earnings</button>
+    <button data-page="history"><span class="icon">◷</span>Delivery History</button>
+  </nav>
+
+  <div class="nav-title" style="margin-top:25px">PERSONAL</div>
+  <nav class="nav">
+    <button data-page="account"><span class="icon">♙</span>My Account</button>
+    <button data-page="settings"><span class="icon">⚙</span>Settings</button>
+  </nav>
+
+  <div class="side-bottom">
+    <div class="helpbox">
+      <strong>Need a hand?</strong>
+      <p>Having trouble with a delivery? Contact Foozy support.</p>
+      <button data-page="help">Get help →</button>
+    </div>
+    <button class="logout" id="logoutBtn">↪ &nbsp; Log out</button>
+  </div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div class="top-left">
+    <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Open menu">☰</button>
+    <div><h2 id="pageTitle">Dashboard</h2>
+    <p id="dateText">Your delivery workspace</p></div>
+  </div>
+  <div class="top-actions">
+    <button class="icon-btn" id="notificationBtn" aria-label="Notifications">♧<i class="dot"></i></button>
+    <button class="icon-btn" data-page="account" aria-label="Account">♙</button>
+  </div>
+</header>
+
+<div class="content">
+<section class="page active" id="page-dashboard">
+  <div class="welcome">
+    <div><h1>Ready to roll? 👋</h1>
+    <p>Every delivery brings Foozy closer to its customers.</p></div>
+    <div class="availability">
+      <div><strong id="availabilityTitle">You're offline</strong>
+      <small id="availabilityHint">Go online to receive requests</small></div>
+      <button class="switch" id="availabilitySwitch" aria-label="Toggle availability" aria-pressed="false"></button>
+    </div>
+  </div>
+
+  <div class="notice" id="offlineNotice">
+    <strong>You're currently offline.</strong><br>
+    Turn on availability to become eligible for delivery requests. This preview does not update your real availability in Supabase yet.
+  </div>
+
+  <div class="stats">
+    <div class="card"><div class="stat-head">Deliveries today <span class="stat-icon">🛵</span></div>
+    <div class="stat-value" id="statDeliveries">0</div><div class="stat-foot">Completed deliveries</div></div>
+    <div class="card"><div class="stat-head">Today's earnings <span class="stat-icon">₹</span></div>
+    <div class="stat-value" id="statEarnings">₹0</div><div class="stat-foot">Delivery earnings</div></div>
+    <div class="card"><div class="stat-head">Active orders <span class="stat-icon">📦</span></div>
+    <div class="stat-value" id="statActive">0 / 2</div><div class="stat-foot">Maximum two at a time</div></div>
+    <div class="card"><div class="stat-head">Partner rating <span class="stat-icon">⭐</span></div>
+    <div class="stat-value" id="statRating">—</div><div class="stat-foot">Rating after reviews are connected</div></div>
+  </div>
+
+  <div class="layout-grid">
+    <div class="card">
+      <div class="section-head"><h3>New delivery requests</h3><span class="pill" id="requestCount">0 REQUESTS</span></div>
+      <p class="muted">Accept within 20 seconds. If you decline or time out, Foozy can offer the order to another eligible partner.</p>
+      <div id="requests">
+        <div class="empty"><div class="big">🔔</div><strong>No new requests</strong><br>New requests will appear here when the assignment service is connected.</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-head"><h3>How it works</h3><span class="pill">QUICK GUIDE</span></div>
+      <div class="steps">
+        <div class="step"><div class="step-icon">🔔</div><div><strong>1. Receive a request</strong><br><span class="muted">A request gives you 20 seconds to respond.</span></div></div>
+        <div class="step"><div class="step-icon">🤝</div><div><strong>2. Accept the delivery</strong><br><span class="muted">You can carry a maximum of two active orders.</span></div></div>
+        <div class="step"><div class="step-icon">🍔</div><div><strong>3. Collect the food</strong><br><span class="muted">Follow the restaurant's pickup instructions.</span></div></div>
+        <div class="step"><div class="step-icon">📍</div><div><strong>4. Deliver to the customer</strong><br><span class="muted">Update each step so the customer can track progress.</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-head"><h3>My active deliveries</h3><button class="btn btn-secondary" data-page="orders">View all</button></div>
+    <div id="activePreview" class="empty"><div class="big">📦</div>No active deliveries yet.</div>
+  </div>
+</section>
+
+<section class="page" id="page-orders">
+  <div class="welcome"><div><h1>My deliveries 📦</h1><p>Manage your accepted delivery requests.</p></div></div>
+  <div class="card"><div class="section-head"><h3>Active orders</h3><span class="pill" id="ordersCount">0 / 2</span></div>
+  <div id="ordersList" class="empty"><div class="big">🛵</div>You don't have any active deliveries.</div></div>
+  <p class="muted">Order details will appear here after the assignment service and database are connected.</p>
+</section>
+
+<section class="page" id="page-earnings">
+  <div class="welcome"><div><h1>Your earnings 💰</h1><p>Keep track of your delivery income.</p></div></div>
+  <div class="stats">
+    <div class="card"><div class="stat-head">Today</div><div class="stat-value" id="earnToday">₹0</div><div class="stat-foot">Today's completed deliveries</div></div>
+    <div class="card"><div class="stat-head">This week</div><div class="stat-value">₹0</div><div class="stat-foot">Will update from completed orders</div></div>
+  </div>
+  <div class="card"><div class="section-head"><h3>Earnings history</h3><span class="pill">RECENT</span></div>
+  <div class="empty">Your completed deliveries and earnings will appear here once connected.</div></div>
+</section>
+
+<section class="page" id="page-history">
+  <div class="welcome"><div><h1>Delivery history 🧾</h1><p>Review your previously completed deliveries.</p></div></div>
+  <div class="card"><div class="section-head"><h3>Completed deliveries</h3></div>
+  <div class="empty"><div class="big">🧾</div>No completed deliveries yet.</div></div>
+</section>
+
+<section class="page" id="page-account">
+  <div class="welcome"><div><h1>My account 👤</h1><p>Manage your delivery partner profile.</p></div></div>
+  <div class="card">
+    <div class="section-head"><h3>Personal information</h3><span class="pill">PROFILE</span></div>
+    <p class="muted">Your account details should come from your authenticated Foozy delivery partner account.</p>
+    <div class="field"><label for="partnerName">Full name</label><input id="partnerName" placeholder="Your registered name"></div>
+    <div class="field"><label for="partnerPhone">Phone number</label><input id="partnerPhone" type="tel" placeholder="Your registered phone number"></div>
+    <div class="field"><label for="partnerVehicle">Vehicle type</label><input id="partnerVehicle" placeholder="e.g. Bike or scooter"></div>
+    <button class="btn btn-primary" id="saveAccount">Save preview</button>
+    <p class="muted">Preview only: changes are not saved to your Supabase account yet.</p>
+  </div>
+</section>
+
+<section class="page" id="page-settings">
+  <div class="welcome"><div><h1>Settings ⚙️</h1><p>Manage your dashboard preferences.</p></div></div>
+  <div class="card">
+    <div class="setting-row"><div><strong>Delivery notifications</strong><p>Receive alerts for new delivery requests.</p></div><input type="checkbox" id="settingNotifications" checked aria-label="Delivery notifications"></div>
+    <div class="setting-row"><div><strong>Sound alerts</strong><p>Play an alert for a new request.</p></div><input type="checkbox" id="settingSound" checked aria-label="Sound alerts"></div>
+    <div class="setting-row"><div><strong>Location sharing</strong><p>GPS sharing requires permission and an active delivery.</p></div><span class="pill">NOT CONNECTED</span></div>
+    <div class="setting-row"><div><strong>Account security</strong><p>Password and login security are managed by your account provider.</p></div><span class="pill">ACCOUNT</span></div>
+  </div>
+</section>
+
+<section class="page" id="page-help">
+  <div class="welcome"><div><h1>Help & support 💬</h1><p>We're here to help with delivery issues.</p></div></div>
+  <div class="card"><h3>Need help?</h3><p class="muted">Support contact details will be added once Foozy's official support channel is configured.</p><button class="btn btn-secondary" id="helpNotice">View support information</button></div>
+</section>
+
+<footer>FOOZY • DELIVERY PARTNER PORTAL<br>Made for better local deliveries.</footer>
+</div>
+</main>
+</div>
+
+<nav class="mobile-nav">
+  <button class="active" data-page="dashboard"><span>▦</span>Home</button>
+  <button data-page="orders"><span>🛵</span>Deliveries</button>
+  <button data-page="earnings"><span>₹</span>Earnings</button>
+  <button data-page="account"><span>♙</span>Account</button>
+</nav>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const titles = {
+    dashboard:"Dashboard",orders:"My Deliveries",earnings:"Earnings",
+    history:"Delivery History",account:"My Account",settings:"Settings",help:"Help & Support"
+  };
+  let online = false;
+  let toastTimer;
+
+  function toast(message){
+    const box=$("toast");
+    box.textContent=message;
+    box.style.display="block";
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>box.style.display="none",2800);
+  }
+
+  function showPage(page){
+    if(!titles[page]) return;
+    document.querySelectorAll(".page").forEach(el=>el.classList.remove("active"));
+    $("page-"+page).classList.add("active");
+    document.querySelectorAll("[data-page]").forEach(btn=>{
+      btn.classList.toggle("active",btn.dataset.page===page);
+    });
+    $("pageTitle").textContent=titles[page];
+    $("sidebar").classList.remove("open");
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+
+  document.querySelectorAll("[data-page]").forEach(btn=>{
+    btn.addEventListener("click",()=>showPage(btn.dataset.page));
+  });
+
+  $("menuToggle").addEventListener("click",()=>$("sidebar").classList.toggle("open"));
+
+  $("availabilitySwitch").addEventListener("click",()=>{
+    online=!online;
+    const sw=$("availabilitySwitch");
+    sw.classList.toggle("on",online);
+    sw.setAttribute("aria-pressed",String(online));
+    $("availabilityTitle").textContent=online?"You're online":"You're offline";
+    $("availabilityHint").textContent=online?"Available for delivery requests":"Go online to receive requests";
+    $("sideStatus").textContent=online?"Online • Preview mode":"Currently offline";
+    $("offlineNotice").style.display=online?"none":"block";
+    toast(online
+      ?"Online preview enabled. Real availability isn't connected yet."
+      :"Offline preview enabled. Real availability isn't connected yet.");
+  });
+
+  $("notificationBtn").addEventListener("click",()=>{
+    toast("Notifications will work after the notification service is connected.");
+  });
+
+  $("logoutBtn").addEventListener("click",()=>{
+    if(!confirm("Log out of your Foozy delivery partner account?"))return;
+    toast("Authentication isn't connected yet. No account was logged out.");
+  });
+
+  $("saveAccount").addEventListener("click",()=>{
+    const name=$("partnerName").value.trim();
+    if(name)$("sideName").textContent=name;
+    toast("Preview updated only. Account details aren't saved to Supabase.");
+  });
+
+  $("helpNotice").addEventListener("click",()=>{
+    toast("Foozy support contact details haven't been configured yet.");
+  });
+
+  $("dateText").textContent=new Intl.DateTimeFormat("en-IN",{
+    weekday:"long",day:"numeric",month:"short"
+  }).format(new Date())+" • Your delivery workspace";
+
+  // No fake orders, earnings, GPS positions, or live assignments are generated.
+  // These require authenticated Supabase data and secure backend assignment logic.
+})();
+</script>
+</body>
+</html>
