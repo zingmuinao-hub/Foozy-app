@@ -1172,7 +1172,9 @@
         true
       );
 
-      button.textContent = "Order Placed ✓";
+      window.location.href =
+  "./order-status.html?order_id=" + encodeURIComponent(orderId);
+return;
 
     } catch (error) {
       console.error("Foozy checkout failed:", error);
