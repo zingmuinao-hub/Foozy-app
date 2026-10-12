@@ -2797,6 +2797,78 @@ document.getElementById("foozy-notifications").addEventListener("click", async f
     });
 
     grid.replaceChildren(fragment);
+    const categoryContainer = document.querySelector(".categories");
+
+if (categoryContainer) {
+const existingButtons = [...categoryContainer.querySelectorAll(".category")];
+const existingNames = new Set(
+existingButtons.map(button =>
+String(button.dataset.category || "").trim().toLowerCase()
+)
+);
+
+const allCategories = [
+...new Set(
+allItems
+.map(item => String(item.category || "").trim())
+.filter(Boolean)
+)
+];
+
+const categoryEmojis = {
+burger: "🍔",
+pizza: "🍕",
+chicken: "🍗",
+snack: "🍟",
+drink: "🥤",
+momo: "🥟",
+dessert: "🍰",
+noodle: "🍜",
+rice: "🍚",
+seafood: "🐟",
+breakfast: "🍳"
+};
+
+allCategories.forEach(categoryName => {
+const key = categoryName.toLowerCase();
+
+if (existingNames.has(key)) return;
+
+const button = document.createElement("button");
+button.className = "category";
+button.dataset.category = categoryName;
+
+const emoji = document.createElement("div");
+emoji.className = "emoji";
+
+const emojiKey = Object.keys(categoryEmojis).find(word =>
+  key.includes(word)
+);
+
+emoji.textContent = emojiKey ? categoryEmojis[emojiKey] : "🍽️";
+
+const label = document.createElement("strong");
+label.textContent = categoryName;
+
+button.append(emoji, label);
+
+button.addEventListener("click", () => {
+  categoryContainer.querySelectorAll(".category").forEach(item => {
+    item.classList.remove("active");
+  });
+
+  button.classList.add("active");
+  window.filterRestaurants();
+
+  document.getElementById("restaurantsSection")
+    ?.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+categoryContainer.appendChild(button);
+existingNames.add(key);
+
+});
+}
 
     // Update search and category filters for the live cards.
     window.filterRestaurants = function() {
