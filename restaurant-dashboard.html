@@ -966,18 +966,18 @@ async function logout(){
 $("logoutSide").onclick=logout;
 
 (async () => {
-  const heading = $("loginPage").querySelector("h2");
-  const details = $("loginPage").querySelector("p");
-
-  function showStartupError(message) {
+  const showError = message => {
     $("app").classList.add("hidden");
     $("bottomNav").classList.add("hidden");
     $("loginPage").classList.remove("hidden");
-    heading.textContent = "Dashboard couldn't load";
-    details.textContent = message;
-  }
 
-  function withTimeout(promise, ms, label) {
+    $("loginPage").querySelector("h2").textContent =
+      "Dashboard couldn't load";
+
+    $("loginPage").querySelector("p").textContent = message;
+  };
+
+  const withTimeout = (promise, ms, label) => {
     let timer;
 
     return Promise.race([
@@ -989,13 +989,13 @@ $("logoutSide").onclick=logout;
         );
       })
     ]).finally(() => clearTimeout(timer));
-  }
+  };
 
   try {
     const { data, error } = await withTimeout(
       db.auth.getSession(),
       12000,
-      "Supabase session check"
+      "Login check"
     );
 
     if (error) throw error;
@@ -1009,13 +1009,13 @@ $("logoutSide").onclick=logout;
 
     await withTimeout(
       startApp(),
-      20000,
-      "Restaurant dashboard startup"
+      25000,
+      "Dashboard startup"
     );
 
   } catch (error) {
     console.error("Foozy startup error:", error);
-    showStartupError(error.message || "Unknown startup error.");
+    showError(error.message || "An unexpected error occurred.");
   }
 })();
 </script>
