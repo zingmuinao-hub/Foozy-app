@@ -550,99 +550,31 @@
       });
     }
 
-    async function checkout() {
-      const entries = Object.values(cart).filter(
-        item => item && Number(item.quantity) > 0
-      );
+    function checkout() {
+  const entries = Object.values(cart).filter(
+    item => item && Number(item.quantity) > 0
+  );
 
-      if (!entries.length) {
-        showToast("Your cart is empty!");
-        return;
-      }
+  if (!entries.length) {
+    showToast("Your cart is empty!");
+    return;
+  }
 
-      const restaurantIds = [
-        ...new Set(entries.map(item => String(item.restaurant_id)))
-      ];
+  const restaurantIds = [
+    ...new Set(entries.map(item => String(item.restaurant_id)))
+  ];
 
-      if (
-        restaurantIds.length !== 1 ||
-        !entries.every(item => item.item_id && item.restaurant_id)
-      ) {
-        alert("Please keep only valid items from one restaurant in your cart.");
-        return;
-      }
+  if (
+    restaurantIds.length !== 1 ||
+    !entries.every(item => item.item_id && item.restaurant_id)
+  ) {
+    alert("Please keep only valid items from one restaurant in your cart.");
+    return;
+  }
 
-      const customerName = prompt("Enter your full name:");
-      if (!customerName || !customerName.trim()) return;
+  saveCart();
 
-      const customerPhone = prompt("Enter your phone number:");
-      if (!customerPhone || !customerPhone.trim()) return;
-
-      const customerAddress = prompt("Enter your complete delivery address:");
-      if (!customerAddress || !customerAddress.trim()) return;
-
-      const paymentMethod = prompt("Choose payment method: Type COD or UPI");
-
-      if (
-        !paymentMethod ||
-        !["COD", "UPI"].includes(paymentMethod.trim().toUpperCase())
-      ) {
-        alert("Please enter COD or UPI.");
-        return;
-      }
-
-      const notes = prompt("Delivery instructions (optional):") || "";
-
-      const payload = {
-        customer_name: customerName.trim(),
-        customer_phone: customerPhone.trim(),
-        customer_adress: customerAddress.trim(),
-        payment_method: paymentMethod.trim().toUpperCase(),
-        notes: notes.trim(),
-        items: entries.map(item => ({
-          item_id: item.item_id,
-          quantity: item.quantity
-        }))
-      };
-
-      const button = document.getElementById("checkoutButton");
-      button.disabled = true;
-      button.textContent = "Placing your order...";
-
-      try {
-        const { data, error } = await db.functions.invoke(
-          "create-order",
-          { body: payload }
-        );
-
-        if (error) throw error;
-
-        if (!data || !data.success) {
-          throw new Error(
-            data?.error || "Your order could not be placed."
-          );
-        }
-
-        alert(
-          "Order placed successfully! Your order ID is: " +
-          data.order.id + "\n\n" + (data.message || "")
-        );
-
-        cart = {};
-        saveCart();
-
-        document.getElementById("cartPanel").style.display = "none";
-
-      } catch (error) {
-        console.error("Foozy checkout error:", error);
-        alert(
-          "We couldn't place your order.\n\n" +
-          (error.message || "Please try again.")
-        );
-      } finally {
-        button.disabled = false;
-        button.textContent = "Continue to Checkout →";
-      }
+  window.location.href = "./checkout.html";
     }
 
     function addImage(container, imageUrl, alt) {
