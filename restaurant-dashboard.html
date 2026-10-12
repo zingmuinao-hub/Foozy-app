@@ -1024,5 +1024,13 @@ $("logoutSide").onclick=logout;
   }
 })();
 </script>
+<script>
+setTimeout(() => {
+  const heading = document.querySelector("#loginPage h2");
+  if (heading) {
+    heading.textContent = "Diagnostic: JavaScript is running";
+  }
+}, 3000);
+</script>
 </body>
 </html>
