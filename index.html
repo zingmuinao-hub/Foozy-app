@@ -2135,7 +2135,26 @@ function updateCart() {
     });
   }
 }
+  
+function syncFoozyCart() {
+  try {
+    const savedCart = JSON.parse(
+      localStorage.getItem('foozyCart') || '{}'
+    );
 
+    Object.keys(cart).forEach(key => delete cart[key]);
+
+    Object.assign(cart, savedCart);
+
+    updateCart();
+  } catch (error) {
+    console.error('Could not sync Foozy cart:', error);
+  }
+}
+
+window.addEventListener('pageshow', syncFoozyCart);
+window.addEventListener('focus', syncFoozyCart);
+  
 function openCart() {
   document.getElementById('cartOverlay').classList.remove('hidden');
 }
