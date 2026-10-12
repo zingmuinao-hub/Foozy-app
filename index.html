@@ -2998,6 +2998,8 @@ try {
 } catch {
   categories = (card.dataset.category || "").split(" ");
 }
+
+categories = categories.filter(Boolean);
         const matchesCategory =
           activeCategory === "All" ||
           categories.includes(activeCategory);
