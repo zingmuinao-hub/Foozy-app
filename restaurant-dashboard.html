@@ -766,6 +766,33 @@ console.log("Logged-in user ID:", user.id);
           return;
         }
 
+        if (status === "ready_for_pickup") {
+  const { data: result, error: requestError } = await db.rpc(
+    "create_foozy_delivery_request",
+    { p_order_id: Number(id) }
+  );
+
+  if (requestError) {
+    alert(
+      "Order status saved, but delivery assignment failed: " +
+      requestError.message
+    );
+    await loadDashboardOrders();
+    return;
+  }
+
+  if (result?.status === "no_partner_available") {
+    alert(
+      "Order is ready, but no eligible online delivery partner is available yet."
+    );
+  } else if (result?.status === "request_created") {
+    alert(
+      "Delivery request created! The delivery dashboard still needs to be connected."
+    );
+  } else if (result?.status === "already_exists") {
+    alert("An active delivery request already exists for this order.");
+  }
+        }
         alert("Order status updated!");
         await loadDashboardOrders();
       };
