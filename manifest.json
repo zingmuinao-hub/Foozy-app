@@ -1,0 +1,25 @@
+{
+  "name": "Foozy - Food Delivery",
+  "short_name": "Foozy",
+  "description": "Discover delicious food from local restaurants with Foozy.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fff8f1",
+  "theme_color": "#ff641f",
+  "icons": [
+    {
+      "src": "icons/foozy-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/foozy-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
