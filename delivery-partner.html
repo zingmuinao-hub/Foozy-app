@@ -421,20 +421,58 @@ font-size:10px;padding:5px;display:grid;gap:4px;justify-items:center}
 
   $("menuToggle").addEventListener("click",()=>$("sidebar").classList.toggle("open"));
 
-  $("availabilitySwitch").addEventListener("click",()=>{
-    online=!online;
-    const sw=$("availabilitySwitch");
-    sw.classList.toggle("on",online);
-    sw.setAttribute("aria-pressed",String(online));
-    $("availabilityTitle").textContent=online?"You're online":"You're offline";
-    $("availabilityHint").textContent=online?"Available for delivery requests":"Go online to receive requests";
-    $("sideStatus").textContent=online?"Online • Preview mode":"Currently offline";
-    $("offlineNotice").style.display=online?"none":"block";
-    toast(online
-      ?"Online preview enabled. Real availability isn't connected yet."
-      :"Offline preview enabled. Real availability isn't connected yet.");
-  });
+  $("availabilitySwitch").addEventListener("click", async () => {
+  const db = window.foozyDb;
 
+  if (!db) {
+    toast("Account connection unavailable. Please log in again.");
+    return;
+  }
+
+  const sw = $("availabilitySwitch");
+  const nextOnline = !online;
+
+  sw.disabled = true;
+  toast("Updating your availability...");
+
+  try {
+    const { data, error } = await db.rpc(
+      "set_my_delivery_availability",
+      { p_is_available: nextOnline }
+    );
+
+    if (error) throw error;
+
+    online = data === true;
+
+    sw.classList.toggle("on", online);
+    sw.setAttribute("aria-pressed", String(online));
+
+    $("availabilityTitle").textContent =
+      online ? "You're online" : "You're offline";
+
+    $("availabilityHint").textContent = online
+      ? "Available for delivery requests"
+      : "Go online to receive requests";
+
+    $("sideStatus").textContent = online
+      ? "Online"
+      : "Currently offline";
+
+    $("offlineNotice").style.display =
+      online ? "none" : "block";
+
+    toast(online
+      ? "You're online! Availability saved."
+      : "You're offline. Availability saved."
+    );
+  } catch (error) {
+    console.error("Availability update failed:", error);
+    toast(error.message || "Couldn't update availability.");
+  } finally {
+    sw.disabled = false;
+  }
+});
   $("notificationBtn").addEventListener("click",()=>{
     toast("Notifications will work after the notification service is connected.");
   });
