@@ -358,6 +358,78 @@
   <p id="pricingMessage" class="muted" role="status"></p>
     </div>
 
+    <!-- FOOZY PROMOTIONS MANAGER -->
+<section id="promotionsSection" class="panel">
+  <h2>🎉 Promotions Manager</h2>
+
+  <p class="muted">
+    Create and manage homepage promotions for Foozy.
+  </p>
+
+  <form id="promotionForm">
+
+    <label for="promotionTitle">Promotion title</label>
+    <input
+      id="promotionTitle"
+      type="text"
+      maxlength="100"
+      placeholder="e.g. Foozy Festival Special"
+      required
+    >
+
+    <label for="promotionDescription">Description</label>
+    <textarea
+      id="promotionDescription"
+      maxlength="300"
+      placeholder="Describe your promotion..."
+    ></textarea>
+
+    <label for="promotionImage">Promotional image</label>
+    <input
+      id="promotionImage"
+      type="file"
+      accept="image/png,image/jpeg,image/webp"
+    >
+
+    <label for="promotionStart">Start date and time</label>
+    <input id="promotionStart" type="datetime-local">
+
+    <label for="promotionEnd">End date and time</label>
+    <input id="promotionEnd" type="datetime-local">
+
+    <label>
+      <input
+        id="promotionActive"
+        type="checkbox"
+        style="width:auto;margin-right:8px"
+      >
+      Activate this promotion
+    </label>
+
+    <br><br>
+
+    <button class="primary" type="submit">
+      Save Promotion
+    </button>
+
+  </form>
+
+  <p id="promotionMessage" class="muted" role="status"></p>
+
+  <hr>
+
+  <h3>Current Promotions</h3>
+
+  <button
+    id="refreshPromotions"
+    class="secondary"
+    type="button"
+  >
+    Refresh Promotions
+  </button>
+
+  <div id="promotionList"></div>
+</section>
   </main>
 </div>
   </section>
