@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <meta name="theme-color" content="#1F1F1F">
+  <title>Checkout | Foozy</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+  <link rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+  <style>
+    :root {
+      --bg: #1F1F1F;
+      --card: #292929;
+      --field: #202020;
+      --orange: #FF6B00;
+      --text: #FFF4E8;
+      --muted: #aaa;
+      --border: #414141;
+      --green: #67d391;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      animation: pageIn .35s ease both;
+      padding-bottom: 35px;
+    }
+
+    @keyframes pageIn {
+      from {
+        opacity: 0;
+        transform: translateY(9px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    button, input, textarea, select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 500;
+      background: rgba(31,31,31,.96);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 16px;
+    }
+
+    .topbar-inner {
+      max-width: 720px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand {
+      font-size: 27px;
+      font-weight: 1000;
+      letter-spacing: -1.5px;
+    }
+
+    .brand span {
+      color: var(--orange);
+    }
+
+    .back {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 13px;
+      font-weight: 800;
+    }
+
+    .page {
+      max-width: 720px;
+      margin: auto;
+      padding: 24px 15px 40px;
+    }
+
+    .intro {
+      margin-bottom: 23px;
+      animation: pageIn .4s ease both;
+    }
+
+    .eyebrow {
+      color: var(--orange);
+      font-size: 11px;
+      font-weight: 1000;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(29px, 7vw, 39px);
+      line-height: 1.15;
+      margin: 8px 0;
+      letter-spacing: -1px;
+    }
+
+    .intro p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .step {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin: 25px 0 13px;
+    }
+
+    .step-number {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,107,0,.14);
+      border: 1px solid rgba(255,107,0,.4);
+      color: var(--orange);
+      border-radius: 11px;
+      font-weight: 1000;
+      flex-shrink: 0;
+    }
+
+    .step h2 {
+      font-size: 17px;
+      font-weight: 900;
+    }
+
+    .step p {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 19px;
+      padding: 17px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.12);
+    }
+
+    .field {
+      margin-bottom: 15px;
+    }
+
+    .field:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      color: #e7e0d8;
+      font-size: 12px;
+      font-weight: 900;
+      margin-bottom: 7px;
+    }
+
+    .required {
+      color: var(--orange);
+    }
+
+    input, textarea, select {
+      display: block;
+      width: 100%;
+      background: var(--field);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 13px;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(255,107,0,.12);
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: #777;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 85px;
+    }
+
+    .location-button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      background: rgba(255,107,0,.12);
+      color: #ff9c5b;
+      border: 1px solid rgba(255,107,0,.55);
+      border-radius: 13px;
+      padding: 14px;
+      font-weight: 1000;
+      transition: background .2s, transform .2s;
+    }
+
+    .location-button:active,
+    .place-order:active {
+      transform: scale(.98);
+    }
+
+    .location-status {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 11px 0;
+    }
+
+    .location-status.success {
+      color: var(--green);
+    }
+
+    #map {
+      height: 255px;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #303030;
+      border: 1px solid var(--border);
+      z-index: 1;
+    }
+
+    .map-help {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+      margin-top: 9px;
+    }
+
+    .map-link {
+      display: inline-block;
+      margin-top: 10px;
+      color: #ff9c5b;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .payment-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--field);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 14px;
+      margin-top: 10px;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+    }
+
+    .payment-option:has(input:checked) {
+      border-color: var(--orange);
+      background: rgba(255,107,0,.08);
+    }
+
+    .payment-option input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--orange);
+      flex-shrink: 0;
+    }
+
+    .payment-icon {
+      font-size: 23px;
+    }
+
+    .payment-copy {
+      flex: 1;
+    }
+
+    .payment-copy strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .payment-copy small {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 3px;
+    }
+
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+
+    .order-item:last-child {
+      border-bottom: none;
+    }
+
+    .item-name {
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .item-sub {
+      color: var(--muted);
+      font-size: 11px;
+      margin-top: 3px;
+    }
+
+    .item-price {
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .summary-line {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      padding: 8px 0;
+      font-size: 13px;
+    }
+
+    .summary-line.muted {
+      color: var(--muted);
+    }
+
+    .summary-line.total {
+      border-top: 1px solid var(--border);
+      margin-top: 8px;
+      padding-top: 16px;
+      font-size: 19px;
+      font-weight: 1000;
+    }
+
+    .summary-line.total strong {
+      color: var(--orange);
+    }
+
+    .place-order {
+      width: 100%;
+      background: var(--orange);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 15px;
+      font-weight: 1000;
+      margin-top: 12px;
+      box-shadow: 0 8px 22px rgba(255,107,0,.18);
+      transition: transform .2s, background .2s;
+    }
+
+    .place-order:hover {
+      background: #f05e00;
+    }
+
+    .fine-print {
+      color: var(--muted);
+      font-size: 11px;
+      text-align: center;
+      line-height: 1.7;
+      margin-top: 13px;
+    }
+
+    .notice {
+      display: none;
+      border-radius: 12px;
+      padding: 13px;
+      margin-bottom: 15px;
+      background: #33251b;
+      border: 1px solid #684021;
+      color: #ffd6bb;
+      font-size: 13px;
+      line-height: 1.6;
+      white-space: pre-line;
+    }
+
+    .notice.show {
+      display: block;
+      animation: pageIn .25s ease both;
+    }
+
+    .notice.success {
+      background: #172a20;
+      border-color: #2d6845;
+      color: #b8f2cd;
+    }
+
+    .empty {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+      text-align: center;
+      padding: 20px 5px;
+    }
+
+    @media (min-width: 600px) {
+      .page {
+        padding-top: 32px;
+      }
+
+      .card {
+        padding: 22px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="./index.html?skipIntro=1">
+      foo<span>zy</span>
+    </a>
+
+    <button class="back" type="button"
+            onclick="location.href='./index.html?skipIntro=1'">
+      ← Back to Foozy
+    </button>
+  </div>
+</header>
+
+<main class="page">
+
+  <div class="intro">
+    <div class="eyebrow">Almost there 🧡</div>
+    <h1>Checkout</h1>
+    <p>Confirm your delivery details and get your favourites on their way.</p>
+  </div>
+
+  <div id="notice" class="notice" role="status"></div>
+
+  <form id="checkoutForm">
+
+    <div class="step">
+      <div class="step-number">01</div>
+      <div>
+        <h2>Your details</h2>
+        <p>Who should we deliver the food to?</p>
+      </div>
+    </div>
+
+    <section class="card">
+
+      <div class="field">
+        <label for="customerName">
+          Full name <span class="required">*</span>
+        </label>
+        <input id="customerName" name="customerName"
+               autocomplete="name" maxlength="100"
+               placeholder="Enter your full name" required>
+      </div>
+
+      <div class="field">
+        <label for="customerPhone">
+          Mobile number <span class="required">*</span>
+        </label>
+        <input id="customerPhone" name="customerPhone"
+               type="tel" autocomplete="tel"
+               inputmode="tel" maxlength="20"
+               placeholder="Enter your phone number" required>
+      </div>
+
+    </section>
+
+    <div class="step">
+      <div class="step-number">02</div>
+      <div>
+        <h2>Delivery address</h2>
+        <p>Choose where your food should arrive.</p>
+      </div>
+    </div>
+
+    <section class="card">
+
+      <button class="location-button" id="useLocation"
+              type="button">
+        📍 Use My Current Location
+      </button>
+
+      <p id="locationStatus" class="location-status">
+        Your location is only accessed when you tap the button.
+      </p>
+
+      <div id="map"></div>
+
+      <p class="map-help">
+        Move the map or tap a different spot to adjust your delivery pin.
+        The address will update when a readable address is available.
+      </p>
+
+      <a id="openMap" class="map-link"
+         href="#" target="_blank" rel="noopener"
+         style="display:none">
+        Open selected location in Maps ↗
+      </a>
+
+      <div class="field" style="margin-top:18px">
+        <label for="address">
+          Complete address <span class="required">*</span>
+        </label>
+        <textarea id="address" name="address"
+                  autocomplete="street-address"
+                  maxlength="500"
+                  placeholder="House number, street, locality, town"
+                  required></textarea>
+      </div>
+
+      <div class="field">
+        <label for="landmark">Nearby landmark</label>
+        <input id="landmark" name="landmark"
+               maxlength="150"
+               placeholder="e.g. Near the church or main market">
+      </div>
+
+      <div class="field">
+        <label for="instructions">Delivery instructions</label>
+        <textarea id="instructions" name="instructions"
+                  maxlength="500"
+                  placeholder="e.g. Call me when you arrive"></textarea>
+      </div>
+
+      <p class="map-help">
+        Please check the address before ordering. GPS addresses can be
+        approximate, especially near buildings or narrow roads.
+      </p>
+
+    </section>
+
+    <div class="step">
+      <div class="step-number">03</div>
+      <div>
+        <h2>Payment method</h2>
+        <p>Choose how you want to pay.</p>
+      </div>
+    </div>
+
+    <section class="card">
+
+      <label class="payment-option">
+        <input type="radio" name="payment" value="COD" checked>
+        <span class="payment-icon">💵</span>
+        <span class="payment-copy">
+          <strong>Cash on Delivery</strong>
+          <small>Pay when your order arrives.</small>
+        </span>
+      </label>
+
+      <label class="payment-option">
+        <input type="radio" name="payment" value="UPI">
+        <span class="payment-icon">📱</span>
+        <span class="payment-copy">
+          <strong>UPI</strong>
+          <small>Choose UPI if it is available for your order.</small>
+        </span>
+      </label>
+
+      <p class="map-help">
+        Selecting UPI here does not process a payment. Online payment
+        processing must be connected separately.
+      </p>
+
+    </section>
+
+    <div class="step">
+      <div class="step-number">04</div>
+      <div>
+        <h2>Your order</h2>
+        <p>One last look before placing your order.</p>
+      </div>
+    </div>
+
+    <section class="card">
+
+      <div id="orderItems">
+        <p class="empty">Loading your cart...</p>
+      </div>
+
+      <div class="summary-line">
+        <span>Food subtotal</span>
+        <strong id="subtotal">₹0</strong>
+      </div>
+
+      <div class="summary-line muted">
+        <span>Delivery fee</span>
+        <span>Confirmed during order processing</span>
+      </div>
+
+      <div class="summary-line total">
+        <span>Food subtotal</span>
+        <strong id="total">₹0</strong>
+      </div>
+
+      <button class="place-order" id="placeOrder" type="submit">
+        Place My Order →
+      </button>
+
+      <p class="fine-print">
+        By placing your order, you confirm that your contact and delivery
+        details are correct. Your order is confirmed only after Foozy
+        successfully receives the order response.
+      </p>
+
+    </section>
+
+  </form>
+
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+(function () {
+  "use strict";
+
+  const SUPABASE_URL =
+    "https://snmufxscviahmmsdbess.supabase.co";
+
+  const SUPABASE_KEY =
+    "sb_publishable_Ix1rMiMTqPQIsBEM708shg_POK6_JM8";
+
+  const db = window.supabase?.createClient
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+    : null;
+
+  const $ = id => document.getElementById(id);
+
+  let cart = {};
+  let map = null;
+  let marker = null;
+  let selectedCoordinates = null;
+  let reverseGeocodeTimer = null;
+  let geocodeRequestNumber = 0;
+
+  function showNotice(message, success) {
+    const box = $("notice");
+    box.textContent = message;
+    box.classList.add("show");
+    box.classList.toggle("success", Boolean(success));
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+  function hideNotice() {
+    $("notice").classList.remove("show", "success");
+  }
+
+  function money(amount) {
+    return "₹" + Number(amount || 0).toLocaleString("en-IN", {
+      maximumFractionDigits: 2
+    });
+  }
+
+  function readCart() {
+    try {
+      cart = JSON.parse(localStorage.getItem("foozyCart") || "{}");
+
+      if (!cart || typeof cart !== "object" || Array.isArray(cart)) {
+        cart = {};
+      }
+    } catch (error) {
+      cart = {};
+    }
+  }
+
+  function getItems() {
+    return Object.entries(cart).filter(function (entry) {
+      const item = entry[1];
+
+      return item &&
+        Number(item.quantity) > 0 &&
+        Number.isFinite(Number(item.price));
+    });
+  }
+
+  function renderCart() {
+    const container = $("orderItems");
+    const entries = getItems();
+
+    container.replaceChildren();
+
+    if (!entries.length) {
+      const empty = document.createElement("p");
+      empty.className = "empty";
+      empty.textContent =
+        "Your cart is empty. Return to Foozy and add some food first.";
+
+      container.appendChild(empty);
+      $("subtotal").textContent = money(0);
+      $("total").textContent = money(0);
+      $("placeOrder").disabled = true;
+      return;
+    }
+
+    $("placeOrder").disabled = false;
+
+    let subtotal = 0;
+
+    entries.forEach(function (entry) {
+      const key = entry[0];
+      const item = entry[1];
+
+      const quantity = Number(item.quantity);
+      const price = Number(item.price);
+      subtotal += quantity * price;
+
+      const row = document.createElement("div");
+      row.className = "order-item";
+
+      const details = document.createElement("div");
+
+      const name = document.createElement("div");
+      name.className = "item-name";
+      name.textContent = item.name || key;
+
+      const sub = document.createElement("div");
+      sub.className = "item-sub";
+      sub.textContent = "Qty " + quantity + " × " + money(price);
+
+      const total = document.createElement("div");
+      total.className = "item-price";
+      total.textContent = money(quantity * price);
+
+      details.append(name, sub);
+      row.append(details, total);
+      container.appendChild(row);
+    });
+
+    $("subtotal").textContent = money(subtotal);
+    $("total").textContent = money(subtotal);
+  }
+
+  function initialiseMap() {
+    if (!window.L) {
+      $("locationStatus").textContent =
+        "The map could not load. You can still enter your address manually.";
+      return;
+    }
+
+    map = L.map("map", {
+      zoomControl: true
+    }).setView([25.096, 94.361], 13);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    marker = L.marker([25.096, 94.361], {
+      draggable: true
+    }).addTo(map);
+
+    marker.on("dragend", function () {
+      const point = marker.getLatLng();
+      selectCoordinates(point.lat, point.lng, true);
+    });
+
+    map.on("click", function (event) {
+      selectCoordinates(event.latlng.lat, event.latlng.lng, true);
+    });
+
+    window.setTimeout(function () {
+      map.invalidateSize();
+    }, 250);
+  }
+
+  function updateMapLink(lat, lng) {
+    const link = $("openMap");
+
+    link.href =
+      "https://www.openstreetmap.org/?mlat=" +
+      encodeURIComponent(lat) +
+      "&mlon=" +
+      encodeURIComponent(lng) +
+      "#map=18/" + encodeURIComponent(lat) +
+      "/" + encodeURIComponent(lng);
+
+    link.style.display = "inline-block";
+  }
+
+  async function reverseGeocode(lat, lng) {
+    const requestNumber = ++geocodeRequestNumber;
+
+    $("locationStatus").textContent =
+      "Finding the nearest readable address…";
+
+    try {
+      const url =
+        "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" +
+        encodeURIComponent(lat) +
+        "&lon=" + encodeURIComponent(lng) +
+        "&zoom=18&addressdetails=1";
+
+      const response = await fetch(url, {
+        headers: {
+          "Accept": "application/json"
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error("Address lookup unavailable");
+      }
+
+      const data = await response.json();
+
+      if (requestNumber !== geocodeRequestNumber) return;
+
+      if (!data || !data.display_name) {
+        throw new Error("No readable address returned");
+      }
+
+      const address = data.address || {};
+
+      const house = address.house_number || "";
+      const road = address.road ||
+                   address.pedestrian ||
+                   address.residential || "";
+
+      const locality = address.neighbourhood ||
+                       address.suburb ||
+                       address.village ||
+                       address.town ||
+                       address.city ||
+                       address.county || "";
+
+      const state = address.state || "";
+      const postcode = address.postcode || "";
+      const country = address.country || "";
+
+      const parts = [
+        house,
+        road,
+        locality,
+        state,
+        postcode,
+        country
+      ].filter(Boolean);
+
+      const readableAddress = parts.length
+        ? [...new Set(parts)].join(", ")
+        : data.display_name;
+
+      $("address").value = readableAddress;
+
+      $("locationStatus").textContent =
+        "✓ Location selected. Please check the address and add your house number if needed.";
+
+      $("locationStatus").classList.add("success");
+
+    } catch (error) {
+      if (requestNumber !== geocodeRequestNumber) return;
+
+      $("locationStatus").textContent =
+        "Pin selected, but we couldn't retrieve a readable address. Please type your address manually.";
+
+      $("locationStatus").classList.remove("success");
+    }
+  }
+
+  function selectCoordinates(lat, lng, lookupAddress) {
+    selectedCoordinates = {
+      latitude: Number(lat),
+      longitude: Number(lng)
+    };
+
+    if (map && marker) {
+      marker.setLatLng([lat, lng]);
+      map.panTo([lat, lng], {
+        animate: true,
+        duration: 0.35
+      });
+    }
+
+    updateMapLink(lat, lng);
+
+    if (lookupAddress) {
+      clearTimeout(reverseGeocodeTimer);
+
+      reverseGeocodeTimer = setTimeout(function () {
+        reverseGeocode(lat, lng);
+      }, 700);
+    }
+  }
+
+  function useCurrentLocation() {
+    hideNotice();
+
+    if (!navigator.geolocation) {
+      showNotice(
+        "Your browser does not support location access. Please enter your address manually."
+      );
+      return;
+    }
+
+    const button = $("useLocation");
+    button.disabled = true;
+    button.textContent = "📍 Finding your location…";
+
+    $("locationStatus").textContent =
+      "Allow location access if your phone asks. Foozy only requests your location after you tap this button.";
+
+    navigator.geolocation.getCurrentPosition(
+      function (position) {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+
+        selectCoordinates(lat, lng, true);
+
+        if (map) {
+          map.setView([lat, lng], 17, {
+            animate: true
+          });
+        }
+
+        button.disabled = false;
+        button.textContent = "📍 Refresh My Location";
+      },
+      function (error) {
+        button.disabled = false;
+        button.textContent = "📍 Try My Current Location Again";
+
+        let message =
+          "We couldn't get your location. You can enter your address manually or select a spot on the map.";
+
+        if (error.code === 1) {
+          message =
+            "Location permission was denied. Allow location access in your browser settings, or enter your address manually.";
+        } else if (error.code === 3) {
+          message =
+            "Location detection took too long. Try again or select your location on the map.";
+        }
+
+        $("locationStatus").textContent = message;
+        $("locationStatus").classList.remove("success");
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 30000
+      }
+    );
+  }
+
+  function validateCart() {
+    const entries = getItems();
+
+    if (!entries.length) {
+      showNotice("Your cart is empty. Add food before checking out.");
+      return false;
+    }
+
+    if (entries.some(function (entry) {
+      const item = entry[1];
+
+      return !item.item_id ||
+             !item.restaurant_id ||
+             !Number.isFinite(Number(item.quantity)) ||
+             Number(item.quantity) <= 0;
+    })) {
+      showNotice(
+        "Some cart items are missing their restaurant or menu IDs. Return to Foozy, remove those items, and add them again."
+      );
+      return false;
+    }
+
+    const restaurantIds = [
+      ...new Set(entries.map(function (entry) {
+        return String(entry[1].restaurant_id);
+      }))
+    ];
+
+    if (restaurantIds.length !== 1) {
+      showNotice(
+        "Please order from one restaurant at a time. Remove items from other restaurants before checking out."
+      );
+      return false;
+    }
+
+    return true;
+  }
+
+  async function placeOrder(event) {
+    event.preventDefault();
+    hideNotice();
+
+    if (!validateCart()) return;
+
+    if (!db) {
+      showNotice(
+        "Foozy couldn't connect to Supabase. Please refresh the page and try again."
+      );
+      return;
+    }
+
+    const name = $("customerName").value.trim();
+    const phone = $("customerPhone").value.trim();
+    const address = $("address").value.trim();
+    const landmark = $("landmark").value.trim();
+    const instructions = $("instructions").value.trim();
+
+    if (!name || !phone || !address) {
+      showNotice(
+        "Please complete your name, mobile number, and delivery address."
+      );
+      return;
+    }
+
+    if (phone.replace(/\D/g, "").length < 7) {
+      showNotice("Please enter a valid contact number.");
+      return;
+    }
+
+    const payment = document.querySelector(
+      'input[name="payment"]:checked'
+    )?.value;
+
+    if (!["COD", "UPI"].includes(payment)) {
+      showNotice("Please choose a payment method.");
+      return;
+    }
+
+    const button = $("placeOrder");
+    button.disabled = true;
+    button.textContent = "Placing your order…";
+
+    const entries = getItems();
+
+    let deliveryAddress = address;
+
+    if (landmark) {
+      deliveryAddress += "\nLandmark: " + landmark;
+    }
+
+    if (selectedCoordinates) {
+      deliveryAddress +=
+        "\nGPS coordinates: " +
+        selectedCoordinates.latitude.toFixed(6) +
+        ", " +
+        selectedCoordinates.longitude.toFixed(6);
+    }
+
+    let notes = instructions;
+
+    if (landmark) {
+      notes += (notes ? "\n" : "") + "Landmark: " + landmark;
+    }
+
+    if (selectedCoordinates) {
+      const coordinatesNote =
+        "Delivery GPS: " +
+        selectedCoordinates.latitude.toFixed(6) +
+        ", " +
+        selectedCoordinates.longitude.toFixed(6);
+
+      notes += (notes ? "\n" : "") + coordinatesNote;
+    }
+
+    const payload = {
+      customer_name: name,
+      customer_phone: phone,
+      customer_adress: deliveryAddress,
+      payment_method: payment,
+      notes: notes,
+      items: entries.map(function (entry) {
+        return {
+          item_id: entry[1].item_id,
+          quantity: Number(entry[1].quantity)
+        };
+      })
+    };
+
+    try {
+      const result = await db.functions.invoke("create-order", {
+        body: payload
+      });
+
+      if (result.error) {
+        console.error("Foozy create-order error:", result.error);
+
+        throw new Error(
+          result.error.message ||
+          "The server could not process your order."
+        );
+      }
+
+      const data = result.data;
+
+      if (!data || !data.success || !data.order) {
+        throw new Error(
+          data?.error || "The server did not confirm your order."
+        );
+      }
+
+      const orderId = data.order.id;
+
+      localStorage.setItem("foozyLastOrderId", String(orderId));
+
+      Object.keys(cart).forEach(function (key) {
+        delete cart[key];
+      });
+
+      localStorage.setItem("foozyCart", JSON.stringify(cart));
+
+      renderCart();
+
+      showNotice(
+        "🎉 Your order was successfully placed!\nOrder ID: " +
+        orderId +
+        "\n\n" +
+        (data.message || "Thank you for ordering with Foozy!"),
+        true
+      );
+
+      button.textContent = "Order Placed ✓";
+
+    } catch (error) {
+      console.error("Foozy checkout failed:", error);
+
+      showNotice(
+        "We couldn't confirm your order.\n" +
+        (error.message || "Please try again.") +
+        "\n\nIf you are unsure whether the order was saved, check with Foozy before submitting again."
+      );
+
+      button.disabled = false;
+      button.textContent = "Try Placing Order Again";
+    }
+  }
+
+  readCart();
+  renderCart();
+  initialiseMap();
+
+  $("useLocation").addEventListener("click", useCurrentLocation);
+  $("checkoutForm").addEventListener("submit", placeOrder);
+
+})();
+</script>
+
+</body>
+</html>
