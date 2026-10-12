@@ -1948,10 +1948,17 @@ function filterRestaurants() {
   const query = searchInput.value.trim().toLowerCase();
   let visibleCount = 0;
 
-  restaurants.forEach(card => {
-    const categories = card.dataset.category.split(' ');
+  const restaurantCards = document.querySelectorAll(
+    '#restaurantGrid .restaurant'
+  );
+
+  restaurantCards.forEach(card => {
+    const categories = (card.dataset.category || '')
+      .split(/\s+/)
+      .filter(Boolean);
+
     const searchText = (
-      card.dataset.search + ' ' + card.innerText
+      (card.dataset.search || '') + ' ' + card.innerText
     ).toLowerCase();
 
     const categoryMatch =
