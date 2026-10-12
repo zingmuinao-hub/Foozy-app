@@ -467,16 +467,45 @@
               "Your delivery partner application has been submitted for review. Foozy Admin must review it before you can start delivering."
             );
           } else {
-            const { error } = await db.auth.signInWithPassword({
-              email,
-              password: password.value
-            });
+  const { data, error } = await db.auth.signInWithPassword({
+    email,
+    password: password.value
+  });
 
-            if (error) throw error;
+  if (error) throw error;
 
-            say(
-              "Login successful. Your application status and delivery access must be confirmed by Foozy Admin."
-            );
+  const { data: application, error: applicationError } = await db
+    .from("partner_applications")
+    .select("status, application_type")
+    .eq("user_id", data.user.id)
+    .eq("application_type", "delivery")
+    .maybeSingle();
+
+  if (applicationError) {
+    throw applicationError;
+  }
+
+  if (!application) {
+    await db.auth.signOut();
+    say("No delivery partner application was found for this account. Please contact Foozy Admin.");
+    return;
+  }
+
+  if (application.status !== "approved") {
+    const status = String(application.status || "pending").toLowerCase();
+
+    await db.auth.signOut();
+
+    if (status === "rejected") {
+      say("Your delivery partner application was not approved. Please contact Foozy Admin.");
+    } else {
+      say("Your delivery partner application is awaiting approval. You can access your dashboard once Foozy Admin approves it.");
+    }
+
+    return;
+  }
+
+  window.location.href = "./delivery-partner.html";
           }
         } catch (error) {
           console.error("Delivery partner error:", error);
