@@ -1920,8 +1920,8 @@ transition: none;
     </div>
 
     <button class="primary-btn checkout-btn"
-            onclick="checkoutDemo()">
-      Continue →
+onclick="goToCheckout()">
+Continue →
     </button>
 
     <p class="cart-note">
@@ -2147,7 +2147,32 @@ function outsideCart(event) {
   }
 }
 
-async function checkoutDemo() {
+function goToCheckout() {
+const entries = Object.values(cart);
+
+if (entries.length === 0) {
+showToast('Your cart is empty! Add some food first.');
+return;
+}
+
+if (entries.some(item => !item.item_id || !item.restaurant_id)) {
+alert('Please remove old cart items and add them again.');
+return;
+}
+
+const restaurantIds = [
+...new Set(entries.map(item => String(item.restaurant_id)))
+];
+
+if (restaurantIds.length !== 1) {
+alert('Please order from one restaurant at a time.');
+return;
+}
+
+closeCart();
+window.location.href = './checkout.html';
+}
+  async function checkoutDemo() {
   const entries = Object.values(cart);
 
   if (entries.length === 0) {
