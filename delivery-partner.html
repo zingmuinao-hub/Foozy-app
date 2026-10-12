@@ -221,7 +221,26 @@ font-size:10px;padding:5px;display:grid;gap:4px;justify-items:center}
   </div>
 </header>
 
-<div class="content">
+<div id="notificationPanel" style="
+  display:none;
+  background:#fffdf8;
+  border:1px solid #e9e4d9;
+  border-radius:14px;
+  padding:18px;
+  margin:18px 28px;
+">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+    <h3 style="margin:0">🔔 Notifications</h3>
+    <button id="closeNotifications" class="btn btn-secondary">
+      Close
+    </button>
+  </div>
+
+  <div id="notificationList" style="margin-top:15px">
+    <p class="muted">Loading notifications...</p>
+  </div>
+</div>
+  <div class="content">
 <section class="page active" id="page-dashboard">
   <div class="welcome">
     <div><h1>Ready to roll? 👋</h1>
