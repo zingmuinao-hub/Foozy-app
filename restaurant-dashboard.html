@@ -965,13 +965,24 @@ async function logout(){
 }
 $("logoutSide").onclick=logout;
 
-db.auth.getSession().then(async ({data,error})=>{
-  if(error){say("Could not check login session.");return;}
-  if(data.session){
-    ownerId=data.session.user.id;
-    try{await startApp();}catch(e){say("Could not open dashboard: "+e.message);}
+(async () => {
+  try {
+    const { data, error } = await db.auth.getSession();
+
+    if (error) throw error;
+
+    if (!data.session) {
+      window.location.replace("restaurant-login.html");
+      return;
+    }
+
+    ownerId = data.session.user.id;
+    await startApp();
+
+  } catch (e) {
+    say("Could not open dashboard: " + e.message);
   }
-});
+})();
 </script>
 </body>
 </html>
