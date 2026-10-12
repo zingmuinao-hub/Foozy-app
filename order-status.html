@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1F1F1F">
+  <title>Track Your Order | Foozy</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --bg: #1F1F1F;
+      --card: #292929;
+      --orange: #FF6B00;
+      --cream: #FFF4E8;
+      --muted: #AAA49E;
+      --border: #414141;
+      --green: #67D391;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--cream);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      min-height: 100vh;
+      opacity: 0;
+      animation: pageEnter 650ms ease forwards;
+    }
+
+    @keyframes pageEnter {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    button, a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .topbar {
+      height: 68px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      z-index: 2;
+      background: var(--bg);
+    }
+
+    .brand {
+      color: var(--orange);
+      font-size: 27px;
+      font-weight: 900;
+      letter-spacing: -1.3px;
+    }
+
+    .secure {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .container {
+      width: min(100% - 28px, 620px);
+      margin: 0 auto;
+      padding: 26px 0 45px;
+    }
+
+    .success-heading {
+      text-align: center;
+      padding: 12px 8px 22px;
+      animation: riseIn 700ms 100ms both;
+    }
+
+    @keyframes riseIn {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .success-icon {
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      background: rgba(103, 211, 145, 0.12);
+      border: 1px solid rgba(103, 211, 145, 0.4);
+      display: grid;
+      place-items: center;
+      color: var(--green);
+      font-size: 38px;
+      animation: popIn 650ms 180ms cubic-bezier(.2, 1.5, .5, 1) both;
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(.55) rotate(-15deg);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) rotate(0);
+      }
+    }
+
+    h1 {
+      font-size: clamp(25px, 6vw, 34px);
+      margin: 0 0 8px;
+      letter-spacing: -1px;
+    }
+
+    .success-heading p {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 20px;
+      margin-bottom: 16px;
+      animation: riseIn 650ms 220ms both;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 800;
+      margin: 0 0 16px;
+    }
+
+    .order-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+
+    .order-number {
+      font-weight: 800;
+      font-size: 17px;
+      overflow-wrap: anywhere;
+    }
+
+    .copy-button {
+      flex-shrink: 0;
+      background: rgba(255, 107, 0, .12);
+      color: var(--orange);
+      border: 1px solid rgba(255, 107, 0, .35);
+      border-radius: 12px;
+      padding: 10px 13px;
+      font-weight: 750;
+      cursor: pointer;
+      min-height: 42px;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 18px 0;
+    }
+
+    .eta-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .eta-icon {
+      width: 52px;
+      height: 52px;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: rgba(255, 107, 0, .13);
+      font-size: 27px;
+    }
+
+    .eta-time {
+      font-size: 25px;
+      font-weight: 900;
+      letter-spacing: -.7px;
+    }
+
+    .eta-caption {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    /* Animated route illustration */
+
+    .map-card {
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .map-top {
+      padding: 19px 19px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .map-top .section-title {
+      margin: 0;
+    }
+
+    .map-badge {
+      color: var(--green);
+      font-size: 11px;
+      background: rgba(103, 211, 145, .1);
+      border-radius: 20px;
+      padding: 6px 9px;
+      white-space: nowrap;
+    }
+
+    .map-art {
+      position: relative;
+      height: 224px;
+      margin-top: 16px;
+      overflow: hidden;
+      background: #343A35;
+      isolation: isolate;
+    }
+
+    .map-art::before,
+    .map-art::after {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      z-index: -1;
+      background-image:
+        linear-gradient(28deg, transparent 46%, #465046 47%, #465046 52%, transparent 53%),
+        linear-gradient(118deg, transparent 41%, #465046 42%, #465046 47%, transparent 48%);
+      background-size: 155px 125px, 190px 160px;
+      opacity: .9;
+    }
+
+    .map-block {
+      position: absolute;
+      background: #3D483D;
+      border: 1px solid #4A5549;
+      border-radius: 8px;
+      transform: rotate(-12deg);
+    }
+
+    .block-one {
+      left: 5%;
+      top: 14%;
+      width: 26%;
+      height: 25%;
+    }
+
+    .block-two {
+      right: 6%;
+      top: 10%;
+      width: 29%;
+      height: 23%;
+    }
+
+    .block-three {
+      left: 9%;
+      bottom: 9%;
+      width: 28%;
+      height: 26%;
+    }
+
+    .block-four {
+      right: 7%;
+      bottom: 9%;
+      width: 24%;
+      height: 25%;
+    }
+
+    .park {
+      position: absolute;
+      left: 39%;
+      top: 6%;
+      width: 20%;
+      height: 24%;
+      border-radius: 45% 35% 50% 40%;
+      background: #45674A;
+      transform: rotate(15deg);
+    }
+
+    .route {
+      position: absolute;
+      width: 72%;
+      height: 90px;
+      left: 14%;
+      top: 36%;
+      overflow: visible;
+    }
+
+    .route-base {
+      fill: none;
+      stroke: #E1D8C5;
+      stroke-width: 5;
+      stroke-linecap: round;
+      stroke-dasharray: 7 8;
+    }
+
+    .route-progress {
+      fill: none;
+      stroke: var(--orange);
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-dasharray: 280;
+      stroke-dashoffset: 280;
+      animation: drawRoute 2.2s 500ms ease forwards;
+    }
+
+    @keyframes drawRoute {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    .map-pin {
+      position: absolute;
+      font-size: 26px;
+      z-index: 2;
+      filter: drop-shadow(0 3px 4px rgba(0,0,0,.35));
+    }
+
+    .restaurant-pin {
+      left: 12%;
+      top: 34%;
+    }
+
+    .home-pin {
+      right: 11%;
+      top: 55%;
+    }
+
+    .scooter {
+      position: absolute;
+      left: 14%;
+      top: 43%;
+      font-size: 29px;
+      z-index: 3;
+      transform: translateX(-50%);
+      animation: scooterRide 5s 1s ease-in-out infinite;
+      filter: drop-shadow(0 3px 4px rgba(0,0,0,.4));
+    }
+
+    @keyframes scooterRide {
+      0% {
+        left: 14%;
+        top: 43%;
+        transform: translateX(-50%) translateY(0) rotate(-5deg);
+      }
+      25% {
+        left: 33%;
+        top: 37%;
+        transform: translateX(-50%) translateY(-3px) rotate(4deg);
+      }
+      50% {
+        left: 52%;
+        top: 47%;
+        transform: translateX(-50%) translateY(1px) rotate(-3deg);
+      }
+      75% {
+        left: 72%;
+        top: 55%;
+        transform: translateX(-50%) translateY(-3px) rotate(3deg);
+      }
+      100% {
+        left: 86%;
+        top: 56%;
+        transform: translateX(-50%) translateY(0) rotate(-3deg);
+      }
+    }
+
+    .map-caption {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      right: 12px;
+      text-align: center;
+      font-size: 11px;
+      color: #F4F0E8;
+      text-shadow: 0 1px 3px #000;
+      pointer-events: none;
+    }
+
+    .map-details {
+      padding: 16px 19px 19px;
+    }
+
+    .address {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--muted);
+      overflow-wrap: anywhere;
+      margin: 0 0 14px;
+    }
+
+    .map-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      width: 100%;
+      border-radius: 14px;
+      background: var(--orange);
+      color: #20170F;
+      font-weight: 850;
+      font-size: 14px;
+      transition: transform 180ms ease, filter 180ms ease;
+    }
+
+    .map-button:active {
+      transform: scale(.98);
+    }
+
+    .map-button.disabled {
+      opacity: .5;
+      pointer-events: none;
+    }
+
+    /* Order progress */
+
+    .timeline {
+      margin-top: 6px;
+    }
+
+    .step {
+      display: flex;
+      gap: 14px;
+      min-height: 73px;
+      position: relative;
+    }
+
+    .step:not(:last-child)::before {
+      content: "";
+      position: absolute;
+      left: 16px;
+      top: 35px;
+      width: 2px;
+      height: 40px;
+      background: var(--border);
+      transition: background 450ms ease;
+    }
+
+    .step.done:not(:last-child)::before {
+      background: var(--orange);
+    }
+
+    .step-icon {
+      width: 34px;
+      height: 34px;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #383838;
+      border: 1px solid var(--border);
+      font-size: 15px;
+      z-index: 1;
+      transition: all 450ms ease;
+    }
+
+    .step.done .step-icon {
+      background: var(--orange);
+      border-color: var(--orange);
+      color: #20170F;
+    }
+
+    .step.current .step-icon {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 5px rgba(255,107,0,.12);
+      animation: currentPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes currentPulse {
+      0%, 100% {
+        box-shadow: 0 0 0 4px rgba(255,107,0,.08);
+      }
+      50% {
+        box-shadow: 0 0 0 7px rgba(255,107,0,.17);
+      }
+    }
+
+    .step-copy {
+      padding: 2px 0 19px;
+    }
+
+    .step-title {
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .step-description {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .step:not(.done):not(.current) .step-title {
+      color: #AAA49E;
+    }
+
+    .notice {
+      display: none;
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 12px;
+      background: rgba(255, 107, 0, .09);
+      border: 1px solid rgba(255,107,0,.25);
+      color: var(--cream);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .notice.show {
+      display: block;
+    }
+
+    .bottom-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .secondary-button {
+      min-height: 46px;
+      border-radius: 13px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 10px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--cream);
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 6px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .footer strong {
+      color: var(--orange);
+    }
+
+    @media (max-width: 380px) {
+      .container {
+        width: calc(100% - 20px);
+      }
+
+      .card {
+        padding: 16px;
+        border-radius: 18px;
+      }
+
+      .map-card {
+        padding: 0;
+      }
+
+      .map-top {
+        padding: 16px 16px 0;
+      }
+
+      .map-details {
+        padding: 14px 16px 16px;
+      }
+
+      .eta-time {
+        font-size: 22px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="topbar">
+    <a class="brand" href="./index.html" aria-label="Foozy home">foozy.</a>
+    <span class="secure">🍽️ Your order</span>
+  </header>
+
+  <main class="container">
+    <section class="success-heading">
+      <div class="success-icon" aria-hidden="true">✓</div>
+      <h1 id="mainTitle">Order received!</h1>
+      <p id="mainMessage">
+        Your order is in the system. We'll keep you updated here.
+      </p>
+    </section>
+
+    <section class="card">
+      <div class="order-row">
+        <div>
+          <div class="label">YOUR ORDER ID</div>
+          <div class="order-number" id="orderNumber">Loading...</div>
+        </div>
+        <button class="copy-button" id="copyButton" type="button">
+          Copy ID
+        </button>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="eta-row">
+        <div class="eta-icon" aria-hidden="true">🕒</div>
+        <div>
+          <div class="label">ESTIMATED DELIVERY</div>
+          <div class="eta-time" id="etaTime">25–40 min</div>
+          <div class="eta-caption" id="etaCaption">
+            Estimated time, not guaranteed
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card map-card">
+      <div class="map-top">
+        <h2 class="section-title">Your delivery route</h2>
+        <span class="map-badge" id="mapBadge">Route preview</span>
+      </div>
+
+      <div class="map-art" role="img"
+           aria-label="Illustrated map with an animated scooter moving along a route">
+        <div class="map-block block-one"></div>
+        <div class="map-block block-two"></div>
+        <div class="map-block block-three"></div>
+        <div class="map-block block-four"></div>
+        <div class="park"></div>
+
+        <svg class="route" viewBox="0 0 300 90"
+             preserveAspectRatio="none" aria-hidden="true">
+          <path class="route-base"
+                d="M8,20 C48,5 55,66 104,43 S171,22 200,48 S252,80 292,70"/>
+          <path class="route-progress"
+                d="M8,20 C48,5 55,66 104,43 S171,22 200,48 S252,80 292,70"/>
+        </svg>
+
+        <span class="map-pin restaurant-pin" aria-hidden="true">🍽️</span>
+        <span class="map-pin home-pin" aria-hidden="true">📍</span>
+        <span class="scooter" aria-hidden="true">🛵</span>
+
+        <div class="map-caption">
+          Animated route preview · Not live GPS
+        </div>
+      </div>
+
+      <div class="map-details">
+        <div class="label">DELIVERY ADDRESS</div>
+        <p class="address" id="deliveryAddress">
+          Your delivery address will appear here when available.
+        </p>
+
+        <a class="map-button disabled"
+           id="mapButton"
+           href="#"
+           target="_blank"
+           rel="noopener noreferrer"
+           aria-disabled="true">
+          🗺️ View in Maps
+        </a>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2 class="section-title">Order progress</h2>
+
+      <div class="timeline" id="timeline">
+        <div class="step current" data-stage="0">
+          <div class="step-icon">✓</div>
+          <div class="step-copy">
+            <div class="step-title">Order placed</div>
+            <div class="step-description">
+              Your order has been received.
+            </div>
+          </div>
+        </div>
+
+        <div class="step" data-stage="1">
+          <div class="step-icon">🍳</div>
+          <div class="step-copy">
+            <div class="step-title">Preparing your food</div>
+            <div class="step-description">
+              The restaurant will confirm and prepare your order.
+            </div>
+          </div>
+        </div>
+
+        <div class="step" data-stage="2">
+          <div class="step-icon">🛍️</div>
+          <div class="step-copy">
+            <div class="step-title">Order picked up</div>
+            <div class="step-description">
+              The delivery partner collects your order.
+            </div>
+          </div>
+        </div>
+
+        <div class="step" data-stage="3">
+          <div class="step-icon">🛵</div>
+          <div class="step-copy">
+            <div class="step-title">Out for delivery</div>
+            <div class="step-description">
+              Your order is on its way to you.
+            </div>
+          </div>
+        </div>
+
+        <div class="step" data-stage="4">
+          <div class="step-icon">🏠</div>
+          <div class="step-copy">
+            <div class="step-title">Delivered</div>
+            <div class="step-description">
+              Enjoy your food. Thanks for choosing Foozy!
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="notice" id="statusNotice" role="status">
+        Waiting for the latest restaurant update.
+      </div>
+
+      <div class="bottom-actions">
+        <a class="secondary-button" href="./index.html">
+          ← Back to Foozy
+        </a>
+        <a class="secondary-button" href="./index.html">
+          Order more 🍔
+        </a>
+      </div>
+    </section>
+
+    <div class="footer">
+      Made with <strong>♥</strong> for food lovers.<br>
+      <strong>Foozy</strong> · Good food, good mood.
+    </div>
+  </main>
+
+  <script>
+    const SUPABASE_URL =
+      "https://snmufxscviahmmsdbess.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_Ix1rMiMTqPQIsBEM708shg_POK6_JM8";
+
+    const params = new URLSearchParams(window.location.search);
+
+    const orderId =
+      params.get("order_id") ||
+      localStorage.getItem("foozyLastOrderId") ||
+      "";
+
+    const orderNumber = document.getElementById("orderNumber");
+    const copyButton = document.getElementById("copyButton");
+    const statusNotice = document.getElementById("statusNotice");
+    const deliveryAddress = document.getElementById("deliveryAddress");
+    const mapButton = document.getElementById("mapButton");
+    const mainTitle = document.getElementById("mainTitle");
+    const mainMessage = document.getElementById("mainMessage");
+    const etaTime = document.getElementById("etaTime");
+    const etaCaption = document.getElementById("etaCaption");
+
+    let db = null;
+    let latestStatus = "";
+    let firstLoad = true;
+
+    orderNumber.textContent = orderId ? "#" + orderId : "Unavailable";
+
+    function showNotice(message) {
+      statusNotice.textContent = message;
+      statusNotice.classList.add("show");
+    }
+
+    function normalizeStatus(value) {
+      return String(value || "")
+        .toLowerCase()
+        .trim()
+        .replace(/[_-]+/g, " ");
+    }
+
+    function statusToStage(status) {
+      const s = normalizeStatus(status);
+
+      if (
+        s.includes("deliver") &&
+        (s.includes("out") || s.includes("way") || s.includes("transit"))
+      ) {
+        return 3;
+      }
+
+      if (
+        s.includes("picked") ||
+        s.includes("collected") ||
+        s.includes("pickup complete")
+      ) {
+        return 2;
+      }
+
+      if (
+        s.includes("prepar") ||
+        s.includes("accept") ||
+        s.includes("confirm") ||
+        s.includes("cook") ||
+        s.includes("ready")
+      ) {
+        return 1;
+      }
+
+      if (
+        s === "delivered" ||
+        s.includes("completed") ||
+        s.includes("complete")
+      ) {
+        return 4;
+      }
+
+      if (
+        s.includes("cancel") ||
+        s.includes("reject") ||
+        s.includes("failed")
+      ) {
+        return -1;
+      }
+
+      return 0;
+    }
+
+    function updateTimeline(status) {
+      const stage = statusToStage(status);
+      const steps = document.querySelectorAll(".step");
+
+      if (stage === -1) {
+        mainTitle.textContent = "Order needs attention";
+        mainMessage.textContent =
+          "Please contact the restaurant to confirm what happened to your order.";
+
+        steps.forEach(function (step) {
+          step.classList.remove("done", "current");
+        });
+
+        showNotice("The latest order status is: " + status + ".");
+        return;
+      }
+
+      if (stage === 4) {
+        mainTitle.textContent = "Delivered! Enjoy 🎉";
+        mainMessage.textContent =
+          "Your order has been marked as delivered. Thanks for choosing Foozy!";
+        etaTime.textContent = "Delivered";
+        etaCaption.textContent = "Enjoy your meal!";
+      } else {
+        mainTitle.textContent =
+          stage === 0 ? "Order received!" : "Your order is progressing!";
+
+        mainMessage.textContent = [
+          "Your order is in the system. We'll keep you updated here.",
+          "The restaurant has started handling your order.",
+          "Your order has been picked up.",
+          "Your order is out for delivery!"
+        ][stage] || "We'll keep you updated here.";
+
+        etaTime.textContent =
+          stage === 0 ? "25–40 min" :
+          stage === 1 ? "20–35 min" :
+          stage === 2 ? "15–25 min" :
+          "On the way";
+
+        etaCaption.textContent =
+          "Estimated only; the actual time may vary.";
+      }
+
+      steps.forEach(function (step, index) {
+        step.classList.remove("done", "current");
+
+        if (index < stage) {
+          step.classList.add("done");
+        } else if (index === stage) {
+          step.classList.add("current");
+        }
+      });
+
+      if (stage === 0) {
+        showNotice(
+          "Your order has been placed. We're waiting for the restaurant's next update."
+        );
+      } else if (stage === 4) {
+        showNotice("Your order is marked as delivered.");
+      } else {
+        showNotice("Latest order status: " + status + ".");
+      }
+    }
+
+    function setAddress(address) {
+      if (!address || !String(address).trim()) {
+        deliveryAddress.textContent =
+          "Your delivery address will appear here when available.";
+
+        mapButton.classList.add("disabled");
+        mapButton.setAttribute("aria-disabled", "true");
+        mapButton.href = "#";
+        return;
+      }
+
+      const cleanAddress = String(address).trim();
+
+      deliveryAddress.textContent = cleanAddress;
+
+      mapButton.href =
+        "https://www.google.com/maps/search/?api=1&query=" +
+        encodeURIComponent(cleanAddress);
+
+      mapButton.classList.remove("disabled");
+      mapButton.setAttribute("aria-disabled", "false");
+    }
+
+    copyButton.addEventListener("click", async function () {
+      if (!orderId) {
+        copyButton.textContent = "No ID";
+        return;
+      }
+
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(String(orderId));
+        } else {
+          const field = document.createElement("textarea");
+          field.value = String(orderId);
+          field.style.position = "absolute";
+          field.style.opacity = "0";
+          document.body.appendChild(field);
+          field.select();
+
+          const copied = document.execCommand("copy");
+          field.remove();
+
+          if (!copied) {
+            throw new Error("Copy unavailable");
+          }
+        }
+
+        copyButton.textContent = "Copied ✓";
+      } catch (error) {
+        copyButton.textContent = "ID: " + orderId;
+      }
+
+      setTimeout(function () {
+        copyButton.textContent = "Copy ID";
+      }, 1800);
+    });
+
+    async function refreshOrder() {
+      if (!db || !orderId) {
+        return;
+      }
+
+      try {
+        const result = await db
+          .from("Order")
+          .select("id, order_status, created_at, customer_adress")
+          .eq("id", orderId)
+          .maybeSingle();
+
+        if (result.error) {
+          if (firstLoad) {
+            showNotice(
+              "Your order was submitted. We're waiting for tracking access to become available."
+            );
+          }
+          firstLoad = false;
+          return;
+        }
+
+        if (!result.data) {
+          if (firstLoad) {
+            showNotice(
+              "Your order ID is saved. The latest tracking details aren't available yet."
+            );
+          }
+          firstLoad = false;
+          return;
+        }
+
+        const order = result.data;
+
+        if (order.customer_adress) {
+          setAddress(order.customer_adress);
+        }
+
+        const status = order.order_status || "Order placed";
+
+        if (normalizeStatus(status) !== normalizeStatus(latestStatus)) {
+          latestStatus = status;
+          updateTimeline(status);
+        }
+
+        firstLoad = false;
+      } catch (error) {
+        if (firstLoad) {
+          showNotice(
+            "Your order is saved. We couldn't load the latest tracking update yet."
+          );
+        }
+        firstLoad = false;
+      }
+    }
+
+    async function startTracking() {
+      if (!orderId) {
+        mainTitle.textContent = "Order ID not found";
+        mainMessage.textContent =
+          "Open this page from your order confirmation to see your tracking details.";
+
+        showNotice(
+          "No order ID was found in the page link or on this device."
+        );
+
+        orderNumber.textContent = "Unavailable";
+        etaTime.textContent = "Unavailable";
+        return;
+      }
+
+      updateTimeline("Order placed");
+
+      try {
+        if (
+          window.supabase &&
+          typeof window.supabase.createClient === "function"
+        ) {
+          db = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+          );
+
+          await refreshOrder();
+
+          // Refresh periodically. Actual updates depend on Supabase
+          // permissions and the restaurant's order-status changes.
+          setInterval(refreshOrder, 12000);
+        } else {
+          showNotice(
+            "Your order ID is saved. Live status could not connect yet."
+          );
+        }
+      } catch (error) {
+        showNotice(
+          "Your order ID is saved. Tracking updates aren't available yet."
+        );
+      }
+    }
+
+    startTracking();
+  </script>
+</body>
+</html>
