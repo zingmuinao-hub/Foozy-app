@@ -2698,22 +2698,16 @@ document.getElementById("foozy-notifications").addEventListener("click", async f
         "Discover delicious local favourites.";
 
       const categories = [
-        ...new Set(items.map(item => {
-          const category = String(item.category || "").toLowerCase();
-
-          if (category.includes("burger")) return "Burgers";
-          if (category.includes("pizza")) return "Pizza";
-          if (category.includes("chicken")) return "Chicken";
-          if (category.includes("snack")) return "Snacks";
-          if (category.includes("drink")) return "Drinks";
-
-          return "";
-        }).filter(Boolean))
-      ];
+  ...new Set(
+    items
+      .map(item => String(item.category || "").trim())
+      .filter(Boolean)
+  )
+];
 
       const card = document.createElement("article");
       card.className = "restaurant";
-      card.dataset.category = categories.join(" ") || "All";
+      card.dataset.category = JSON.stringify(categories);
       card.dataset.search = [
         restaurant.name || "",
         description,
