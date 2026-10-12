@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101010">
+<title>My Account | Foozy</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root {
+  --orange: #ff641f;
+  --bg: #101010;
+  --card: #1c1c1c;
+  --surface: #252525;
+  --border: #353535;
+  --text: #fff;
+  --muted: #aaa;
+  --green: #39b86a;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding-bottom: 95px;
+}
+
+button, input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.container {
+  width: min(650px, 92%);
+  margin: auto;
+}
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(16,16,16,.96);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+}
+
+.header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 17px 0;
+}
+
+.logo {
+  font-size: 29px;
+  font-weight: 1000;
+  letter-spacing: -1.5px;
+}
+
+.logo span {
+  color: var(--orange);
+}
+
+.back-btn {
+  background: var(--surface);
+  color: white;
+  border: 1px solid var(--border);
+  padding: 9px 13px;
+  border-radius: 11px;
+}
+
+.page-title {
+  margin: 25px 0 18px;
+}
+
+.page-title h1 {
+  font-size: 30px;
+  font-weight: 1000;
+}
+
+.page-title p {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: linear-gradient(135deg,#302016,#1c1c1c 70%);
+  border: 1px solid #54301e;
+  border-radius: 22px;
+  padding: 21px;
+  margin-bottom: 27px;
+}
+
+.avatar {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  background: var(--orange);
+  display: grid;
+  place-items: center;
+  font-size: 29px;
+  font-weight: 1000;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.profile-info h2 {
+  font-size: 19px;
+  overflow-wrap: anywhere;
+}
+
+.profile-info p {
+  color: var(--muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+  margin-top: 3px;
+}
+
+.edit-btn {
+  margin-top: 10px;
+  background: var(--orange);
+  color: white;
+  border: 0;
+  padding: 8px 13px;
+  border-radius: 9px;
+  font-weight: 900;
+  font-size: 12px;
+}
+
+.section {
+  margin-top: 26px;
+}
+
+.section-heading {
+  font-size: 12px;
+  letter-spacing: 1.6px;
+  color: var(--muted);
+  font-weight: 900;
+  margin-bottom: 12px;
+}
+
+.menu-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 17px;
+  overflow: hidden;
+}
+
+.menu-row {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-height: 67px;
+  padding: 13px 15px;
+  border-bottom: 1px solid #303030;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  color: white;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+}
+
+.menu-row:last-child {
+  border-bottom: 0;
+}
+
+.menu-row:active {
+  background: var(--surface);
+}
+
+.icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 13px;
+  background: #302219;
+  font-size: 20px;
+}
+
+.row-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.row-content strong {
+  display: block;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.row-content small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 3px;
+  line-height: 1.5;
+}
+
+.arrow {
+  color: #777;
+  font-size: 22px;
+}
+
+.badge {
+  font-size: 10px;
+  background: #382719;
+  color: #ffad80;
+  border-radius: 7px;
+  padding: 5px 8px;
+  font-weight: 900;
+}
+
+.signout {
+  width: 100%;
+  margin-top: 27px;
+  background: #291b19;
+  color: #ff785f;
+  border: 1px solid #59302b;
+  border-radius: 14px;
+  padding: 15px;
+  font-weight: 1000;
+}
+
+.footer-note {
+  text-align: center;
+  color: #666;
+  font-size: 11px;
+  padding: 25px 0;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-around;
+  background: #171717;
+  border-top: 1px solid var(--border);
+  padding: 10px 5px calc(10px + env(safe-area-inset-bottom));
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: #888;
+  font-size: 10px;
+  font-weight: 800;
+  min-width: 55px;
+}
+
+.nav-item span {
+  font-size: 20px;
+}
+
+.nav-item.active {
+  color: var(--orange);
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: #000b;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 18px;
+}
+
+.overlay.show {
+  display: flex;
+}
+
+.dialog {
+  width: min(430px,100%);
+  max-height: 85vh;
+  overflow: auto;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 21px;
+  padding: 22px;
+}
+
+.dialog h2 {
+  font-size: 21px;
+  margin-bottom: 8px;
+}
+
+.dialog p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+  margin-bottom: 16px;
+  white-space: pre-line;
+}
+
+.dialog label {
+  display: block;
+  color: #ddd;
+  font-size: 12px;
+  font-weight: 900;
+  margin: 13px 0 6px;
+}
+
+.dialog input {
+  width: 100%;
+  padding: 12px;
+  color: white;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  outline: none;
+}
+
+.dialog input:focus {
+  border-color: var(--orange);
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.dialog-actions button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: 0;
+  font-weight: 900;
+}
+
+.cancel-btn {
+  background: var(--surface);
+  color: white;
+}
+
+.save-btn {
+  background: var(--orange);
+  color: white;
+}
+
+.status {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: #ddd;
+}
+
+@media(max-width:400px) {
+  .profile-card {
+    padding: 15px;
+    gap: 10px;
+  }
+  .avatar {
+    width: 52px;
+    height: 52px;
+  }
+  .profile-info h2 {
+    font-size: 16px;
+  }
+  .page-title h1 {
+    font-size: 27px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="container header-inner">
+    <a href="./index.html" class="logo">foo<span>zy</span></a>
+    <button class="back-btn" onclick="location.href='./index.html'">← Home</button>
+  </div>
+</header>
+
+<main class="container">
+
+  <div class="page-title">
+    <h1>My Account 👋</h1>
+    <p>Your profile, orders and everything Foozy.</p>
+  </div>
+
+  <section class="profile-card">
+    <div class="avatar" id="avatar">F</div>
+    <div class="profile-info">
+      <h2 id="profileName">Loading profile...</h2>
+      <p id="profileEmail">Checking your account</p>
+      <p id="profilePhone"></p>
+      <button class="edit-btn" onclick="openEditProfile()">✏️ Edit Profile</button>
+    </div>
+  </section>
+
+  <div id="accountNotice" class="status" style="display:none;margin-bottom:20px"></div>
+
+  <section class="section">
+    <h3 class="section-heading">YOUR ACTIVITY</h3>
+    <div class="menu-card">
+      <button class="menu-row" onclick="showFeature('Active Orders')">
+        <div class="icon">🛵</div>
+        <div class="row-content">
+          <strong>My Orders</strong>
+          <small>Track food you're waiting for</small>
+        </div>
+        <span class="arrow">›</span>
+      </button>
+      <button class="menu-row" onclick="showFeature('Past Orders')">
+        <div class="icon">📦</div>
+        <div class="row-content">
+          <strong>Past Orders</strong>
+          <small>View previous orders and reorder</small>
+        </div>
+        <span class="arrow">›</span>
+      </button>
+      <button class="menu-row" onclick="showFeature('My Refunds')">
+        <div class="icon">💸</div>
+        <div class="row-content">
+          <strong>My Refunds</strong>
+          <small>View refund information and status</small>
+        </div>
+        <span class="arrow">›</span>
+      </button>
+    </div>
+  </section>
+
+  <section class="section">
+    <h3 class="section-heading">YOUR BENEFITS</h3>
+    <div class="menu-card">
+      <button class="menu-row" onclick="showFeature('My Vouchers')">
+        <div class="icon">🎟️</div>
+        <div class="row-content">
+          <strong>My Vouchers</strong>
+          <small>Coupons and available discounts</small>
+        </div>
+        <span class="arrow">›</span>
+      </button>
+      <button class="menu-row" onclick="showFeature('Foozy Money')">
+        <div class="icon">💰</div>
+        <div class="row-content">
+          <strong>Foozy Money</strong>
+          <small>Wallet balance and transactions</small>
+        </div>
+        <span class="badge">WALLET</span>
+      </button>
+      <button class="menu-row" onclick="showFeature('Offers')">
+        <div class="icon">🏷️</div>
+        <div class="row-content">
+          <strong>Offers & Deals</strong>
+          <small>Discover savings on your next order</small>
+        </div>
+        <span class="arrow">›</span>
+      </button>
+    </div>
+  </section>
+
+  <section class="section">
+    <h3 class="section-heading">ACCOUNT & PREFERENCES</h3>
+    <div class="menu-card">
+      <button class="menu-row" onclick="showFeature('Saved Addresses')">
+        <div class="icon">📍</div>
+        <div class="row-content">
+          <strong>Saved Addresses</strong>
+          <small>Manage your delivery locations</small>
+        </div>
+        <span class="arrow">›</span>
+      </button>
+      <button class="menu-row" onclick="openSettings()">
+        <div class="icon">⚙️</div>
+        <div class="row-content">
+          <strong>Settings</strong>
+          <small>Notifications and account preferences</small>
+        </div>
+        <span class="arrow">›</span>
+      </button>
+      <button class="menu-row" onclick="showFeature('Privacy & Security')">
+        <div class="icon">🔐</div>
+        <div class="row-content">
+          <strong>Privacy & Security</strong>
+          <small>Protect your account and information</small>
+        </div>
+        <span class="arrow">›</span>
+      </button>
+    </div>
+  </section>
+
+  <section class="section">
+    <h3 class="section-heading">HELP & INFORMATION</h3>
+    <div class="menu-card">
+      <button class="menu-row" onclick="showFeature('Help & Support')">
+        <div class="icon">🆘</div>
+        <div class="row-content">
+          <strong>Help & Support</strong>
+          <small>Order problems and customer assistance</small>
+        </div>
+        <span class="arrow">›</span>
+      </button>
+      <button class="menu-row" onclick="showLegal('Terms & Conditions')">
+        <div class="icon">📄</div>
+        <div class="row-content">
+          <strong>Terms & Conditions</strong>
+          <small>Rules for using Foozy</small>
+        </div>
+        <span class="arrow">›</span>
+      </button>
+      <button class="menu-row" onclick="showLegal('Privacy Policy')">
+        <div class="icon">🛡️</div>
+        <div class="row-content">
+          <strong>Privacy Policy</strong>
+          <small>How personal information is handled</small>
+        </div>
+        <span class="arrow">›</span>
+      </button>
+      <button class="menu-row" onclick="showLegal('Refund & Cancellation Policy')">
+        <div class="icon">↩️</div>
+        <div class="row-content">
+          <strong>Refund & Cancellation Policy</strong>
+          <small>Information about order cancellations</small>
+        </div>
+        <span class="arrow">›</span>
+      </button>
+      <button class="menu-row" onclick="showLegal('About Foozy')">
+        <div class="icon">🧡</div>
+        <div class="row-content">
+          <strong>About Foozy</strong>
+          <small>Food is calling!</small>
+        </div>
+        <span class="arrow">›</span>
+      </button>
+    </div>
+  </section>
+
+  <button class="signout" id="logoutButton" onclick="logout()">↪ Log Out</button>
+
+  <div class="footer-note">
+    Made with 🧡 for food lovers in Ukhrul.<br>
+    Foozy · Version 1.0
+  </div>
+
+</main>
+
+<nav class="bottom-nav">
+  <a class="nav-item" href="./index.html">
+    <span>⌂</span>Home
+  </a>
+  <a class="nav-item" href="./index.html#categoriesSection">
+    <span>🍽️</span>Menu
+  </a>
+  <a class="nav-item" href="./index.html#offersSection">
+    <span>🏷️</span>Offers
+  </a>
+  <a class="nav-item active" href="./account.html">
+    <span>👤</span>Profile
+  </a>
+</nav>
+
+<div class="overlay" id="dialogOverlay">
+  <div class="dialog">
+    <h2 id="dialogTitle">Foozy</h2>
+    <div id="dialogBody"></div>
+    <div class="dialog-actions" id="dialogActions">
+      <button class="cancel-btn" onclick="closeDialog()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/*
+  Foozy Supabase configuration.
+  The publishable key is intended for client-side use.
+  Database access must still be protected by Supabase RLS policies.
+*/
+const SUPABASE_URL = "https://snmufxscviahmmsdbess.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Ix1rMiMTqPQIsBEM708shg_POK6_JM8";
+
+let db = null;
+let currentUser = null;
+
+try {
+  if (window.supabase?.createClient) {
+    db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  }
+} catch (error) {
+  console.error("Foozy connection setup failed:", error);
+}
+
+function showNotice(message) {
+  const box = document.getElementById("accountNotice");
+  box.textContent = message;
+  box.style.display = "block";
+}
+
+function updateProfileDisplay(user) {
+  const metadata = user.user_metadata || {};
+  const name = metadata.full_name || metadata.name || "Foozy Customer";
+  const phone = metadata.phone || user.phone || "";
+  const email = user.email || "";
+
+  document.getElementById("profileName").textContent = name;
+  document.getElementById("profileEmail").textContent = email || "Email not provided";
+  document.getElementById("profilePhone").textContent = phone ? "📱 " + phone : "";
+
+  const avatar = document.getElementById("avatar");
+  const photo = metadata.avatar_url || metadata.picture || "";
+
+  if (photo) {
+    const img = document.createElement("img");
+    img.src = photo;
+    img.alt = "Profile";
+    img.onerror = () => {
+      avatar.textContent = name.charAt(0).toUpperCase();
+    };
+    avatar.replaceChildren(img);
+  } else {
+    avatar.textContent = name.charAt(0).toUpperCase();
+  }
+}
+
+async function loadAccount() {
+  if (!db) {
+    document.getElementById("profileName").textContent = "Welcome to Foozy";
+    document.getElementById("profileEmail").textContent = "Account connection unavailable";
+    showNotice("We couldn't initialize the account connection. Please check the Supabase configuration.");
+    return;
+  }
+
+  try {
+    const { data, error } = await db.auth.getUser();
+
+    if (error) throw error;
+
+    currentUser = data.user;
+
+    if (!currentUser) {
+      document.getElementById("profileName").textContent = "Welcome to Foozy";
+      document.getElementById("profileEmail").textContent = "You're not signed in";
+      showNotice("Sign in to view your personal details and manage your Foozy account.");
+      return;
+    }
+
+    updateProfileDisplay(currentUser);
+  } catch (error) {
+    console.error("Could not load account:", error);
+    document.getElementById("profileName").textContent = "Welcome to Foozy";
+    document.getElementById("profileEmail").textContent = "Unable to load profile";
+    showNotice("We couldn't load your account details. Please try again.");
+  }
+}
+
+function openDialog(title, html, actions) {
+  document.getElementById("dialogTitle").textContent = title;
+  document.getElementById("dialogBody").innerHTML = html;
+
+  const actionBox = document.getElementById("dialogActions");
+  actionBox.replaceChildren();
+
+  if (actions && actions.length) {
+    actions.forEach(action => actionBox.appendChild(action));
+  } else {
+    const close = document.createElement("button");
+    close.className = "cancel-btn";
+    close.textContent = "Close";
+    close.onclick = closeDialog;
+    actionBox.appendChild(close);
+  }
+
+  document.getElementById("dialogOverlay").classList.add("show");
+}
+
+function makeButton(text, className, handler) {
+  const button = document.createElement("button");
+  button.textContent = text;
+  button.className = className;
+  button.onclick = handler;
+  return button;
+}
+
+function closeDialog() {
+  document.getElementById("dialogOverlay").classList.remove("show");
+}
+
+function openEditProfile() {
+  if (!currentUser) {
+    showNotice("Please sign in through Foozy before editing your profile.");
+    return;
+  }
+
+  const metadata = currentUser.user_metadata || {};
+  const name = metadata.full_name || metadata.name || "";
+  const phone = metadata.phone || currentUser.phone || "";
+
+  openDialog("Edit Profile", `
+    <p>Update the details saved to your Foozy account.</p>
+    <label for="editName">Full name</label>
+    <input id="editName" maxlength="100" value="${escapeHTML(name)}" placeholder="Your full name">
+    <label for="editPhone">Phone number</label>
+    <input id="editPhone" maxlength="25" value="${escapeHTML(phone)}" placeholder="Your phone number">
+  `, [
+    makeButton("Cancel", "cancel-btn", closeDialog),
+    makeButton("Save Changes", "save-btn", saveProfile)
+  ]);
+}
+
+function escapeHTML(value) {
+  return String(value || "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  }[char]));
+}
+
+async function saveProfile() {
+  if (!db || !currentUser) return;
+
+  const name = document.getElementById("editName").value.trim();
+  const phone = document.getElementById("editPhone").value.trim();
+
+  if (!name) {
+    alert("Please enter your name.");
+    return;
+  }
+
+  const saveButton = document.querySelector(".save-btn");
+  saveButton.disabled = true;
+  saveButton.textContent = "Saving...";
+
+  try {
+    const existing = currentUser.user_metadata || {};
+
+    const { data, error } = await db.auth.updateUser({
+      data: {
+        ...existing,
+        full_name: name,
+        phone: phone
+      }
+    });
+
+    if (error) throw error;
+
+    currentUser = data.user;
+    updateProfileDisplay(currentUser);
+    closeDialog();
+    showNotice("Your profile has been updated successfully.");
+  } catch (error) {
+    console.error("Profile update failed:", error);
+    alert("We couldn't save your profile. Please try again.");
+    saveButton.disabled = false;
+    saveButton.textContent = "Save Changes";
+  }
+}
+
+function showFeature(feature) {
+  const descriptions = {
+    "Active Orders": "Your current orders will appear here once the order-history connection is implemented.",
+    "Past Orders": "Your previous orders and reorder options will appear here once connected to your real order records.",
+    "My Refunds": "Refund requests and their actual statuses will appear here when the refund system is connected.",
+    "My Vouchers": "Your available vouchers and coupon codes will appear here when the voucher system is connected.",
+    "Foozy Money": "Your wallet balance and transaction history will appear here after the secure wallet system is implemented.",
+    "Offers": "Browse the latest offers from Foozy restaurants on the Offers section of the homepage.",
+    "Saved Addresses": "Saved delivery addresses will appear here after address storage is connected to your customer account.",
+    "Privacy & Security": "Keep your sign-in details private. Password reset and account-security features will be connected to the authentication flow.",
+    "Help & Support": "For help, contact the Foozy team through your official support channel. We still need to connect the support contact details."
+  };
+
+  openDialog(feature,
+    `<div class="status">${escapeHTML(descriptions[feature] || "This feature will be available when its service is connected.")}</div>`
+  );
+}
+
+function openSettings() {
+  const saved = localStorage.getItem("foozy_notifications") !== "off";
+
+  openDialog("Settings", `
+    <p>Choose whether you want this device to remember your notification preference.</p>
+    <div class="status">
+      <label style="display:flex;align-items:center;gap:10px;margin:0">
+        <input id="notificationSetting" type="checkbox" style="width:20px;height:20px;accent-color:#ff641f" ${saved ? "checked" : ""}>
+        Enable notification preference
+      </label>
+    </div>
+    <p style="margin-top:12px">This is only a local preference for now. Push notifications are not connected yet.</p>
+  `, [
+    makeButton("Cancel", "cancel-btn", closeDialog),
+    makeButton("Save", "save-btn", () => {
+      const checked = document.getElementById("notificationSetting").checked;
+      localStorage.setItem("foozy_notifications", checked ? "on" : "off");
+      closeDialog();
+      showNotice("Your preference has been saved on this device.");
+    })
+  ]);
+}
+
+function showLegal(page) {
+  const messages = {
+    "Terms & Conditions": "The final Foozy Terms & Conditions must explain ordering, restaurant responsibilities, payments, cancellations, customer conduct and dispute handling. This section is a placeholder until the official terms are approved.",
+    "Privacy Policy": "Foozy should explain what customer data it collects, why it is used, how it is protected, and how customers can request access or deletion. The official privacy policy still needs to be published.",
+    "Refund & Cancellation Policy": "Refund eligibility, cancellation rules and processing times must follow Foozy's actual operating policy. This page is a placeholder, not a promise that a refund has been approved.",
+    "About Foozy": "Foozy is being built to help people discover and order food locally in Ukhrul, Manipur. Food is calling!"
+  };
+
+  openDialog(page, `<div class="status">${escapeHTML(messages[page] || "")}</div>`);
+}
+
+async function logout() {
+  if (!db) {
+    showNotice("Account connection unavailable. Please refresh and try again.");
+    return;
+  }
+
+  if (!currentUser) {
+    showNotice("You're not signed in to a Foozy account.");
+    return;
+  }
+
+  const confirmButton = makeButton("Log Out", "save-btn", async () => {
+    confirmButton.disabled = true;
+    confirmButton.textContent = "Logging out...";
+
+    try {
+      const { error } = await db.auth.signOut();
+      if (error) throw error;
+
+      currentUser = null;
+      location.href = "./index.html";
+    } catch (error) {
+      console.error("Logout failed:", error);
+      alert("We couldn't log you out. Please try again.");
+      confirmButton.disabled = false;
+      confirmButton.textContent = "Log Out";
+    }
+  });
+
+  openDialog("Log out of Foozy?", "<p>Are you sure you want to sign out of your account on this device?</p>", [
+    makeButton("Cancel", "cancel-btn", closeDialog),
+    confirmButton
+  ]);
+}
+
+document.getElementById("dialogOverlay").addEventListener("click", event => {
+  if (event.target.id === "dialogOverlay") closeDialog();
+});
+
+loadAccount();
+</script>
+
+</body>
+</html>
