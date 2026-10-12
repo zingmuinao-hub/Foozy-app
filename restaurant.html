@@ -1,0 +1,820 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#ff6b2c">
+  <title>Restaurant Menu | Foozy</title>  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #101010;
+      color: #fff;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .topbar {
+      padding: 16px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: #171717;
+      border-bottom: 1px solid #353535;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .logo {
+      color: #ff6b2c;
+      font-size: 27px;
+      font-weight: 900;
+      text-decoration: none;
+    }
+
+    .back, .cart-button {
+      background: #252525;
+      color: white;
+      border: 1px solid #404040;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-weight: 800;
+    }
+
+    .cart-button {
+      background: #ff6b2c;
+      border-color: #ff6b2c;
+    }
+
+    .hero {
+      width: min(1100px, 92%);
+      margin: 24px auto;
+      background: #1c1c1c;
+      border: 1px solid #353535;
+      border-radius: 22px;
+      overflow: hidden;
+    }
+
+    .cover {
+      height: 280px;
+      background: linear-gradient(135deg, #ff6b2c, #35190f);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 75px;
+      overflow: hidden;
+    }
+
+    .cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .restaurant-info {
+      padding: 23px;
+    }
+
+    .restaurant-info h1 {
+      font-size: clamp(26px, 5vw, 38px);
+      line-height: 1.2;
+    }
+
+    .restaurant-info p {
+      color: #b5b5b5;
+      margin-top: 8px;
+      line-height: 1.7;
+    }
+
+    .menu-section {
+      width: min(1100px, 92%);
+      margin: 35px auto 70px;
+    }
+
+    .heading {
+      margin-bottom: 22px;
+    }
+
+    .heading h2 {
+      font-size: 29px;
+    }
+
+    .heading p {
+      color: #aaa;
+      margin-top: 5px;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .food-card {
+      background: #1c1c1c;
+      border: 1px solid #353535;
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .food-image {
+      height: 180px;
+      background: #292929;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      overflow: hidden;
+    }
+
+    .food-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .food-info {
+      padding: 16px;
+    }
+
+    .food-info h3 {
+      font-size: 18px;
+    }
+
+    .food-info p {
+      color: #aaa;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-top: 7px;
+      min-height: 40px;
+    }
+
+    .food-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .price {
+      color: #ff814d;
+      font-size: 19px;
+      font-weight: 900;
+    }
+
+    .add-button {
+      background: #ff6b2c;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 13px;
+      font-weight: 900;
+    }
+
+    .message {
+      color: #bbb;
+      padding: 30px 10px;
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    .cart-panel {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      background: #000b;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+    }
+
+    .cart-box {
+      width: min(440px, 100%);
+      max-height: 85vh;
+      overflow-y: auto;
+      background: #1c1c1c;
+      border: 1px solid #404040;
+      border-radius: 20px;
+      padding: 22px;
+    }
+
+    .cart-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+
+    .close-button {
+      background: #333;
+      color: white;
+      border: none;
+      border-radius: 9px;
+      padding: 7px 12px;
+      font-size: 20px;
+    }
+
+    .cart-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 0;
+      border-bottom: 1px solid #383838;
+    }
+
+    .quantity-buttons {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .quantity-buttons button {
+      background: #ff6b2c;
+      color: white;
+      border: none;
+      border-radius: 7px;
+      padding: 5px 10px;
+    }
+
+    .total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 20px;
+      font-weight: 900;
+      margin: 20px 0;
+    }
+
+    .checkout-button {
+      width: 100%;
+      background: #ff6b2c;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-weight: 900;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #252525;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 12px;
+      display: none;
+      z-index: 50;
+      width: max-content;
+      max-width: 90%;
+    }
+
+    footer {
+      text-align: center;
+      color: #888;
+      padding: 25px;
+      border-top: 1px solid #353535;
+    }
+
+    @media (max-width: 760px) {
+      .menu-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .cover {
+        height: 210px;
+      }
+
+      .food-image {
+        height: 135px;
+      }
+
+      .food-info {
+        padding: 12px;
+      }
+
+      .food-info h3 {
+        font-size: 15px;
+      }
+
+      .food-bottom {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .add-button {
+        width: 100%;
+      }
+
+      .restaurant-info {
+        padding: 18px;
+      }
+    }
+
+    @media (max-width: 350px) {
+      .menu-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style></head><body>  <header class="topbar">
+    <a class="logo" href="./index.html">FOOZY<span style="color:white">.</span></a><a class="back" href="./index.html">← Home</a>
+
+<button class="cart-button" id="openCart">
+  🛒 Cart <span id="cartCount">0</span>
+</button>
+
+  </header>  <main>
+    <section class="hero">
+      <div class="cover" id="restaurantCover">🍽️</div>  <div class="restaurant-info">
+    <h1 id="restaurantName">Loading restaurant...</h1>
+    <p id="restaurantDescription">
+      Getting everything ready for you. 🧡
+    </p>
+  </div>
+</section>
+
+<section class="menu-section">
+  <div class="heading">
+    <h2>Our Menu 🍴</h2>
+    <p>Fresh favourites, made for your cravings.</p>
+  </div>
+
+  <div id="menuStatus" class="message">
+    Loading delicious food...
+  </div>
+
+  <div class="menu-grid" id="menuGrid"></div>
+</section>
+
+  </main>  <footer>
+    Made with 🧡 for Ukhrul, Manipur · Foozy
+  </footer>  <div class="cart-panel" id="cartPanel">
+    <div class="cart-box">
+      <div class="cart-heading">
+        <h2>🛒 Your Cart</h2>
+        <button class="close-button" id="closeCart">×</button>
+      </div>  <div id="cartItems"></div>
+
+  <div class="total">
+    <span>Total</span>
+    <span id="cartTotal">₹0</span>
+  </div>
+
+  <button class="checkout-button" id="checkoutButton">
+    Continue to Checkout →
+  </button>
+
+  <p style="color:#999;font-size:12px;margin-top:12px;line-height:1.6">
+    Orders are placed through Foozy's ordering system. Payment handling
+    depends on the available payment options.
+  </p>
+</div>
+
+  </div>  <div class="toast" id="toast"></div>  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>  <script>
+    const SUPABASE_URL =
+      "https://snmufxscviahmmsdbess.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_Ix1rMiMTqPQIsBEM708shg_POK6_JM8";
+
+    const db = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    const params = new URLSearchParams(window.location.search);
+    const restaurantId = params.get("id");
+
+    let restaurantData = null;
+
+    let cart = {};
+
+    try {
+      cart = JSON.parse(localStorage.getItem("foozyCart") || "{}");
+
+      if (!cart || typeof cart !== "object" || Array.isArray(cart)) {
+        cart = {};
+      }
+    } catch (error) {
+      cart = {};
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.style.display = "block";
+
+      clearTimeout(window.foozyToastTimer);
+
+      window.foozyToastTimer = setTimeout(() => {
+        toast.style.display = "none";
+      }, 2500);
+    }
+
+    function money(amount) {
+      return "₹" + Number(amount || 0).toLocaleString("en-IN", {
+        maximumFractionDigits: 2
+      });
+    }
+
+    function saveCart() {
+      localStorage.setItem("foozyCart", JSON.stringify(cart));
+      renderCart();
+    }
+
+    function addFood(item) {
+      if (!item || !item.id || !restaurantData) return;
+
+      const otherRestaurantItems = Object.values(cart).some(
+        cartItem =>
+          cartItem.restaurant_id &&
+          String(cartItem.restaurant_id) !== String(restaurantData.id)
+      );
+
+      if (otherRestaurantItems) {
+        const replace = confirm(
+          "Your cart contains food from another restaurant. " +
+          "Would you like to clear it and order from " +
+          restaurantData.name + " instead?"
+        );
+
+        if (!replace) return;
+
+        cart = {};
+      }
+
+      const key = String(item.id);
+
+      if (!cart[key]) {
+        cart[key] = {
+          name: item.name,
+          price: Number(item.price || 0),
+          quantity: 0,
+          item_id: item.id,
+          restaurant_id: restaurantData.id
+        };
+      }
+
+      cart[key].quantity++;
+      saveCart();
+      showToast(item.name + " added to your cart! 🧡");
+    }
+
+    function changeQuantity(key, amount) {
+      if (!cart[key]) return;
+
+      cart[key].quantity += amount;
+
+      if (cart[key].quantity <= 0) {
+        delete cart[key];
+      }
+
+      saveCart();
+    }
+
+    function renderCart() {
+      const entries = Object.entries(cart).filter(
+        ([key, item]) => item && Number(item.quantity) > 0
+      );
+
+      const count = entries.reduce(
+        (sum, [, item]) => sum + Number(item.quantity), 0
+      );
+
+      const total = entries.reduce(
+        (sum, [, item]) =>
+          sum + Number(item.price) * Number(item.quantity), 0
+      );
+
+      document.getElementById("cartCount").textContent = count;
+      document.getElementById("cartTotal").textContent = money(total);
+
+      const container = document.getElementById("cartItems");
+      container.replaceChildren();
+
+      if (!entries.length) {
+        const empty = document.createElement("p");
+        empty.className = "message";
+        empty.textContent = "Your cart is empty. Find something delicious!";
+        container.appendChild(empty);
+        return;
+      }
+
+      entries.forEach(([key, item]) => {
+        const row = document.createElement("div");
+        row.className = "cart-line";
+
+        const details = document.createElement("div");
+
+        const name = document.createElement("strong");
+        name.textContent = item.name || "Food item";
+
+        const price = document.createElement("p");
+        price.style.color = "#aaa";
+        price.style.fontSize = "12px";
+        price.textContent = money(item.price) + " each";
+
+        details.append(name, price);
+
+        const controls = document.createElement("div");
+        controls.className = "quantity-buttons";
+
+        const minus = document.createElement("button");
+        minus.textContent = "−";
+        minus.addEventListener("click", () => changeQuantity(key, -1));
+
+        const quantity = document.createElement("span");
+        quantity.textContent = item.quantity;
+
+        const plus = document.createElement("button");
+        plus.textContent = "+";
+        plus.addEventListener("click", () => changeQuantity(key, 1));
+
+        controls.append(minus, quantity, plus);
+        row.append(details, controls);
+        container.appendChild(row);
+      });
+    }
+
+    async function checkout() {
+      const entries = Object.values(cart).filter(
+        item => item && Number(item.quantity) > 0
+      );
+
+      if (!entries.length) {
+        showToast("Your cart is empty!");
+        return;
+      }
+
+      const restaurantIds = [
+        ...new Set(entries.map(item => String(item.restaurant_id)))
+      ];
+
+      if (
+        restaurantIds.length !== 1 ||
+        !entries.every(item => item.item_id && item.restaurant_id)
+      ) {
+        alert("Please keep only valid items from one restaurant in your cart.");
+        return;
+      }
+
+      const customerName = prompt("Enter your full name:");
+      if (!customerName || !customerName.trim()) return;
+
+      const customerPhone = prompt("Enter your phone number:");
+      if (!customerPhone || !customerPhone.trim()) return;
+
+      const customerAddress = prompt("Enter your complete delivery address:");
+      if (!customerAddress || !customerAddress.trim()) return;
+
+      const paymentMethod = prompt("Choose payment method: Type COD or UPI");
+
+      if (
+        !paymentMethod ||
+        !["COD", "UPI"].includes(paymentMethod.trim().toUpperCase())
+      ) {
+        alert("Please enter COD or UPI.");
+        return;
+      }
+
+      const notes = prompt("Delivery instructions (optional):") || "";
+
+      const payload = {
+        customer_name: customerName.trim(),
+        customer_phone: customerPhone.trim(),
+        customer_adress: customerAddress.trim(),
+        payment_method: paymentMethod.trim().toUpperCase(),
+        notes: notes.trim(),
+        items: entries.map(item => ({
+          item_id: item.item_id,
+          quantity: item.quantity
+        }))
+      };
+
+      const button = document.getElementById("checkoutButton");
+      button.disabled = true;
+      button.textContent = "Placing your order...";
+
+      try {
+        const { data, error } = await db.functions.invoke(
+          "create-order",
+          { body: payload }
+        );
+
+        if (error) throw error;
+
+        if (!data || !data.success) {
+          throw new Error(
+            data?.error || "Your order could not be placed."
+          );
+        }
+
+        alert(
+          "Order placed successfully! Your order ID is: " +
+          data.order.id + "\n\n" + (data.message || "")
+        );
+
+        cart = {};
+        saveCart();
+
+        document.getElementById("cartPanel").style.display = "none";
+
+      } catch (error) {
+        console.error("Foozy checkout error:", error);
+        alert(
+          "We couldn't place your order.\n\n" +
+          (error.message || "Please try again.")
+        );
+      } finally {
+        button.disabled = false;
+        button.textContent = "Continue to Checkout →";
+      }
+    }
+
+    function addImage(container, imageUrl, alt) {
+      if (!imageUrl || !/^https?:\/\//i.test(imageUrl)) return false;
+
+      const img = document.createElement("img");
+      img.src = imageUrl;
+      img.alt = alt || "";
+      img.onerror = () => {
+        container.replaceChildren();
+        container.textContent = "🍽️";
+      };
+
+      container.replaceChildren(img);
+      return true;
+    }
+
+    function renderFood(item) {
+      const card = document.createElement("article");
+      card.className = "food-card";
+
+      const imageBox = document.createElement("div");
+      imageBox.className = "food-image";
+      imageBox.textContent = "🍔";
+
+      addImage(imageBox, item.image_url, item.name);
+
+      const info = document.createElement("div");
+      info.className = "food-info";
+
+      const name = document.createElement("h3");
+      name.textContent = item.name || "Delicious Food";
+
+      const description = document.createElement("p");
+      description.textContent =
+        item.description || "A tasty favourite from our menu.";
+
+      const bottom = document.createElement("div");
+      bottom.className = "food-bottom";
+
+      const price = document.createElement("span");
+      price.className = "price";
+      price.textContent = money(item.price);
+
+      const add = document.createElement("button");
+      add.className = "add-button";
+      add.textContent = "+ Add";
+
+      add.addEventListener("click", () => addFood(item));
+
+      bottom.append(price, add);
+      info.append(name, description, bottom);
+      card.append(imageBox, info);
+
+      return card;
+    }
+
+    async function loadRestaurant() {
+      const status = document.getElementById("menuStatus");
+
+      if (!restaurantId) {
+        document.getElementById("restaurantName").textContent =
+          "Restaurant not found";
+
+        document.getElementById("restaurantDescription").textContent =
+          "Please return to Foozy and choose a restaurant.";
+
+        status.textContent = "No restaurant was selected.";
+        return;
+      }
+
+      try {
+        const { data: restaurants, error: restaurantError } = await db
+          .from("restaurants")
+          .select("*")
+          .eq("id", restaurantId)
+          .eq("is_active", true)
+          .limit(1);
+
+        if (restaurantError) throw restaurantError;
+
+        restaurantData = restaurants && restaurants[0];
+
+        if (!restaurantData) {
+          document.getElementById("restaurantName").textContent =
+            "Restaurant unavailable";
+
+          document.getElementById("restaurantDescription").textContent =
+            "This restaurant may be inactive or unavailable right now.";
+
+          status.textContent = "We couldn't find this active restaurant.";
+          return;
+        }
+
+        document.title = restaurantData.name + " | Foozy";
+
+        document.getElementById("restaurantName").textContent =
+          restaurantData.name || "Local Restaurant";
+
+        document.getElementById("restaurantDescription").textContent =
+          restaurantData.description ||
+          restaurantData.restaurant_description ||
+          "Discover delicious food made with love. 🧡";
+
+        const cover =
+          restaurantData.cover_photo_url ||
+          restaurantData.cover_image_url ||
+          restaurantData.cover_image ||
+          restaurantData.banner_url ||
+          restaurantData.image_url ||
+          restaurantData.logo_url ||
+          restaurantData.logo ||
+          "";
+
+        const coverBox = document.getElementById("restaurantCover");
+
+        if (cover) {
+          addImage(coverBox, cover, restaurantData.name);
+        }
+
+        const { data: items, error: menuError } = await db
+          .from("menu_items")
+          .select("id,name,description,price,image_url,category,restaurant_id,is_available")
+          .eq("restaurant_id", restaurantData.id)
+          .eq("is_available", true);
+
+        if (menuError) throw menuError;
+
+        const grid = document.getElementById("menuGrid");
+        grid.replaceChildren();
+
+        if (!items || items.length === 0) {
+          status.textContent =
+            "This restaurant is preparing its menu. Check back soon! 🧡";
+          return;
+        }
+
+        status.style.display = "none";
+
+        items.forEach(item => {
+          grid.appendChild(renderFood(item));
+        });
+
+      } catch (error) {
+        console.error("Foozy restaurant page error:", error);
+
+        status.textContent =
+          "We couldn't load this restaurant. Please try again later.";
+      }
+    }
+
+    document.getElementById("openCart").addEventListener("click", () => {
+      document.getElementById("cartPanel").style.display = "flex";
+      renderCart();
+    });
+
+    document.getElementById("closeCart").addEventListener("click", () => {
+      document.getElementById("cartPanel").style.display = "none";
+    });
+
+    document.getElementById("cartPanel").addEventListener("click", event => {
+      if (event.target.id === "cartPanel") {
+        event.currentTarget.style.display = "none";
+      }
+    });
+
+    document.getElementById("checkoutButton").addEventListener(
+      "click",
+      checkout
+    );
+
+    renderCart();
+    loadRestaurant();
+  </script></body>
+</html>
