@@ -2037,6 +2037,9 @@ function scrollToRestaurants() {
 /* DEMO SHOPPING CART */
 
   const cart = JSON.parse(localStorage.getItem('foozyCart') || '{}');
+  window.addEventListener('DOMContentLoaded', () => {
+  updateCart();
+});
 
 function addToCart(name, price, itemId = null, restaurantId = null) {
   const key = itemId || name;
