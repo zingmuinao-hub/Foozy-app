@@ -1383,10 +1383,19 @@ transition: none;
       </div>
     </div>
 
-    <button class="cart-btn" onclick="openCart()">
-      🛒 Cart <span class="cart-count" id="cartCount">0</span>
-    </button>
-  </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+  <a href="./account.html"
+     style="display:inline-flex;align-items:center;gap:6px;
+     background:#252525;color:white;border:1px solid #353535;
+     border-radius:12px;padding:12px;text-decoration:none;
+     font-weight:900;font-size:13px;white-space:nowrap;">
+    👤 Account
+  </a>
+
+  <button class="cart-btn" onclick="openCart()">
+    🛒 Cart <span class="cart-count" id="cartCount">0</span>
+  </button>
+    </div>
 </header>
 
 <main>
