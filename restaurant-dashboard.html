@@ -329,8 +329,6 @@ async function login(){
   }catch(e){alert("Login failed: "+e.message);}
   finally{busy=false;}
 }
-$("loginForm").onsubmit=e=>{e.preventDefault();login();};
-
 async function startApp() {
   try {
     // 1. Confirm that a user is logged in.
