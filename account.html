@@ -866,7 +866,7 @@ async function logout() {
       if (error) throw error;
 
       currentUser = null;
-      location.href = "./index.html";
+      location.href = "./signup.html";
     } catch (error) {
       console.error("Logout failed:", error);
       alert("We couldn't log you out. Please try again.");
