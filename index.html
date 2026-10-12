@@ -2388,7 +2388,30 @@ function showToast(message) {
   }, 2600);
 }
 
-/* FOOTER YEAR */
+function foozyTrackLastOrder() {
+  const orderId = localStorage.getItem("foozyLastOrderId");
+
+  if (!orderId) {
+    showToast("No recent order found.");
+    return;
+  }
+
+  window.location.href =
+    "./order-status.html?order_id=" +
+    encodeURIComponent(orderId);
+}
+
+function showFoozyTrackBanner() {
+  const orderId = localStorage.getItem("foozyLastOrderId");
+  const banner = document.getElementById("foozyTrackBanner");
+
+  if (banner && orderId) {
+    banner.style.display = "flex";
+  }
+}
+
+showFoozyTrackBanner();
+  /* FOOTER YEAR */
 
 document.getElementById('year').textContent =
   new Date().getFullYear();
