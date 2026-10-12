@@ -492,42 +492,174 @@ font-size:10px;padding:5px;display:grid;gap:4px;justify-items:center}
     sw.disabled = false;
   }
 });
-  $("notificationBtn").addEventListener("click",()=>{
-    toast("Notifications will work after the notification service is connected.");
-  });
-
-  $("logoutBtn").addEventListener("click", async () => {
-  if (!confirm("Log out of your Foozy delivery partner account?")) {
-    return;
-  }
-
+  // FOOZY: Real delivery partner notifications
+(async function () {
   const db = window.foozyDb;
+  const panel = $("notificationPanel");
+  const list = $("notificationList");
+  const button = $("notificationBtn");
+  const closeButton = $("closeNotifications");
 
-  if (!db) {
-    toast("Unable to connect to your account. Please try again.");
+  if (!db || !panel || !list || !button) {
+    console.error("Foozy notification setup is incomplete.");
     return;
   }
 
-  const { error } = await db.auth.signOut();
+  let currentUserId = null;
+  let channel = null;
+  let loading = false;
 
-  if (error) {
-    toast("Logout failed. Please try again.");
-    console.error("Logout error:", error);
+  function showMessage(message) {
+    list.replaceChildren();
+    const p = document.createElement("p");
+    p.textContent = message;
+    list.appendChild(p);
+  }
+
+  function renderNotifications(items) {
+    list.replaceChildren();
+
+    if (!items || items.length === 0) {
+      showMessage("You're all caught up! No notifications yet. 🧡");
+      return;
+    }
+
+    items.forEach(item => {
+      const card = document.createElement("div");
+      card.style.cssText =
+        "padding:14px 0;border-bottom:1px solid #e9e4d9;";
+
+      const title = document.createElement("strong");
+      title.textContent = item.title;
+      card.appendChild(title);
+
+      const message = document.createElement("p");
+      message.textContent = item.message;
+      message.style.margin = "8px 0";
+      card.appendChild(message);
+
+      const time = document.createElement("small");
+      time.textContent = new Date(item.created_at).toLocaleString();
+      card.appendChild(time);
+
+      if (!item.is_read) {
+        const badge = document.createElement("span");
+        badge.textContent = " • NEW";
+        badge.style.fontWeight = "bold";
+        badge.style.color = "#e87524";
+        card.appendChild(badge);
+
+        const markRead = document.createElement("button");
+        markRead.type = "button";
+        markRead.textContent = "Mark as read";
+        markRead.style.cssText =
+          "display:block;margin-top:10px;padding:8px 12px;cursor:pointer;";
+
+        markRead.addEventListener("click", async () => {
+          markRead.disabled = true;
+
+          const { error } = await db
+            .from("notifications")
+            .update({ is_read: true })
+            .eq("id", item.id)
+            .eq("user_id", currentUserId);
+
+          if (error) {
+            console.error("Could not mark notification as read:", error);
+            markRead.disabled = false;
+            toast("Couldn't update notification. Please try again.");
+            return;
+          }
+
+          await loadNotifications();
+        });
+
+        card.appendChild(markRead);
+      }
+
+      list.appendChild(card);
+    });
+  }
+
+  async function loadNotifications() {
+    if (loading || !currentUserId) return;
+
+    loading = true;
+
+    try {
+      const { data, error } = await db
+        .from("notifications")
+        .select(
+          "id, title, message, notification_type, order_id, is_read, created_at"
+        )
+        .eq("user_id", currentUserId)
+        .order("created_at", { ascending: false })
+        .limit(50);
+
+      if (error) throw error;
+
+      renderNotifications(data);
+    } catch (error) {
+      console.error("Notification loading failed:", error);
+      showMessage("Couldn't load notifications. Please try again.");
+    } finally {
+      loading = false;
+    }
+  }
+
+  const { data: sessionData, error: sessionError } =
+    await db.auth.getSession();
+
+  if (sessionError || !sessionData.session) {
+    showMessage("Please log in again to view notifications.");
     return;
   }
 
-  window.location.replace("./delivery-login.html");
-});
+  currentUserId = sessionData.session.user.id;
 
-  $("saveAccount").addEventListener("click",()=>{
-    const name=$("partnerName").value.trim();
-    if(name)$("sideName").textContent=name;
-    toast("Preview updated only. Account details aren't saved to Supabase.");
+  button.addEventListener("click", async () => {
+    const opening = panel.style.display === "none" ||
+                    getComputedStyle(panel).display === "none";
+
+    panel.style.display = opening ? "block" : "none";
+
+    if (opening) {
+      await loadNotifications();
+    }
   });
 
-  $("helpNotice").addEventListener("click",()=>{
-    toast("Foozy support contact details haven't been configured yet.");
+  closeButton?.addEventListener("click", () => {
+    panel.style.display = "none";
   });
+
+  channel = db
+    .channel("foozy-delivery-notifications-" + currentUserId)
+    .on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "notifications",
+        filter: "user_id=eq." + currentUserId
+      },
+      payload => {
+        if (panel.style.display !== "none") {
+          loadNotifications();
+        } else {
+          toast("🔔 " + payload.new.title);
+        }
+      }
+    )
+    .subscribe(status => {
+      console.log("Foozy notification connection:", status);
+    });
+
+  window.addEventListener("beforeunload", () => {
+    if (channel) db.removeChannel(channel);
+  });
+
+  console.log("Foozy notifications initialized.");
+})();
 
   $("dateText").textContent=new Intl.DateTimeFormat("en-IN",{
     weekday:"long",day:"numeric",month:"short"
