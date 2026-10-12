@@ -438,7 +438,7 @@ if (alertButton) {
 
     $("app").classList.add("hidden");
     $("loginPage").classList.remove("hidden");
-    $("loginForm").classList.add("hidden");
+    if ($("loginForm")) $("loginForm").classList.add("hidden");
 
     $("loginPage").querySelector("h2").textContent =
       "Dashboard couldn't load";
