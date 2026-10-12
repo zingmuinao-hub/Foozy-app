@@ -1149,5 +1149,243 @@ document.getElementById("refreshDelivery")
 
 loadDeliveryApplications();
 </script>
+  <script>
+(() => {
+  const db = window.db;
+
+  if (!db) {
+    console.error("Foozy: Supabase client not found.");
+    return;
+  }
+
+  const form = document.getElementById("promotionForm");
+  const list = document.getElementById("promotionList");
+  const message = document.getElementById("promotionMessage");
+  const refreshButton = document.getElementById("refreshPromotions");
+
+  if (!form || !list || !message) {
+    console.error("Foozy: Promotions form or list not found.");
+    return;
+  }
+
+  const field = id => document.getElementById(id);
+
+  function showMessage(text, isError = false) {
+    message.textContent = text;
+    message.style.color = isError ? "#d93025" : "#16803c";
+  }
+
+  async function checkAdmin() {
+    const { data: sessionData, error: sessionError } =
+      await db.auth.getSession();
+
+    if (sessionError || !sessionData.session) {
+      throw new Error("Please log in to the Foozy admin panel again.");
+    }
+
+    const { data, error } = await db.rpc("is_foozy_admin");
+
+    if (error || data !== true) {
+      throw new Error("Your account does not have Foozy admin permission.");
+    }
+  }
+
+  function formatDate(value) {
+    if (!value) return "Not scheduled";
+    return new Date(value).toLocaleString();
+  }
+
+  async function loadPromotions() {
+    list.textContent = "Loading promotions...";
+
+    try {
+      await checkAdmin();
+
+      const { data, error } = await db
+        .from("promotions")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+
+      list.replaceChildren();
+
+      if (!data || data.length === 0) {
+        list.textContent = "No promotions yet. Create your first one above!";
+        return;
+      }
+
+      data.forEach(promo => {
+        const card = document.createElement("div");
+        card.style.cssText =
+          "border:1px solid #ddd;border-radius:12px;padding:14px;" +
+          "margin:14px 0;background:#fff;";
+
+        if (promo.image_url) {
+          const img = document.createElement("img");
+          img.src = promo.image_url;
+          img.alt = promo.title || "Promotion";
+          img.style.cssText =
+            "width:100%;max-width:280px;max-height:160px;" +
+            "object-fit:cover;border-radius:10px;display:block;margin-bottom:10px;";
+          card.appendChild(img);
+        }
+
+        const heading = document.createElement("h3");
+        heading.textContent = promo.title;
+        card.appendChild(heading);
+
+        const description = document.createElement("p");
+        description.textContent = promo.description || "";
+        card.appendChild(description);
+
+        const status = document.createElement("p");
+        status.textContent = promo.is_active ? "🟢 Active" : "⚪ Inactive";
+        card.appendChild(status);
+
+        const dates = document.createElement("p");
+        dates.textContent =
+          "Starts: " + formatDate(promo.starts_at) +
+          " | Ends: " + formatDate(promo.ends_at);
+        card.appendChild(dates);
+
+        const toggle = document.createElement("button");
+        toggle.type = "button";
+        toggle.textContent = promo.is_active
+          ? "Deactivate promotion"
+          : "Activate promotion";
+
+        toggle.addEventListener("click", async () => {
+          toggle.disabled = true;
+
+          try {
+            await checkAdmin();
+
+            const { error } = await db
+              .from("promotions")
+              .update({
+                is_active: !promo.is_active,
+                updated_at: new Date().toISOString()
+              })
+              .eq("id", promo.id);
+
+            if (error) throw error;
+
+            showMessage("Promotion status updated!");
+            await loadPromotions();
+          } catch (error) {
+            showMessage(error.message || "Could not update promotion.", true);
+            toggle.disabled = false;
+          }
+        });
+
+        card.appendChild(toggle);
+        list.appendChild(card);
+      });
+    } catch (error) {
+      list.textContent = "";
+      showMessage(error.message || "Could not load promotions.", true);
+    }
+  }
+
+  form.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const submitButton = form.querySelector('[type="submit"]');
+    submitButton.disabled = true;
+    showMessage("Saving promotion...");
+
+    try {
+      await checkAdmin();
+
+      const title = field("promotionTitle").value.trim();
+      const description = field("promotionDescription").value.trim();
+      const file = field("promotionImage").files[0];
+      const active = field("promotionActive").checked;
+      const startValue = field("promotionStart").value;
+      const endValue = field("promotionEnd").value;
+
+      if (!title) {
+        throw new Error("Please enter a promotion title.");
+      }
+
+      if (file) {
+        if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+          throw new Error("Choose a JPG, PNG, or WebP image.");
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+          throw new Error("Image must be 5 MB or smaller.");
+        }
+      }
+
+      const startsAt = startValue
+        ? new Date(startValue).toISOString()
+        : null;
+
+      const endsAt = endValue
+        ? new Date(endValue).toISOString()
+        : null;
+
+      if (startsAt && endsAt && new Date(endsAt) <= new Date(startsAt)) {
+        throw new Error("The end date must be after the start date.");
+      }
+
+      let imageUrl = null;
+
+      if (file) {
+        const extension = file.name.split(".").pop().toLowerCase();
+        const path =
+          Date.now() + "-" + crypto.randomUUID() + "." + extension;
+
+        const { error: uploadError } = await db.storage
+          .from("promotion-images")
+          .upload(path, file, {
+            contentType: file.type,
+            upsert: false
+          });
+
+        if (uploadError) throw uploadError;
+
+        const { data: urlData } = db.storage
+          .from("promotion-images")
+          .getPublicUrl(path);
+
+        imageUrl = urlData.publicUrl;
+      }
+
+      const { error: insertError } = await db
+        .from("promotions")
+        .insert({
+          title,
+          description,
+          image_url: imageUrl,
+          is_active: active,
+          starts_at: startsAt,
+          ends_at: endsAt,
+          display_order: 0
+        });
+
+      if (insertError) throw insertError;
+
+      form.reset();
+      showMessage("🎉 Promotion saved successfully!");
+      await loadPromotions();
+
+    } catch (error) {
+      console.error("Foozy promotion save error:", error);
+      showMessage(error.message || "Could not save promotion.", true);
+    } finally {
+      submitButton.disabled = false;
+    }
+  });
+
+  if (refreshButton) {
+    refreshButton.addEventListener("click", loadPromotions);
+  }
+
+  loadPromotions();
+})();
+  </script>
 </body>
 </html>
