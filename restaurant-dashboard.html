@@ -419,7 +419,7 @@ if (alertButton) {
 }
     });
 
-    $("loginPage").classList.add("hidden");
+    if ($("loginPage")) $("loginPage").classList.add("hidden");
     $("app").classList.remove("hidden");
     $("bottomNav").classList.remove("hidden");
 
