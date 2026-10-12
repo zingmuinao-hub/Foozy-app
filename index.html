@@ -2076,6 +2076,16 @@ function changeQuantity(key, amount) {
   updateCart();
 }
 function updateCart() {
+    try {
+    const savedCart = JSON.parse(
+      localStorage.getItem('foozyCart') || '{}'
+    );
+
+    Object.keys(cart).forEach(key => delete cart[key]);
+    Object.assign(cart, savedCart);
+  } catch (error) {
+    console.error('Unable to read saved cart:', error);
+    }
   const count = Object.values(cart).reduce(
     (sum, item) => sum + item.quantity, 0
   );
