@@ -2105,6 +2105,48 @@ if (!window.foozySupabase) {
   );
 
   window.foozySupabase = foozySupabase;
+  // FOOZY LIVE PROMOTION
+async function loadFoozyPromotion() {
+  const banner = document.getElementById("promoBanner");
+  const image = document.getElementById("promoImage");
+  const title = document.getElementById("promoTitle");
+  const description = document.getElementById("promoDescription");
+
+  if (!banner || !image || !title || !description) return;
+
+  try {
+    const { data, error } = await window.foozySupabase
+      .from("promotions")
+      .select("title, description, image_url")
+      .eq("is_active", true)
+      .order("display_order", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+
+    if (error) throw error;
+    if (!data) return;
+
+    title.textContent = data.title || "";
+    description.textContent = data.description || "";
+
+    if (data.image_url) {
+      image.src = data.image_url;
+      image.alt = data.title || "Foozy promotion";
+      image.onerror = () => {
+        image.style.display = "none";
+      };
+    } else {
+      image.style.display = "none";
+    }
+
+    banner.classList.add("has-promo");
+
+  } catch (error) {
+    console.error("Foozy promotion error:", error);
+  }
+}
+
+loadFoozyPromotion();
 </script>
 
 <script>
