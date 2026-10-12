@@ -785,10 +785,36 @@ console.log("Logged-in user ID:", user.id);
           alert("Unexpected assignment response. Check the dashboard.");
         }
       } else {
-        alert("Order status updated!");
-      }
+        if (status === "ready_for_pickup") {
+  button.textContent = "Creating request...";
 
-      await loadDashboardOrders();
+  const { data: result, error: requestError } =
+    await db.rpc("create_foozy_delivery_request", {
+      p_order_id: Number(id)
+    });
+
+  if (requestError) {
+    alert("Delivery request failed: " + requestError.message);
+    button.disabled = false;
+    button.textContent = "Save Status";
+    await loadDashboardOrders();
+    return;
+  }
+
+  if (result?.status === "request_created") {
+    alert("Delivery request created successfully!");
+  } else if (result?.status === "no_partner_available") {
+    alert("No eligible online delivery partner is available.");
+  } else if (result?.status === "already_exists") {
+    alert("This order already has an active delivery request.");
+  } else {
+    alert("Assignment result: " + JSON.stringify(result));
+  }
+} else {
+  alert("Order status updated!");
+}
+
+await loadDashboardOrders();
 
     } catch (error) {
       alert(error.message || "Could not update the order.");
