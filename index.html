@@ -2681,22 +2681,30 @@ loadFoozyPromotion();
 </div>
 
 <script>
-document.getElementById("foozy-notifications").addEventListener("click", async function () {
-  const message = document.getElementById("foozy-notification-message");
+window.OneSignalDeferred = window.OneSignalDeferred || [];
 
+window.OneSignalDeferred.push(async function (OneSignal) {
   try {
-    if (!window.OneSignal) {
-      message.textContent = "Notifications are still loading. Refresh and try again.";
+    // Don't prompt if the customer has already subscribed
+    // or has blocked notifications in browser settings.
+    if (
+      Notification.permission === "denied" ||
+      OneSignal.User.PushSubscription.optedIn
+    ) {
       return;
     }
 
-    await window.OneSignalDeferred.push(async function (OneSignal) {
-      await OneSignal.User.PushSubscription.optIn();
-      message.textContent = "Notification request sent! Check your browser permission.";
-    });
+    // Show Foozy's notification prompt when the page opens.
+    setTimeout(async function () {
+      try {
+        await OneSignal.Slidedown.promptPush();
+      } catch (error) {
+        console.error("Foozy notification prompt:", error);
+      }
+    }, 1200);
+
   } catch (error) {
-    message.textContent = "Could not enable notifications. Please try again.";
-    console.error(error);
+    console.error("Foozy notification setup:", error);
   }
 });
 </script>
