@@ -2607,5 +2607,28 @@ document.getElementById("foozy-notifications").addEventListener("click", async f
 });
 </script>
   
+<!-- FOOZY SPLASH SCREEN CONTROLLER -->
+<script>
+(function () {
+  const splash = document.getElementById("foozySplash");
+
+  if (!splash) return;
+
+  const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+
+  const duration = reducedMotion ? 500 : 2300;
+
+  window.setTimeout(function () {
+    splash.classList.add("foozy-splash-hide");
+
+    window.setTimeout(function () {
+      splash.remove();
+    }, 400);
+  }, duration);
+})();
+</script>
+<!-- END FOOZY SPLASH SCREEN CONTROLLER -->
 </body>
 </html>
