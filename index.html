@@ -1036,6 +1036,166 @@ footer p {
     font-size: 15px;
   }
 }
+/* FOOZY PROMOTION CAROUSEL */
+.promo-banner {
+position: relative;
+overflow: hidden;
+width: 100%;
+height: 240px;
+border-radius: 22px;
+background: #252525;
+isolation: isolate;
+touch-action: pan-y;
+}
+
+.promo-banner.has-promo {
+display: block;
+}
+
+.promo-track {
+display: flex;
+width: 100%;
+height: 100%;
+transition: transform 0.55s ease-in-out;
+}
+
+.promo-slide {
+position: relative;
+flex: 0 0 100%;
+width: 100%;
+height: 100%;
+overflow: hidden;
+background: #252525;
+isolation: isolate;
+}
+
+.promo-slide img {
+position: absolute;
+inset: 0;
+z-index: -2;
+width: 100%;
+height: 100%;
+object-fit: cover;
+}
+
+.promo-overlay {
+position: absolute;
+inset: 0;
+z-index: -1;
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+padding: 22px;
+color: #fff;
+background: linear-gradient(
+to top,
+rgba(0, 0, 0, 0.88),
+rgba(0, 0, 0, 0.35) 55%,
+transparent
+);
+}
+
+.promo-label {
+align-self: flex-start;
+margin-bottom: 8px;
+padding: 6px 10px;
+border-radius: 20px;
+background: #ff641f;
+color: #fff;
+font-size: 10px;
+font-weight: 900;
+letter-spacing: 1px;
+}
+
+.promo-overlay h3 {
+margin: 0 0 7px;
+color: #fff;
+font-size: 23px;
+font-weight: 900;
+line-height: 1.25;
+}
+
+.promo-overlay p {
+max-width: 90%;
+margin: 0;
+color: #fff;
+font-size: 13px;
+line-height: 1.5;
+}
+
+.promo-arrow {
+position: absolute;
+z-index: 3;
+top: 50%;
+transform: translateY(-50%);
+width: 34px;
+height: 42px;
+border: 0;
+border-radius: 12px;
+background: rgba(0, 0, 0, 0.4);
+color: #fff;
+font-size: 30px;
+cursor: pointer;
+}
+
+.promo-prev {
+left: 10px;
+}
+
+.promo-next {
+right: 10px;
+}
+
+.promo-dots {
+position: absolute;
+z-index: 3;
+right: 0;
+bottom: 10px;
+left: 0;
+display: flex;
+justify-content: center;
+gap: 7px;
+}
+
+.promo-dot {
+width: 7px;
+height: 7px;
+padding: 0;
+border: 0;
+border-radius: 10px;
+background: rgba(255, 255, 255, 0.55);
+}
+
+.promo-dot.active {
+width: 22px;
+background: #ff641f;
+}
+
+@media (max-width: 480px) {
+.promo-banner {
+height: 230px;
+border-radius: 19px;
+}
+
+.promo-overlay {
+padding: 17px;
+}
+
+.promo-overlay h3 {
+font-size: 21px;
+}
+
+.promo-overlay p {
+font-size: 12px;
+max-width: 100%;
+}
+}
+
+@media (prefers-reduced-motion: reduce) {
+.promo-track {
+transition: none;
+}
+                   }
 </style>
 </head>
 
