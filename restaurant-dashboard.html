@@ -401,8 +401,16 @@ async function startApp() {
     window.OneSignalDeferred = window.OneSignalDeferred || [];
     window.OneSignalDeferred.push(async function(OneSignal) {
       await OneSignal.login(ownerId);
-      const alertButton = document.getElementById("enableRestaurantNotifications");
 
+const alertButton = document.getElementById("enableRestaurantNotifications");
+
+if (alertButton) {
+  const subscribed = OneSignal.User.PushSubscription.optedIn;
+
+  alertButton.textContent = subscribed
+    ? "✅ Order Alerts Enabled"
+    : "🔔 Enable Order Alerts";
+}
 if (alertButton) {
   alertButton.onclick = async () => {
     alertButton.disabled = true;
