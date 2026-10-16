@@ -1342,13 +1342,71 @@ return;
 
 openDialog("Settings", "<div class="status">Loading your settings...</div>");
 
+try {
 const { data, error } = await db
 .from("customer_preferences")
 .select("notifications_enabled")
 .eq("user_id", currentUser.id)
 .maybeSingle();
 
-if (error) {
+if (error) throw error;
+
+const notificationsEnabled = data?.notifications_enabled ?? true;
+
+openDialog("Settings", `
+  <p>Manage your Foozy account preferences.</p>
+
+  <div class="status">
+    <label style="display:flex;align-items:center;gap:10px;margin:0">
+      <input
+        id="notificationSetting"
+        type="checkbox"
+        style="width:20px;height:20px;accent-color:#ff641f"
+        ${notificationsEnabled ? "checked" : ""}
+      >
+      Enable notification preference
+    </label>
+  </div>
+
+  <p style="margin-top:12px;font-size:13px">
+    This saves your preference to your Foozy account.
+    Actual push notifications are not connected yet.
+  </p>
+`, [
+  makeButton("Cancel", "cancel-btn", closeDialog),
+
+  makeButton("Save", "save-btn", async () => {
+    const checkbox = document.getElementById("notificationSetting");
+
+    if (!checkbox) return;
+
+    const { error: saveError } = await db
+      .from("customer_preferences")
+      .upsert({
+        user_id: currentUser.id,
+        notifications_enabled: checkbox.checked,
+        updated_at: new Date().toISOString()
+      }, {
+        onConflict: "user_id"
+      });
+
+    if (saveError) {
+      console.error("Settings save error:", saveError);
+      showNotice("Couldn't save your settings. Please try again.");
+      return;
+    }
+
+    localStorage.setItem(
+      "foozy_notifications",
+      checkbox.checked ? "on" : "off"
+    );
+
+    closeDialog();
+    showNotice("Your settings have been saved!");
+  })
+]);
+
+} catch (error) {
 console.error("Settings load error:", error);
 
 openDialog("Settings", `
@@ -1359,68 +1417,7 @@ openDialog("Settings", `
   makeButton("Close", "cancel-btn", closeDialog)
 ]);
 
-return;
-
 }
-
-const notificationsEnabled = data?.notifications_enabled ?? true;
-
-openDialog("Settings", `
-<p>Manage your Foozy account preferences.</p>
-
-<div class="status">
-  <label style="display:flex;align-items:center;gap:10px;margin:0">
-    <input
-      id="notificationSetting"
-      type="checkbox"
-      style="width:20px;height:20px;accent-color:#ff641f"
-      ${notificationsEnabled ? "checked" : ""}
-    >
-    Enable notification preference
-  </label>
-</div>
-
-<p style="margin-top:12px;font-size:13px">
-  This saves your preference to your Foozy account.
-  Actual push notifications are not connected yet.
-</p>
-
-`, [
-makeButton("Cancel", "cancel-btn", closeDialog),
-
-makeButton("Save", "save-btn", async () => {
-  const checkbox = document.getElementById("notificationSetting");
-
-  if (!checkbox) return;
-
-  const checked = checkbox.checked;
-
-  const { error: saveError } = await db
-    .from("customer_preferences")
-    .upsert({
-      user_id: currentUser.id,
-      notifications_enabled: checked,
-      updated_at: new Date().toISOString()
-    }, {
-      onConflict: "user_id"
-    });
-
-  if (saveError) {
-    console.error("Settings save error:", saveError);
-    showNotice("Couldn't save your settings. Please try again.");
-    return;
-  }
-
-  localStorage.setItem(
-    "foozy_notifications",
-    checked ? "on" : "off"
-  );
-
-  closeDialog();
-  showNotice("Your settings have been saved!");
-})
-
-]);
 }
 function showLegal(page) {
   const messages = {
