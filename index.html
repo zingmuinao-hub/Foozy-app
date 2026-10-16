@@ -1311,6 +1311,209 @@ transition: none;
 }
 
 /* ===== END FOOZY SPLASH ANIMATION ===== */
+/* FOOZY PREMIUM LIGHT REDESIGN */
+
+:root {
+  --orange: #ff641f;
+  --dark: #202124;
+  --cream: #fff5ee;
+  --muted: #6b7280;
+  --white: #ffffff;
+  --green: #239957;
+
+  --bg: #f7f8fa;
+  --card: #ffffff;
+  --surface: #f1f3f5;
+  --border: #e6e8ec;
+  --text: #202124;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Clean white navigation */
+
+header {
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 3px 18px rgba(0, 0, 0, 0.035);
+}
+
+.nav .logo {
+  color: #202124;
+}
+
+.nav-location {
+  color: #737782;
+}
+
+.nav-location strong {
+  color: #202124;
+}
+
+/* Header action buttons */
+
+#foozy-notifications {
+  background: #fff !important;
+  color: #202124 !important;
+  border-color: #e6e8ec !important;
+}
+
+header a[href="./account.html"] {
+  background: #fff !important;
+  color: #202124 !important;
+  border-color: #e6e8ec !important;
+}
+
+.cart-btn {
+  background: var(--orange);
+  color: #fff;
+}
+
+.cart-count {
+  background: #fff;
+  color: var(--orange);
+}
+
+/* Restaurant cards */
+
+.restaurant {
+  background: #fff;
+  border: 1px solid #eceef1;
+  box-shadow: 0 5px 20px rgba(25, 30, 40, 0.045);
+}
+
+.restaurant-body h3,
+.menu-item strong {
+  color: #202124;
+}
+
+.restaurant-description,
+.restaurant-meta,
+.menu-item small {
+  color: #6b7280;
+}
+
+/* Food items */
+
+.menu-item {
+  background: #f8f9fb;
+  border-color: #eceef1;
+}
+
+.menu-item:hover {
+  background: #fff3eb;
+  border-color: #ffd4bd;
+}
+
+/* Food categories */
+
+.category {
+  background: #fff;
+  border-color: #e9ebef;
+  box-shadow: 0 3px 12px rgba(25, 30, 40, 0.025);
+}
+
+.category strong {
+  color: #202124;
+}
+
+.category.active,
+.category:hover {
+  background: #fff1e8;
+  border-color: var(--orange);
+}
+
+/* Search and content sections */
+
+.search {
+  border-color: #e8eaf0;
+  box-shadow: 0 8px 25px rgba(30, 35, 45, 0.06);
+}
+
+.content-section {
+  color: #202124;
+}
+
+.section-heading h2 {
+  color: #202124;
+}
+
+/* Premium promotional cards */
+
+.promo-two {
+  background: linear-gradient(135deg, #fff0e5, #ffe0c9);
+}
+
+.bottom-cta {
+  box-shadow: 0 12px 30px rgba(20, 20, 20, 0.08);
+}
+
+/* Footer */
+
+footer {
+  background: #fff;
+  border-top: 1px solid #e8eaf0;
+  color: #202124;
+}
+
+footer p,
+.footer-note {
+  color: #737782;
+}
+
+/* Better phone spacing */
+
+@media (max-width: 600px) {
+  .container {
+    width: 92%;
+  }
+
+  .nav {
+    gap: 10px;
+    min-height: 68px;
+  }
+
+  .nav .logo {
+    font-size: 26px;
+  }
+
+  .nav-location {
+    font-size: 10px;
+  }
+
+  .cart-btn {
+    padding: 10px;
+    font-size: 12px;
+  }
+
+  .restaurant-grid {
+    gap: 12px;
+  }
+
+  .restaurant-body {
+    padding: 12px;
+  }
+
+  .restaurant-body h3 {
+    font-size: 15px;
+  }
+
+  .restaurant-image {
+    height: 150px;
+  }
+
+  .menu-item {
+    padding: 8px;
+    gap: 6px;
+  }
+
+  .add-btn {
+    padding: 8px 10px;
+  }
+  }
 </style>
 </head>
 
