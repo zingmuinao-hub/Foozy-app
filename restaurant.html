@@ -592,10 +592,10 @@ font-size: 12px;
   });
    }
     function saveCart() {
-      localStorage.setItem("foozyCart", JSON.stringify(cart));
-      renderCart();
+  localStorage.setItem("foozyCart", JSON.stringify(cart));
+  renderCart();
+  syncMenuQuantities();
     }
-
     function addFood(item) {
       if (!item || !item.id || !restaurantData) return;
 
