@@ -1350,13 +1350,13 @@ async function sendPasswordReset() {
 }
   async function openSettings() {
 if (!db || !currentUser) {
-openDialog("Sign In Required", "<div class="status"> Please sign in to manage your account settings. </div>", [
+openDialog("Sign In Required", "<div class="status">Please sign in to manage your account settings.</div>", [
 makeButton("Close", "cancel-btn", closeDialog)
 ]);
 return;
 }
 
-openDialog("Settings", "<div class="status">Loading your settings...</div>");
+    openDialog("Settings", "<div class="status">Loading your settings...</div>");
 
 try {
 const { data, error } = await db
