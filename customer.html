@@ -539,7 +539,7 @@ let mode = authParams.get("mode") === "signup" ? "signup" : "login";
 
               submitButton.onclick = event => {
                 event.preventDefault();
-                window.location.href = "index.html";
+                window.location.href = returnTo;
               };
             } else {
               showMessage(
@@ -555,7 +555,7 @@ let mode = authParams.get("mode") === "signup" ? "signup" : "login";
             if (error) throw error;
 
             showMessage("Login successful! Opening Foozy...");
-            window.location.href = "index.html";
+            window.location.href = returnTo;
           }
         } catch (error) {
           console.error("Customer authentication error:", error);
