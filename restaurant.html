@@ -330,6 +330,150 @@
         grid-template-columns: 1fr;
       }
     }
+/* FOOZY — HORIZONTAL FOOD MENU */
+.menu-grid {
+display: flex;
+flex-direction: column;
+gap: 14px;
+width: 100%;
+}
+
+.food-card {
+display: flex;
+flex-direction: row;
+align-items: stretch;
+width: 100%;
+min-width: 0;
+background: #1c1c1c;
+border: 1px solid #353535;
+border-radius: 16px;
+overflow: hidden;
+box-sizing: border-box;
+}
+
+.food-image {
+flex: 0 0 130px;
+width: 130px;
+min-height: 145px;
+height: auto;
+align-self: stretch;
+background: #292929;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 38px;
+overflow: hidden;
+}
+
+.food-image img {
+width: 100%;
+height: 100%;
+min-height: 145px;
+object-fit: cover;
+}
+
+.food-info {
+flex: 1;
+min-width: 0;
+padding: 13px;
+display: flex;
+flex-direction: column;
+justify-content: center;
+}
+
+.food-info h3 {
+color: #fff;
+font-size: 16px;
+line-height: 1.35;
+margin: 0;
+overflow-wrap: anywhere;
+}
+
+.food-info p {
+color: #b8b8b8;
+font-size: 12px;
+line-height: 1.5;
+margin: 7px 0 0;
+min-height: 0;
+overflow-wrap: anywhere;
+}
+
+.food-bottom {
+display: flex;
+flex-direction: row;
+justify-content: space-between;
+align-items: center;
+flex-wrap: wrap;
+gap: 10px;
+margin-top: 12px;
+}
+
+.price {
+color: #ff814d;
+font-size: 17px;
+font-weight: 900;
+}
+
+.add-button {
+background: #ff6b2c;
+color: #fff;
+border: none;
+border-radius: 10px;
+padding: 9px 13px;
+font-weight: 900;
+cursor: pointer;
+}
+
+.add-button:active {
+transform: scale(0.97);
+}
+
+@media (max-width: 420px) {
+.menu-grid {
+gap: 11px;
+}
+
+.food-card {
+border-radius: 13px;
+}
+
+.food-image {
+flex-basis: 108px;
+width: 108px;
+min-height: 130px;
+}
+
+.food-image img {
+min-height: 130px;
+}
+
+.food-info {
+padding: 10px;
+}
+
+.food-info h3 {
+font-size: 14px;
+}
+
+.food-info p {
+font-size: 11px;
+line-height: 1.45;
+}
+
+.food-bottom {
+gap: 8px;
+margin-top: 10px;
+}
+
+.price {
+font-size: 15px;
+}
+
+.add-button {
+padding: 8px 10px;
+font-size: 12px;
+}
+}
   </style></head><body>  <header class="topbar">
     <a class="logo" href="./index.html?skipIntro=1">FOOZY<span style="color:white">.</span></a>
 <a class="back" href="./index.html?skipIntro=1">← Home</a>
