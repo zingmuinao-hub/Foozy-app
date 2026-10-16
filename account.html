@@ -728,16 +728,34 @@ function openEditProfile() {
     return;
   }
 
-  const metadata = currentUser.user_metadata || {};
-  const name = metadata.full_name || metadata.name || "";
-  const phone = metadata.phone || currentUser.phone || "";
+  const metadata = currentUser.user_metadata || "";
 
-  openDialog("Edit Profile", `
-    <p>Update the details saved to your Foozy account.</p>
+  const name = currentUser.user_metadata?.full_name ||
+    currentUser.user_metadata?.name || "";
+
+  const phone = currentUser.user_metadata?.phone ||
+    currentUser.phone || "";
+
+  const email = currentUser.email || "";
+
+  openDialog("My Account", `
+    <p>Update your Foozy account details.</p>
+
     <label for="editName">Full name</label>
-    <input id="editName" maxlength="100" value="${escapeHTML(name)}" placeholder="Your full name">
+    <input id="editName" maxlength="100"
+      value="${escapeHTML(name)}" placeholder="Your full name">
+
     <label for="editPhone">Phone number</label>
-    <input id="editPhone" maxlength="25" value="${escapeHTML(phone)}" placeholder="Your phone number">
+    <input id="editPhone" type="tel" maxlength="25"
+      value="${escapeHTML(phone)}" placeholder="Your phone number">
+
+    <label for="editEmail">Email address</label>
+    <input id="editEmail" type="email" maxlength="254"
+      value="${escapeHTML(email)}" placeholder="Your email address">
+
+    <p style="font-size:12px">
+      Changing your email may require confirmation through your inbox.
+    </p>
   `, [
     makeButton("Cancel", "cancel-btn", closeDialog),
     makeButton("Save Changes", "save-btn", saveProfile)
@@ -759,41 +777,60 @@ async function saveProfile() {
 
   const name = document.getElementById("editName").value.trim();
   const phone = document.getElementById("editPhone").value.trim();
+  const email = document.getElementById("editEmail").value.trim();
 
   if (!name) {
     alert("Please enter your name.");
     return;
   }
 
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    alert("Please enter a valid email address.");
+    return;
+  }
+
+  const oldEmail = (currentUser.email || "").trim();
   const saveButton = document.querySelector(".save-btn");
+
   saveButton.disabled = true;
   saveButton.textContent = "Saving...";
 
   try {
     const existing = currentUser.user_metadata || {};
 
-    const { data, error } = await db.auth.updateUser({
+    const updatePayload = {
       data: {
         ...existing,
         full_name: name,
+        name: name,
         phone: phone
       }
-    });
+    };
+
+    if (email.toLowerCase() !== oldEmail.toLowerCase()) {
+      updatePayload.email = email;
+    }
+
+    const { data, error } = await db.auth.updateUser(updatePayload);
 
     if (error) throw error;
 
     currentUser = data.user;
     updateProfileDisplay(currentUser);
     closeDialog();
-    showNotice("Your profile has been updated successfully.");
+
+    if (email.toLowerCase() !== oldEmail.toLowerCase()) {
+      showNotice("Profile saved! Check your inbox to confirm your new email address.");
+    } else {
+      showNotice("Your profile has been updated successfully!");
+    }
   } catch (error) {
     console.error("Profile update failed:", error);
-    alert("We couldn't save your profile. Please try again.");
+    alert(error.message || "Unable to save your profile. Please try again.");
     saveButton.disabled = false;
     saveButton.textContent = "Save Changes";
   }
 }
-
 async function showFeature(feature) {
   if (feature === "Active Orders" || feature === "Past Orders") {
     await showCustomerOrders(feature);
