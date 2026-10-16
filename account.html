@@ -794,21 +794,39 @@ async function saveProfile() {
   }
 }
 
-function showFeature(feature) {
+async function showFeature(feature) {
+  if (feature === "Active Orders" || feature === "Past Orders") {
+    await showCustomerOrders(feature);
+    return;
+  }
+
+  if (feature === "Offers") {
+    location.href = "./index.html?skipIntro=1#offersSection";
+    return;
+  }
+
+  if (feature === "Privacy & Security") {
+    openDialog(feature, `
+      <div class="status">
+        Keep your account secure. You can request a password reset using your registered email.
+      </div>
+      <div class="dialog-actions">
+        <button class="save-btn" onclick="sendPasswordReset()">Send Password Reset Email</button>
+      </div>
+    `);
+    return;
+  }
+
   const descriptions = {
-    "Active Orders": "Your current orders will appear here once the order-history connection is implemented.",
-    "Past Orders": "Your previous orders and reorder options will appear here once connected to your real order records.",
-    "My Refunds": "Refund requests and their actual statuses will appear here when the refund system is connected.",
-    "My Vouchers": "Your available vouchers and coupon codes will appear here when the voucher system is connected.",
-    "Foozy Money": "Your wallet balance and transaction history will appear here after the secure wallet system is implemented.",
-    "Offers": "Browse the latest offers from Foozy restaurants on the Offers section of the homepage.",
-    "Saved Addresses": "Saved delivery addresses will appear here after address storage is connected to your customer account.",
-    "Privacy & Security": "Keep your sign-in details private. Password reset and account-security features will be connected to the authentication flow.",
-    "Help & Support": "For help, contact the Foozy team through your official support channel. We still need to connect the support contact details."
+    "My Refunds": "Refund information will appear here when Foozy's refund system is connected.",
+    "My Vouchers": "Your available coupons will appear here when the voucher system is connected.",
+    "Foozy Money": "Your wallet balance will appear here when the secure wallet system is connected.",
+    "Saved Addresses": "Saved addresses will be available when address storage is connected to your account.",
+    "Help & Support": "The Foozy support contact details will be added here."
   };
 
   openDialog(feature,
-    `<div class="status">${escapeHTML(descriptions[feature] || "This feature will be available when its service is connected.")}</div>`
+    `<div class="status">${escapeHTML(descriptions[feature] || "This feature is coming soon.")}</div>`
   );
 }
 
