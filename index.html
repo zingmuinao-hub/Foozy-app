@@ -3796,5 +3796,38 @@ categories = categories.filter(Boolean);
   }
 })();
 </script>
+<!-- FOOZY FLOATING BOTTOM NAVIGATION -->
+<nav class="foozy-bottom-nav" aria-label="Main navigation">
+
+  <button class="foozy-nav-item active"
+          onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <span class="foozy-nav-icon">⌂</span>
+    <span>Home</span>
+  </button>
+
+  <button class="foozy-nav-item"
+          onclick="document.getElementById('categoriesSection').scrollIntoView({behavior:'smooth'})">
+    <span class="foozy-nav-icon">⌕</span>
+    <span>Explore</span>
+  </button>
+
+  <button class="foozy-nav-item"
+          onclick="document.getElementById('promoBanner').scrollIntoView({behavior:'smooth'})">
+    <span class="foozy-nav-icon">🏷️</span>
+    <span>Offers</span>
+  </button>
+
+  <a class="foozy-nav-item" href="./orders.html">
+    <span class="foozy-nav-icon">▤</span>
+    <span>Orders</span>
+  </a>
+
+  <a class="foozy-nav-item" href="./account.html">
+    <span class="foozy-nav-icon">♙</span>
+    <span>Profile</span>
+  </a>
+
+</nav>
+<!-- END FOOZY NAVIGATION -->
 </body>
 </html>
