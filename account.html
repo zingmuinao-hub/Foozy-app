@@ -1123,24 +1123,8 @@ return;
 }
 
 if (feature === "Privacy & Security") {
-openDialog("Privacy & Security", `
-<div class="status">
-<strong>Account Email</strong>
-<p>${escapeHTML(currentUser?.email || "Not available")}</p>
-</div>
-
-  <div class="dialog-actions">
-    <button class="save-btn" onclick="closeDialog(); openEditProfile();">
-      Edit Profile
-    </button>
-
-    <button class="save-btn" onclick="sendPasswordReset()">
-      Send Password Reset Email
-    </button>
-  </div>
-`);
+openDialog("Privacy & Security", "<div class="status"> <strong>Account Email</strong> <p>${escapeHTML(currentUser?.email || "Not available")}</p> </div> <div class="dialog-actions"> <button class="save-btn" onclick="closeDialog(); openEditProfile();"> Edit Profile </button> <button class="save-btn" onclick="sendPasswordReset()"> Send Password Reset Email </button> </div>");
 return;
-
 }
 
 const descriptions = {
