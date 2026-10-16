@@ -575,6 +575,22 @@ font-size: 12px;
       });
     }
 
+   function syncMenuQuantities() {
+  document.querySelectorAll(".menu-quantity-wrap").forEach(controls => {
+    const key = controls.dataset.itemId;
+    const quantity = Number(cart[key]?.quantity || 0);
+
+    const addButton = controls.querySelector(".add-button");
+    const quantityControls = controls.querySelector(".menu-quantity");
+    const quantityValue = controls.querySelector(".menu-quantity-value");
+
+    if (!addButton || !quantityControls || !quantityValue) return;
+
+    addButton.hidden = quantity > 0;
+    quantityControls.hidden = quantity <= 0;
+    quantityValue.textContent = quantity;
+  });
+   }
     function saveCart() {
       localStorage.setItem("foozyCart", JSON.stringify(cart));
       renderCart();
@@ -736,44 +752,83 @@ font-size: 12px;
     }
 
     function renderFood(item) {
-      const card = document.createElement("article");
-      card.className = "food-card";
+  const card = document.createElement("article");
+  card.className = "food-card";
+  card.dataset.itemId = String(item.id);
 
-      const imageBox = document.createElement("div");
-      imageBox.className = "food-image";
-      imageBox.textContent = "🍔";
+  const imageBox = document.createElement("div");
+  imageBox.className = "food-image";
+  imageBox.textContent = "🍔";
 
-      addImage(imageBox, item.image_url, item.name);
+  addImage(imageBox, item.image_url, item.name);
 
-      const info = document.createElement("div");
-      info.className = "food-info";
+  const info = document.createElement("div");
+  info.className = "food-info";
 
-      const name = document.createElement("h3");
-      name.textContent = item.name || "Delicious Food";
+  const category = document.createElement("span");
+  category.className = "food-type";
+  category.textContent =
+    item.category || item.Category || "Food";
 
-      const description = document.createElement("p");
-      description.textContent =
-        item.description || "A tasty favourite from our menu.";
+  const name = document.createElement("h3");
+  name.textContent = item.name || "Delicious Food";
 
-      const bottom = document.createElement("div");
-      bottom.className = "food-bottom";
+  const description = document.createElement("p");
+  description.textContent =
+    item.description || "A tasty favourite from our menu.";
 
-      const price = document.createElement("span");
-      price.className = "price";
-      price.textContent = money(item.price);
+  const bottom = document.createElement("div");
+  bottom.className = "food-bottom";
 
-      const add = document.createElement("button");
-      add.className = "add-button";
-      add.textContent = "+ Add";
+  const price = document.createElement("span");
+  price.className = "price";
+  price.textContent = money(item.price);
 
-      add.addEventListener("click", () => addFood(item));
+  const controls = document.createElement("div");
+  controls.className = "menu-quantity-wrap";
+  controls.dataset.itemId = String(item.id);
 
-      bottom.append(price, add);
-      info.append(name, description, bottom);
-      card.append(imageBox, info);
+  const add = document.createElement("button");
+  add.className = "add-button";
+  add.textContent = "+ Add";
+  add.type = "button";
+  add.addEventListener("click", () => addFood(item));
 
-      return card;
-    }
+  const quantityControls = document.createElement("div");
+  quantityControls.className = "menu-quantity";
+
+  const minus = document.createElement("button");
+  minus.className = "menu-quantity-button";
+  minus.textContent = "−";
+  minus.type = "button";
+  minus.setAttribute("aria-label", "Remove one");
+
+  const quantity = document.createElement("span");
+  quantity.className = "menu-quantity-value";
+
+  const plus = document.createElement("button");
+  plus.className = "menu-quantity-button";
+  plus.textContent = "+";
+  plus.type = "button";
+  plus.setAttribute("aria-label", "Add one");
+
+  minus.addEventListener("click", () => {
+    changeQuantity(String(item.id), -1);
+  });
+
+  plus.addEventListener("click", () => {
+    addFood(item);
+  });
+
+  quantityControls.append(minus, quantity, plus);
+  controls.append(add, quantityControls);
+
+  bottom.append(price, controls);
+  info.append(category, name, description, bottom);
+  card.append(imageBox, info);
+
+  return card;
+}
 
     async function loadRestaurant() {
       const status = document.getElementById("menuStatus");
