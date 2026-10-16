@@ -516,7 +516,7 @@ let mode = authParams.get("mode") === "signup" ? "signup" : "login";
               email,
               password: password.value,
               options: {
-                emailRedirectTo: "https://zingmuinao-hub.github.io/Foozy-app/customer.html",
+                emailRedirectTo: "https://zingmuinao-hub.github.io/Foozy-app/customer.html?returnTo=" + encodeURIComponent(returnTo)
                 data: {
                   full_name: fullName,
                   phone: phone,
@@ -524,7 +524,7 @@ let mode = authParams.get("mode") === "signup" ? "signup" : "login";
                   locality: locality,
                   account_type: "customer"
                 },
-                emailRedirectTo: "https://zingmuinao-hub.github.io/Foozy-app/customer.html",
+                emailRedirectTo: "https://zingmuinao-hub.github.io/Foozy-app/customer.html?returnTo=" + encodeURIComponent(returnTo)
               }
             });
 
