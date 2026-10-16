@@ -474,6 +474,9 @@ let mode = authParams.get("mode") === "signup" ? "signup" : "login";
   }
 });
       signupTab.addEventListener("click", () => setMode("signup"));
+      if (mode === "signup") {
+  setMode("signup");
+      }
 
       showPassword.addEventListener("click", () => {
         const showing = password.type === "text";
