@@ -1913,6 +1913,74 @@ body {
 .foozy-nav-item:active {
   transform: scale(.96);
 }
+/* FOOZY CIRCULAR SWIPEABLE CATEGORIES */
+.categories {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 2px 12px;
+  margin: 0;
+  grid-template-columns: none;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  touch-action: pan-x;
+}
+
+.categories::-webkit-scrollbar {
+  display: none;
+}
+
+.categories .category {
+  flex: 0 0 76px;
+  min-width: 76px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 6px 4px 8px;
+  gap: 0;
+  border: 1px solid transparent;
+  border-radius: 14px;
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+  scroll-snap-align: start;
+}
+
+.categories .category .emoji {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 7px;
+  border-radius: 50%;
+  background: #fff0e7;
+  font-size: 25px;
+  line-height: 1;
+}
+
+.categories .category strong {
+  display: block;
+  font-size: 11px;
+  line-height: 1.25;
+  text-align: center;
+  color: #202124;
+}
+
+.categories .category.active,
+.categories .category:hover {
+  background: #fff8f3;
+  border-color: var(--orange);
+  transform: none;
+}
+
+.categories .category.active .emoji,
+.categories .category:hover .emoji {
+  background: #ffe2d0;
+}
 </style>
 </head>
 
