@@ -473,6 +473,85 @@ font-size: 15px;
 padding: 8px 10px;
 font-size: 12px;
 }
+ /* Food category label */
+.food-type {
+  display: inline-block;
+  width: fit-content;
+  margin-bottom: 6px;
+  padding: 4px 9px;
+  border-radius: 20px;
+  background: #fff0e3;
+  color: #c65b20;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* Inline quantity controls */
+.menu-quantity-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.menu-quantity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px;
+  border: 1px solid #f0d6c5;
+  border-radius: 24px;
+  background: #fff8f1;
+}
+
+.menu-quantity[hidden],
+.add-button[hidden] {
+  display: none !important;
+}
+
+.menu-quantity-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: #f47735;
+  color: white;
+  font-size: 20px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.menu-quantity-value {
+  min-width: 16px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Keep food descriptions readable */
+.food-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.food-info h3 {
+  margin-top: 0;
+  margin-bottom: 6px;
+}
+
+.food-info p {
+  overflow-wrap: anywhere;
+  line-height: 1.45;
+}
+
+.food-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
 }
   </style></head><body>  <header class="topbar">
     <a class="logo" href="./index.html?skipIntro=1">FOOZY<span style="color:white">.</span></a>
