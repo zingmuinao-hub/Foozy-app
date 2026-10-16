@@ -992,9 +992,10 @@ font-size: 12px;
         status.style.display = "none";
 
         items.forEach(item => {
-          grid.appendChild(renderFood(item));
-        });
+  grid.appendChild(renderFood(item));
+});
 
+syncMenuQuantities();
       } catch (error) {
         console.error("Foozy restaurant page error:", error);
 
