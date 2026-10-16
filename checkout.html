@@ -1042,9 +1042,29 @@
 
   async function placeOrder(event) {
     event.preventDefault();
-    hideNotice();
+hideNotice();
 
-    if (!validateCart()) return;
+if (!db) {
+showNotice("Foozy couldn't connect to Supabase. Please refresh the page and try again.");
+return;
+}
+
+try {
+const { data, error } = await db.auth.getSession();
+if (error) throw error;
+
+if (!data.session) {
+sessionStorage.setItem("foozyCheckoutReturn", "checkout.html");
+window.location.href = "./customer.html?mode=signup&returnTo=checkout.html";
+return;
+}
+} catch (error) {
+console.error("Foozy session check failed:", error);
+showNotice("We couldn't verify your account. Please refresh the page and try again.");
+return;
+}
+
+if (!validateCart()) return;
 
     if (!db) {
       showNotice(
