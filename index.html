@@ -232,6 +232,11 @@ backdrop-filter: blur(12px);
   font-weight: 900;
   white-space: nowrap;
 }
+  .cart-icon {
+  font-size: 15px;
+  display: inline-block;
+  line-height: 1;
+  }
 
 .cart-count {
   background: var(--orange);
@@ -2063,16 +2068,10 @@ body {
   font-size:20px;flex-shrink:0;">
   🔔
       </button>
-  <a href="./account.html"
-     style="display:inline-flex;align-items:center;gap:6px;
-     background:#252525;color:white;border:1px solid #353535;
-     border-radius:12px;padding:12px;text-decoration:none;
-     font-weight:900;font-size:13px;white-space:nowrap;">
-    👤 Account
-  </a>
 
   <button class="cart-btn" onclick="openCart()">
-    🛒 Cart <span class="cart-count" id="cartCount">0</span>
+    <span class="cart-icon" aria-hidden="true">🛒</span> Cart
+    <span class="cart-count" id="cartCount">0</span>
   </button>
     </div>
 </header>
