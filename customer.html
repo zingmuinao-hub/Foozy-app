@@ -403,7 +403,13 @@
       const password = document.getElementById("password");
       const showPassword = document.getElementById("showPassword");
 
-      let mode = "login";
+      const authParams = new URLSearchParams(window.location.search);
+
+const returnTo = authParams.get("returnTo") === "checkout.html"
+  ? "checkout.html"
+  : "index.html";
+
+let mode = authParams.get("mode") === "signup" ? "signup" : "login";
 
       function showMessage(text) {
         message.textContent = text;
