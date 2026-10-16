@@ -830,7 +830,200 @@ async function showFeature(feature) {
   );
 }
 
-function openSettings() {
+function orderStatusGroup(status) {
+  const value = String(status || "").toLowerCase().replace(/[ -]+/g, "_");
+
+  if ([
+    "delivered", "completed", "cancelled", "canceled",
+    "rejected", "refunded", "failed"
+  ].includes(value)) {
+    return "past";
+  }
+
+  return "active";
+}
+
+function formatOrderDate(value) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Date unavailable";
+  }
+
+  return date.toLocaleString("en-IN", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit"
+  });
+}
+
+function renderOrderCard(order) {
+  const status = String(order.order_status || "Pending")
+    .replace(/[_-]+/g, " ");
+
+  let items = order.items;
+
+  if (typeof items === "string") {
+    try {
+      items = JSON.parse(items);
+    } catch {
+      items = [];
+    }
+  }
+
+  if (!Array.isArray(items)) {
+    items = [];
+  }
+
+  const itemText = items.length
+    ? items.map(item => {
+        const name = item.name || item.food_name || item.title || "Food item";
+        const quantity = Number(item.quantity) || 1;
+
+        return `${escapeHTML(name)} × ${quantity}`;
+      }).join("<br>")
+    : "Order items";
+
+  const amount = Number(order.total_amount || 0)
+    .toLocaleString("en-IN", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+
+  return `
+    <article class="status" style="margin-top:12px">
+      <div style="display:flex;justify-content:space-between;gap:10px">
+        <strong>Order #${escapeHTML(order.id)}</strong>
+        <span class="badge">${escapeHTML(status)}</span>
+      </div>
+
+      <div style="font-size:12px;color:#aaa;margin-top:6px">
+        ${escapeHTML(formatOrderDate(order.created_at))}
+      </div>
+
+      <div style="margin-top:12px;line-height:1.8">
+        ${itemText}
+      </div>
+
+      <div style="display:flex;justify-content:space-between;gap:10px;margin-top:12px;padding-top:10px;border-top:1px solid #444">
+        <span>${escapeHTML(order.payment_method || "Payment not specified")}</span>
+        <strong>₹${escapeHTML(amount)}</strong>
+      </div>
+    </article>
+  `;
+}
+
+async function showCustomerOrders(feature) {
+  const isPast = feature === "Past Orders";
+
+  openDialog(
+    feature,
+    '<div class="status">Loading your orders...</div>'
+  );
+
+  if (!db || !currentUser) {
+    document.getElementById("dialogBody").innerHTML = `
+      <div class="status">
+        Please sign in to view orders linked to your Foozy account.
+      </div>
+      <div class="dialog-actions">
+        <button class="save-btn"
+          onclick="location.href='./customer.html?mode=signup&returnTo=account.html'">
+          Sign In / Create Account
+        </button>
+      </div>
+    `;
+    return;
+  }
+
+  try {
+    const { data, error } = await db
+      .from("Order")
+      .select(`
+        id,
+        created_at,
+        items,
+        total_amount,
+        payment_method,
+        order_status,
+        customer_user_id
+      `)
+      .eq("customer_user_id", currentUser.id)
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+
+    const orders = (data || []).filter(order =>
+      orderStatusGroup(order.order_status) ===
+      (isPast ? "past" : "active")
+    );
+
+    document.getElementById("dialogBody").innerHTML = `
+      <p>
+        ${isPast
+          ? "Your completed and closed orders."
+          : "Your current orders and their latest statuses."}
+      </p>
+
+      ${orders.length
+        ? orders.map(renderOrderCard).join("")
+        : `
+          <div class="status">
+            ${isPast
+              ? "No past orders are linked to your account yet."
+              : "You don't have any active orders linked to your account right now."}
+          </div>
+
+          <div class="dialog-actions">
+            <button class="save-btn"
+              onclick="location.href='./index.html?skipIntro=1'">
+              Explore Food
+            </button>
+          </div>
+        `}
+    `;
+  } catch (error) {
+    console.error("Could not load customer orders:", error);
+
+    document.getElementById("dialogBody").innerHTML = `
+      <div class="status">
+        We couldn't load your orders right now. Please try again.
+      </div>
+    `;
+  }
+}
+
+async function sendPasswordReset() {
+  if (!db || !currentUser?.email) {
+    alert("We couldn't find an email address for this account.");
+    return;
+  }
+
+  try {
+    const { error } = await db.auth.resetPasswordForEmail(
+      currentUser.email,
+      {
+        redirectTo:
+          location.origin +
+          location.pathname.replace(
+            /account\.html$/i,
+            "reset-password.html"
+          )
+      }
+    );
+
+    if (error) throw error;
+
+    closeDialog();
+    showNotice("Password reset email sent. Check your inbox and spam folder.");
+  } catch (error) {
+    console.error("Password reset failed:", error);
+    alert("We couldn't send the reset email. Please try again.");
+  }
+}
+  function openSettings() {
   const saved = localStorage.getItem("foozy_notifications") !== "off";
 
   openDialog("Settings", `
