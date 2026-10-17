@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ff641f">
+<title>FoodRush | Survey & Feedback</title>
+
+<style>
+:root {
+  --orange: #ff641f;
+  --ink: #242424;
+  --muted: #777;
+  --line: #e8e8e8;
+  --bg: #f6f7f8;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Arial, sans-serif;
+  line-height: 1.5;
+}
+
+header {
+  background: white;
+  padding: 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.header-inner {
+  max-width: 680px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  color: var(--orange);
+  font-size: 23px;
+  font-weight: 900;
+}
+
+.back {
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+main {
+  max-width: 680px;
+  margin: 24px auto;
+  padding: 0 14px;
+}
+
+.hero {
+  background: linear-gradient(135deg, #fff0e7, white);
+  border-radius: 22px;
+  padding: 25px 21px;
+  margin-bottom: 18px;
+}
+
+.badge {
+  display: inline-block;
+  background: #ffe1d1;
+  color: #bd4310;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+h1 {
+  font-size: 29px;
+  line-height: 1.2;
+  margin: 13px 0 10px;
+}
+
+h2 {
+  font-size: 18px;
+  margin: 0 0 17px;
+}
+
+p { color: var(--muted); }
+
+.card {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 21px;
+  margin-bottom: 16px;
+}
+
+.field { margin-bottom: 20px; }
+.field:last-child { margin-bottom: 0; }
+
+label, .field-title {
+  display: block;
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.required { color: var(--orange); }
+
+input[type="text"], textarea, select {
+  width: 100%;
+  border: 1px solid #dedede;
+  border-radius: 11px;
+  padding: 13px;
+  background: white;
+  color: var(--ink);
+  font-size: 15px;
+  font-family: inherit;
+}
+
+textarea {
+  min-height: 95px;
+  resize: vertical;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: 2px solid #ffd0b9;
+  border-color: var(--orange);
+}
+
+.rating {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rating label {
+  cursor: pointer;
+  margin: 0;
+}
+
+.rating input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.rating span {
+  display: block;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  min-width: 43px;
+  padding: 10px;
+  text-align: center;
+  background: white;
+  font-size: 21px;
+}
+
+.rating input:checked + span {
+  background: #fff0e7;
+  border-color: var(--orange);
+}
+
+.rating input:focus-visible + span {
+  outline: 2px solid var(--orange);
+}
+
+.rating-note {
+  font-size: 12px;
+  margin-top: 7px;
+  color: var(--muted);
+}
+
+.check-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.check-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 11px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-weight: normal;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.check-option input {
+  margin-top: 3px;
+  accent-color: var(--orange);
+}
+
+button {
+  width: 100%;
+  border: 0;
+  border-radius: 13px;
+  padding: 16px;
+  background: var(--orange);
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.status {
+  display: none;
+  margin-top: 14px;
+  padding: 13px;
+  border-radius: 10px;
+  font-size: 14px;
+}
+
+.status.success {
+  display: block;
+  background: #e8f8ed;
+  color: #176b35;
+}
+
+.status.error {
+  display: block;
+  background: #fff0ee;
+  color: #a3281d;
+}
+
+.privacy {
+  text-align: center;
+  font-size: 12px;
+  margin: 20px 8px;
+}
+
+footer {
+  text-align: center;
+  padding: 15px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+@media (max-width: 420px) {
+  h1 { font-size: 25px; }
+  .card { padding: 17px; }
+  .check-grid { grid-template-columns: 1fr; }
+  .rating { gap: 6px; }
+  .rating span { min-width: 40px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">FoodRush<span style="color:#333">.</span></div>
+    <a class="back" href="./index.html">← Back to app</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <span class="badge">YOUR VOICE MATTERS 🧡</span>
+    <h1>Help us make FoodRush better.</h1>
+    <p>We're preparing to serve Ukhrul. Tell us what you think about the app and what you'd love to see next.</p>
+  </section>
+
+  <form id="surveyForm">
+
+    <section class="card">
+      <h2>👋 About you</h2>
+
+      <div class="field">
+        <label for="respondent">Which best describes you? <span class="required">*</span></label>
+        <select id="respondent" required>
+          <option value="">Choose one</option>
+          <option>Potential user</option>
+          <option>Customer</option>
+          <option>Restaurant owner</option>
+          <option>Delivery partner</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="displayName">Your name (optional)</label>
+        <input id="displayName" type="text" maxlength="80" placeholder="Enter your name">
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>⭐ Rate your experience</h2>
+
+      <div class="field">
+        <span class="field-title">Overall, how do you rate FoodRush? <span class="required">*</span></span>
+        <div class="rating">
+          <label><input type="radio" name="overall" value="1" required><span>⭐<small>1</small></span></label>
+          <label><input type="radio" name="overall" value="2"><span>⭐<small>2</small></span></label>
+          <label><input type="radio" name="overall" value="3"><span>⭐<small>3</small></span></label>
+          <label><input type="radio" name="overall" value="4"><span>⭐<small>4</small></span></label>
+          <label><input type="radio" name="overall" value="5"><span>⭐<small>5</small></span></label>
+        </div>
+        <div class="rating-note">1 = Poor · 5 = Excellent</div>
+      </div>
+
+      <div class="field">
+        <span class="field-title">How easy is the app to use? <span class="required">*</span></span>
+        <div class="rating">
+          <label><input type="radio" name="ease" value="1" required><span>1</span></label>
+          <label><input type="radio" name="ease" value="2"><span>2</span></label>
+          <label><input type="radio" name="ease" value="3"><span>3</span></label>
+          <label><input type="radio" name="ease" value="4"><span>4</span></label>
+          <label><input type="radio" name="ease" value="5"><span>5</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <span class="field-title">What do you think of the design? <span class="required">*</span></span>
+        <div class="rating">
+          <label><input type="radio" name="design" value="1" required><span>1</span></label>
+          <label><input type="radio" name="design" value="2"><span>2</span></label>
+          <label><input type="radio" name="design" value="3"><span>3</span></label>
+          <label><input type="radio" name="design" value="4"><span>4</span></label>
+          <label><input type="radio" name="design" value="5"><span>5</span></label>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>💡 What would you like us to add?</h2>
+      <p>Select all the features you'd like to see.</p>
+
+      <div class="check-grid">
+        <label class="check-option"><input type="checkbox" name="features" value="More local restaurants">More local restaurants</label>
+        <label class="check-option"><input type="checkbox" name="features" value="Live order tracking">Live order tracking</label>
+        <label class="check-option"><input type="checkbox" name="features" value="More payment options">More payment options</label>
+        <label class="check-option"><input type="checkbox" name="features" value="Special offers and discounts">Offers and discounts</label>
+        <label class="check-option"><input type="checkbox" name="features" value="Order history">Order history</label>
+        <label class="check-option"><input type="checkbox" name="features" value="Favourite foods">Favourite foods</label>
+        <label class="check-option"><input type="checkbox" name="features" value="Faster delivery">Faster delivery</label>
+        <label class="check-option"><input type="checkbox" name="features" value="Customer support">Better customer support</label>
+        <label class="check-option"><input type="checkbox" name="features" value="Food photos and details">Better food photos and details</label>
+        <label class="check-option"><input type="checkbox" name="features" value="Restaurant reviews">Restaurant reviews</label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>🍔 Tell us what you want</h2>
+
+      <div class="field">
+        <label for="requestedFoods">Which foods or restaurants should we add?</label>
+        <textarea id="requestedFoods" maxlength="1500" placeholder="E.g. burgers, momos, local dishes, your favourite restaurant..."></textarea>
+      </div>
+
+      <div class="field">
+        <label for="suggestions">What should we improve?</label>
+        <textarea id="suggestions" maxlength="2500" placeholder="Tell us about anything confusing, missing, or not working..."></textarea>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>✍️ Your review</h2>
+      <p>Your written review can appear publicly on FoodRush. Please don't include private information.</p>
+
+      <div class="field">
+        <label for="review">Write a review (optional)</label>
+        <textarea id="review" maxlength="2000" placeholder="What do you think about FoodRush?"></textarea>
+      </div>
+    </section>
+
+    <section class="card">
+      <p style="font-size:13px">By submitting, you understand that your written review may be displayed publicly. Your improvement suggestions and survey answers will remain private.</p>
+      <button id="submitBtn" type="submit">Submit my feedback 🧡</button>
+      <div id="status" class="status" role="status" aria-live="polite"></div>
+    </section>
+
+  </form>
+
+  <p class="privacy">Thank you for helping FoodRush grow in Ukhrul. 🧡</p>
+</main>
+
+<footer>FoodRush · Your town. Your food.</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = "https://snmufxscviahmmsdbess.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Ix1rMiMTqPQIsBEM708shg_POK6_JM8";
+
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const form = document.getElementById("surveyForm");
+const submitBtn = document.getElementById("submitBtn");
+const statusBox = document.getElementById("status");
+
+form.addEventListener("submit", async function(event) {
+  event.preventDefault();
+
+  statusBox.className = "status";
+  statusBox.style.display = "none";
+
+  const overall = form.querySelector('input[name="overall"]:checked');
+  const ease = form.querySelector('input[name="ease"]:checked');
+  const design = form.querySelector('input[name="design"]:checked');
+
+  if (!overall || !ease || !design) {
+    statusBox.textContent = "Please complete all three ratings.";
+    statusBox.className = "status error";
+    return;
+  }
+
+  const reviewText = document.getElementById("review").value.trim();
+
+  const payload = {
+    respondent_type: document.getElementById("respondent").value,
+    display_name: document.getElementById("displayName").value.trim() || null,
+    overall_rating: Number(overall.value),
+    ease_rating: Number(ease.value),
+    design_rating: Number(design.value),
+    desired_features: Array.from(
+      form.querySelectorAll('input[name="features"]:checked')
+    ).map(input => input.value),
+    requested_foods: document.getElementById("requestedFoods").value.trim() || null,
+    improvement_suggestions: document.getElementById("suggestions").value.trim() || null,
+    review_text: reviewText || null
+  };
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Submitting...";
+
+  try {
+    const { error } = await db
+      .from("foodrush_feedback")
+      .insert(payload);
+
+    if (error) throw error;
+
+    statusBox.textContent = "Thank you! Your feedback has been submitted successfully. 🧡";
+    statusBox.className = "status success";
+    form.reset();
+    statusBox.scrollIntoView({ behavior: "smooth", block: "center" });
+
+  } catch (error) {
+    console.error("FoodRush survey error:", error);
+    statusBox.textContent = "Sorry, your feedback could not be submitted. Please check your internet connection and try again.";
+    statusBox.className = "status error";
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Submit my feedback 🧡";
+  }
+});
+</script>
+
+</body>
+</html>
