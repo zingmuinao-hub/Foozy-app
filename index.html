@@ -2196,16 +2196,6 @@ body {
   </div>
 </div>
 
-<form class="search nav-search" id="searchForm">
-  <input
-    id="searchInput"
-    type="search"
-    placeholder="Search food or restaurants..."
-    aria-label="Search food or restaurant"
-  >
-  <button type="submit">Search</button>
-</form>
-
 <div class="nav-actions">
   <button
     id="foozy-notifications"
@@ -2231,9 +2221,17 @@ body {
       <p id="promoDescription"></p>
     </div>
   </div>
-</header>
-
-<main>
+</header><div class="sticky-search-bar">
+  <form class="search nav-search" id="searchForm">
+    <input
+      id="searchInput"
+      type="search"
+      placeholder="Search food or restaurants..."
+      aria-label="Search food or restaurant"
+    >
+    <button type="submit">Search</button>
+  </form>
+</div><main>
   <!-- FOOZY ORDER TRACKING BANNER -->
 <div id="foozyTrackBanner" style="
   display:none;
