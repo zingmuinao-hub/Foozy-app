@@ -497,6 +497,36 @@ restoreAvailability();
     clearTimeout(toastTimer);
     toastTimer=setTimeout(()=>box.style.display="none",2800);
   }
+  const logoutButton = $("logoutBtn");
+
+logoutButton.addEventListener("click", async () => {
+  const db = window.foozyDb;
+
+  logoutButton.disabled = true;
+  logoutButton.textContent = "Logging out...";
+
+  try {
+    if (!db) {
+      throw new Error("Account connection is unavailable.");
+    }
+
+    const { error } = await db.auth.signOut({
+      scope: "local"
+    });
+
+    if (error) throw error;
+
+    window.location.replace("./delivery-login.html");
+
+  } catch (error) {
+    console.error("FoodRush logout failed:", error);
+
+    logoutButton.disabled = false;
+    logoutButton.innerHTML = "↪ &nbsp; Log out";
+
+    toast("Couldn't log out. Please try again.");
+  }
+});
 
   function showPage(page){
     if(!titles[page]) return;
