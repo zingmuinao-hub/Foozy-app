@@ -366,7 +366,7 @@
         });
 
         heading.textContent = registering
-          ? "Join Foozy Delivery"
+          ? "Join FoodRush Delivery"
           : "Delivery Partner Login";
 
         subtitle.textContent = registering
@@ -439,7 +439,7 @@
 
             if (!data.session || !data.user) {
               say(
-                "Your account request was received. Confirm your email first. Then log in here and contact Foozy Admin to complete your delivery application."
+                "Your account request was received. Confirm your email first. Then log in here and contact FoodRush Admin to complete your delivery application."
               );
               return;
             }
@@ -461,7 +461,7 @@
             if (applicationError) {
               console.error("Application submission error:", applicationError);
               say(
-                "Your account was created, but your application could not be submitted. Please contact Foozy Admin before trying again."
+                "Your account was created, but your application could not be submitted. Please contact FoodRush Admin before trying again."
               );
               return;
             }
