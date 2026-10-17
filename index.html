@@ -3279,7 +3279,7 @@ async function loadFoozyPromotion() {
       if (promo.image_url) {
         const img = document.createElement("img");
         img.src = promo.image_url;
-        img.alt = promo.title || "Foozy promotion";
+        img.alt = promo.title || "FoodRush promotion";
         img.loading = index === 0 ? "eager" : "lazy";
         slide.appendChild(img);
       }
@@ -3289,7 +3289,7 @@ async function loadFoozyPromotion() {
 
       const label = document.createElement("span");
       label.className = "promo-label";
-      label.textContent = "🔥 SPECIAL ON FOOZY";
+      label.textContent = "🔥 SPECIAL ON FOODRUSH";
 
       const title = document.createElement("h3");
       title.textContent = promo.title || "";
