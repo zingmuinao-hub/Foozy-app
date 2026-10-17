@@ -3275,6 +3275,37 @@ async function loadFoozyPromotion() {
     promotions.forEach((promo, index) => {
       const slide = document.createElement("article");
       slide.className = "promo-slide";
+      if (promo.destination_url) {
+try {
+const destination = new URL(promo.destination_url);
+
+    if (destination.protocol === "https:" || destination.protocol === "http:") {
+      slide.style.cursor = "pointer";
+      slide.setAttribute("role", "link");
+      slide.setAttribute("tabindex", "0");
+      slide.setAttribute("aria-label", "Open promotion: " + (promo.title || "Special offer"));
+
+      const openPromotion = () => {
+        window.location.href = destination.href;
+      };
+
+      slide.addEventListener("click", (event) => {
+        if (event.target.closest("button, a")) return;
+        openPromotion();
+      });
+
+      slide.addEventListener("keydown", (event) => {
+        if (event.target !== slide) return;
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          openPromotion();
+        }
+      });
+    }
+  } catch (error) {
+    console.warn("Invalid promotion destination URL:", promo.destination_url);
+  }
+      }
 
       if (promo.image_url) {
         const img = document.createElement("img");
