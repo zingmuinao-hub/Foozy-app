@@ -1398,5 +1398,127 @@ loadDeliveryApplications();
   loadPromotions();
 })();
   </script>
+<script>
+(() => {
+  const db = window.db;
+  const list = document.getElementById("foodRushReviewsList");
+  const message = document.getElementById("foodRushReviewsMessage");
+  const refresh = document.getElementById("refreshFoodRushReviews");
+
+  if (!db || !list || !message) return;
+
+  function setMessage(text, error = false) {
+    message.textContent = text;
+    message.style.color = error ? "#b91c1c" : "#6b7280";
+  }
+
+  async function verifyAdmin() {
+    const { data, error } = await db.auth.getSession();
+
+    if (error || !data.session) {
+      throw new Error("Please sign in to your FoodRush Admin account.");
+    }
+
+    const result = await db.rpc("is_foozy_admin");
+
+    if (result.error || result.data !== true) {
+      throw new Error("Only an authorized admin can manage reviews.");
+    }
+  }
+
+  async function loadReviews() {
+    list.replaceChildren();
+    setMessage("Loading reviews...");
+
+    try {
+      await verifyAdmin();
+
+      const { data, error } = await db
+        .from("foodrush_public_reviews")
+        .select("id, overall_rating, review_text, display_name, created_at")
+        .order("overall_rating", { ascending: false })
+        .order("created_at", { ascending: false });
+
+      if (error) throw error;
+
+      if (!data || data.length === 0) {
+        setMessage("No public app reviews yet.");
+        return;
+      }
+
+      for (const review of data) {
+        const card = document.createElement("article");
+        card.style.cssText =
+          "border:1px solid #e5e7eb;border-radius:12px;padding:14px;margin:12px 0;background:#fff;";
+
+        const title = document.createElement("h3");
+        const rating = Math.max(
+          0,
+          Math.min(5, Number(review.overall_rating) || 0)
+        );
+        title.textContent = "⭐".repeat(rating) + " (" + rating + "/5)";
+
+        const name = document.createElement("p");
+        name.textContent = "By: " + (review.display_name || "FoodRush user");
+
+        const body = document.createElement("p");
+        body.textContent = review.review_text || "";
+
+        const date = document.createElement("p");
+        date.textContent = review.created_at
+          ? new Date(review.created_at).toLocaleString()
+          : "";
+
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.textContent = "🗑️ Delete Review";
+
+        remove.addEventListener("click", async () => {
+          if (!confirm("Permanently delete this public review?")) return;
+
+          remove.disabled = true;
+          setMessage("Deleting review...");
+
+          try {
+            await verifyAdmin();
+
+            const { data: deleted, error: deleteError } = await db.rpc(
+              "admin_delete_foodrush_review",
+              { p_review_id: review.id }
+            );
+
+            if (deleteError) throw deleteError;
+
+            if (deleted !== true) {
+              throw new Error("Review not found or already deleted.");
+            }
+
+            setMessage("Review deleted successfully!");
+            await loadReviews();
+          } catch (error) {
+            setMessage(error.message || "Could not delete review.", true);
+            remove.disabled = false;
+          }
+        });
+
+        card.append(title, name, body, date, remove);
+        list.appendChild(card);
+      }
+
+      setMessage(
+        "Showing " + data.length + " public review(s), highest ratings first."
+      );
+    } catch (error) {
+      setMessage(error.message || "Could not load reviews.", true);
+    }
+  }
+
+  window.loadFoodRushReviews = loadReviews;
+
+  if (refresh) {
+    refresh.addEventListener("click", loadReviews);
+  }
+})();
+</script>
 </body>
 </html>
