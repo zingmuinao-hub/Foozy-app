@@ -1300,6 +1300,39 @@ loadDeliveryApplications();
         });
 
         card.appendChild(toggle);
+        const deleteButton = document.createElement("button");
+deleteButton.type = "button";
+deleteButton.textContent = "🗑️ Delete Promotion";
+deleteButton.style.cssText =
+"margin-top:10px;background:#dc2626;color:#fff;" +
+"border:0;border-radius:8px;padding:10px 14px;cursor:pointer;";
+
+  deleteButton.addEventListener("click", async () => {
+    if (!confirm("Are you sure you want to delete this promotion? This cannot be undone.")) {
+      return;
+    }
+
+    deleteButton.disabled = true;
+
+    try {
+      await checkAdmin();
+
+      const { error } = await db
+        .from("promotions")
+        .delete()
+        .eq("id", promo.id);
+
+      if (error) throw error;
+
+      showMessage("Promotion deleted successfully!");
+      await loadPromotions();
+    } catch (error) {
+      showMessage(error.message || "Could not delete promotion.", true);
+      deleteButton.disabled = false;
+    }
+  });
+
+  card.appendChild(deleteButton);
         list.appendChild(card);
       });
     } catch (error) {
