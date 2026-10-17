@@ -602,7 +602,7 @@ font-size: 12px;
   </button>
 
   <p style="color:#999;font-size:12px;margin-top:12px;line-height:1.6">
-    Orders are placed through Foozy's ordering system. Payment handling
+    Orders are placed through FoodRush's ordering system. Payment handling
     depends on the available payment options.
   </p>
 </div>
@@ -917,7 +917,7 @@ font-size: 12px;
           "Restaurant not found";
 
         document.getElementById("restaurantDescription").textContent =
-          "Please return to Foozy and choose a restaurant.";
+          "Please return to FoodRush and choose a restaurant.";
 
         status.textContent = "No restaurant was selected.";
         return;
@@ -946,7 +946,7 @@ font-size: 12px;
           return;
         }
 
-        document.title = restaurantData.name + " | Foozy";
+        document.title = restaurantData.name + " | FoodRush";
 
         document.getElementById("restaurantName").textContent =
           restaurantData.name || "Local Restaurant";
@@ -997,7 +997,7 @@ font-size: 12px;
 
 syncMenuQuantities();
       } catch (error) {
-        console.error("Foozy restaurant page error:", error);
+        console.error("FoodRush restaurant page error:", error);
 
         status.textContent =
           "We couldn't load this restaurant. Please try again later.";
