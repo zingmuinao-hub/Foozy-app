@@ -477,23 +477,59 @@
 
   if (error) throw error;
 
-  const { data: application, error: applicationError } = await db
+  let application;
+
+  const { data: foundApplication, error: applicationError } = await db
     .from("partner_applications")
     .select("status, application_type")
     .eq("user_id", data.user.id)
     .eq("application_type", "delivery")
     .maybeSingle();
 
-  if (applicationError) {
-    throw applicationError;
-  }
+  if (applicationError) throw applicationError;
+
+  application = foundApplication;
 
   if (!application) {
-    await db.auth.signOut();
-    say("No delivery partner application was found for this account. Please contact FoodRush Admin.");
-    return;
-  }
+    const details = data.user.user_metadata || {};
 
+    if (
+      details.account_type !== "delivery" ||
+      !details.full_name ||
+      !details.phone
+    ) {
+      await db.auth.signOut();
+      say("No delivery application was found for this account. Please register as a delivery partner.");
+      return;
+    }
+
+    const { data: newApplication, error: createError } = await db
+      .from("partner_applications")
+      .insert({
+        user_id: data.user.id,
+        application_type: "delivery",
+        full_name: details.full_name,
+        phone: details.phone,
+        vehicle_details:
+          "Vehicle: " + (details.vehicle_type || "Not specified") +
+          (details.vehicle_details
+            ? "; Details: " + details.vehicle_details
+            : "") +
+          "; Licence: " + (details.licence || "Not specified"),
+        status: "pending"
+      })
+      .select("status, application_type")
+      .single();
+
+    if (createError || !newApplication) {
+      console.error("Delivery application recovery error:", createError);
+      await db.auth.signOut();
+      say("We couldn't submit your delivery application. Please contact FoodRush Admin.");
+      return;
+    }
+
+    application = newApplication;
+  }
   if (application.status !== "approved") {
     const status = String(application.status || "pending").toLowerCase();
 
