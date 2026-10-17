@@ -1159,11 +1159,11 @@ async function showFeature(feature) {
     "My Vouchers":
       "Your available coupons will appear here when the voucher system is connected.",
 
-    "Foozy Money":
+    "FoodRush Money":
       "Your wallet balance will appear here when the secure wallet system is connected.",
 
     "Help & Support":
-      "The Foozy support contact details will be added here."
+      "The FoodRush support contact details will be added here."
   };
 
   openDialog(
@@ -1483,9 +1483,9 @@ async function openSettings() {
 function showLegal(page) {
   const messages = {
     "Terms & Conditions": "The final Foozy Terms & Conditions must explain ordering, restaurant responsibilities, payments, cancellations, customer conduct and dispute handling. This section is a placeholder until the official terms are approved.",
-    "Privacy Policy": "Foozy should explain what customer data it collects, why it is used, how it is protected, and how customers can request access or deletion. The official privacy policy still needs to be published.",
+    "Privacy Policy": "FoodRush should explain what customer data it collects, why it is used, how it is protected, and how customers can request access or deletion. The official privacy policy still needs to be published.",
     "Refund & Cancellation Policy": "Refund eligibility, cancellation rules and processing times must follow Foozy's actual operating policy. This page is a placeholder, not a promise that a refund has been approved.",
-    "About Foozy": "Foozy is being built to help people discover and order food locally in Ukhrul, Manipur. Food is calling!"
+    "About FoodRush": "FoodRush is being built to help people discover and order food locally in Ukhrul, Manipur. Food is calling!"
   };
 
   openDialog(page, `<div class="status">${escapeHTML(messages[page] || "")}</div>`);
