@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#ff641f">
+<meta name="description" content="Install FoodRush and discover local food.">
+<link rel="manifest" href="./manifest.json">
+<title>Install FoodRush</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+margin:0;min-height:100vh;display:grid;place-items:center;
+padding:22px;background:#fff8f1;
+font-family:Arial,sans-serif;color:#222
+}
+.card{
+width:100%;max-width:420px;background:white;
+padding:30px 24px;border-radius:24px;text-align:center;
+box-shadow:0 10px 35px #00000010
+}
+.logo{font-size:48px;margin-bottom:12px}
+h1{font-size:32px;margin:8px}
+h1 span{color:#ff641f}
+p{color:#666;line-height:1.6}
+button,a{
+display:block;width:100%;padding:15px;margin-top:12px;
+border:0;border-radius:12px;font-size:16px;
+font-weight:bold;text-decoration:none;cursor:pointer
+}
+button{background:#ff641f;color:white}
+a{background:#f1f1f1;color:#222}
+#help{
+display:none;background:#fff3e9;padding:14px;
+border-radius:12px;text-align:left;font-size:14px
+}
+</style>
+</head>
+
+<body>
+<main class="card">
+<div class="logo">🍜</div>
+<h1>Food<span>Rush</span></h1>
+
+<p>
+Discover delicious food from your favourite local
+restaurants. Install FoodRush for easy access
+from your phone's home screen.
+</p>
+
+<button id="installBtn">Install FoodRush</button>
+
+<a href="./">Open FoodRush Website</a>
+
+<div id="help"></div>
+
+<p style="font-size:12px">
+Fast access to local food, wherever you go.
+</p>
+</main>
+
+<script>
+let installPrompt = null;
+
+const button = document.getElementById("installBtn");
+const help = document.getElementById("help");
+
+window.addEventListener("beforeinstallprompt", event => {
+  event.preventDefault();
+  installPrompt = event;
+});
+
+button.addEventListener("click", async () => {
+  if (installPrompt) {
+    installPrompt.prompt();
+    await installPrompt.userChoice;
+    installPrompt = null;
+    return;
+  }
+
+  help.style.display = "block";
+
+  if (/iphone|ipad|ipod/i.test(navigator.userAgent)) {
+    help.innerHTML =
+      "<b>Install on iPhone</b><br>" +
+      "Open this page in Safari, tap Share, " +
+      "choose Add to Home Screen, then tap Add.";
+  } else {
+    help.innerHTML =
+      "<b>Install on Android</b><br>" +
+      "Open this page in Chrome, tap ⋮, " +
+      "choose Install app or Add to Home screen, " +
+      "then confirm.";
+  }
+});
+</script>
+</body>
+</html>
