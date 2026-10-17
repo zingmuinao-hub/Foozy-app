@@ -3237,7 +3237,7 @@ async function loadFoozyPromotion() {
   try {
     const { data, error } = await window.foozySupabase
       .from("promotions")
-      .select("id, title, description, image_url, starts_at, ends_at")
+      .select("id, title, description, image_url, destination_url, starts_at, ends_at")
       .eq("is_active", true)
       .order("display_order", { ascending: true })
       .order("created_at", { ascending: false });
