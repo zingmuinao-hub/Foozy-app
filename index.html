@@ -2081,34 +2081,39 @@ body {
 </div>
 
 <!-- HEADER -->
-
 <header>
-  <div class="container nav">
-    <div>
-      <div class="logo" aria-label="FoodRush">
-  <span class="logo-mark">🍜</span>
-      </div>
-      <div class="nav-location">
-        YOUR LOCAL FOOD DESTINATION · <strong>Ukhrul</strong>
-      </div>
-    </div>
+  <div class="container nav"><div class="nav-brand">
+  <div class="logo" aria-label="FoodRush">
+    <span class="logo-mark">🍜</span>
+  </div>
+</div>
 
-    <div style="display:flex;align-items:center;gap:8px;">
-      <button id="foozy-notifications"
-  type="button"
-  aria-label="Enable FoodRush notifications"
-  title="Enable FoodRush notifications"
-  style="width:42px;height:42px;border:1px solid #353535;
-  border-radius:12px;background:#252525;color:white;
-  font-size:20px;flex-shrink:0;">
-  🔔
-      </button>
+<form class="search nav-search" id="searchForm">
+  <input
+    id="searchInput"
+    type="search"
+    placeholder="Search food or restaurants..."
+    aria-label="Search food or restaurant"
+  >
+  <button type="submit">Search</button>
+</form>
+
+<div class="nav-actions">
+  <button
+    id="foozy-notifications"
+    type="button"
+    aria-label="Enable FoodRush notifications"
+    title="Enable FoodRush notifications"
+  >🔔</button>
 
   <button class="cart-btn" onclick="openCart()">
-    <span class="cart-icon" aria-hidden="true">🛒</span> Cart
+    <span class="cart-icon" aria-hidden="true">🛒</span>
+    <span class="cart-label">Cart</span>
     <span class="cart-count" id="cartCount">0</span>
   </button>
-    </div>
+</div>
+
+  </div>
 </header>
 
 <main>
