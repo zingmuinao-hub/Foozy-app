@@ -299,7 +299,7 @@ try {
   if (
     window.supabase &&
     SUPABASE_URL.startsWith("https://") &&
-    SUPABASE_KEY !== "PASTE_YOUR_EXISTING_PUBLIC_SUPABASE_KEY"
+    SUPABASE_KEY !== "sb_publishable_Ix1rMiMTqPQIsBEM708shg_POK6_JM8"
   ) {
     db = window.supabase.createClient(
       SUPABASE_URL,
@@ -381,8 +381,8 @@ form.addEventListener("submit", async function(event) {
 
     if (data.session) {
       showMessage(
-        "Welcome to Foozy, " + name +
-        "! Your account has been created successfully. Opening Foozy...",
+        "Welcome to FoodRush, " + name +
+        "! Your account has been created successfully. Opening FoodRush...",
         "success"
       );
 
@@ -404,7 +404,7 @@ form.addEventListener("submit", async function(event) {
     }
 
   } catch (error) {
-    console.error("Foozy registration error:", error);
+    console.error("FoodRush registration error:", error);
 
     let errorText = error.message ||
       "Something went wrong. Please try again.";
