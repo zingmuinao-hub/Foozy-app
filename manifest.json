@@ -1,7 +1,7 @@
 {
-  "name": "Foozy - Food Delivery",
-  "short_name": "Foozy",
-  "description": "Discover delicious food from local restaurants with Foozy.",
+  "name": "FoodRush - Food Delivery",
+  "short_name": "FoodRush",
+  "description": "Discover delicious food from local restaurants with FoodRush.",
   "start_url": "./signup.html",
   "scope": "./",
   "display": "standalone",
