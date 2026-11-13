@@ -2146,6 +2146,39 @@ body {
 .categories .category:hover .emoji {
   background: #ffe2d0;
 }
+
+/* Foozy premium app polish */
+body{background:#f7f8fa;color:#202124}
+header{position:sticky;top:0;background:rgba(255,255,255,.96);backdrop-filter:blur(16px);box-shadow:0 8px 28px rgba(28,33,40,.07)}
+.nav{min-height:78px;gap:18px}
+.nav-brand .logo{display:flex;align-items:center;gap:10px;color:#202124;font-size:25px;font-weight:900;letter-spacing:-1.2px}
+.nav-brand .logo-mark{display:grid;place-items:center;width:42px;height:42px;margin:0;border-radius:14px;background:linear-gradient(145deg,#ff8c48,#f04c18);color:#fff;font-size:21px;font-weight:1000;box-shadow:0 5px 12px #ef5a252f,inset 0 1px 0 #ffffff80}
+#foozy-notifications{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:auto!important;height:42px!important;padding:0 13px!important;border:1px solid #e8e9ed!important;border-radius:13px!important;background:#fff!important;color:#353941!important;font-size:13px!important;font-weight:800;box-shadow:0 3px 10px rgba(20,25,35,.04);transition:transform .2s,box-shadow .2s,border-color .2s}
+#foozy-notifications:hover{transform:translateY(-1px);border-color:#ffc1a5!important;box-shadow:0 7px 16px rgba(240,92,39,.12)}
+#foozy-notifications.is-enabled{background:#f0faf4!important;color:#168047!important;border-color:#c8ecd5!important}
+.notification-icon{font-size:16px;line-height:1}
+.cart-btn{border-radius:13px;padding:12px 16px;box-shadow:0 6px 15px rgba(237,86,29,.2)}
+.hero-showcase{min-height:500px;border-radius:0 0 32px 32px;background-position:center 54%}
+.hero-showcase-inner{min-height:500px}.hero-showcase-content{max-width:720px}
+.hero-showcase h2{max-width:680px}
+.hero-ad-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.hero-ad-actions button{padding:13px 18px;border:1px solid #ffffff70;border-radius:13px;color:#fff;background:#ffffff14;font-weight:900;backdrop-filter:blur(8px)}
+.hero-ad-actions .hero-ad-primary{border-color:var(--orange);background:var(--orange);box-shadow:0 8px 20px #ff641f50}
+#foozySplash{display:none;background:radial-gradient(ellipse at 50% 43%,#ff8a4d 0%,#f45b22 50%,#d83b12 100%);perspective:1100px}
+#foozySplash.foozy-splash-active{display:flex;animation:splashGlow 1.9s ease both}
+.foozy-splash-content{transform-style:preserve-3d}
+.foozy-splash-logo{display:flex;align-items:center;gap:15px;opacity:1;font-size:clamp(64px,17vw,104px);letter-spacing:-4px;text-shadow:0 5px 0 #b93512,0 16px 35px #59140080;animation:foozyLogo3D 1.35s cubic-bezier(.2,.8,.25,1) both}
+.foozy-3d-mark{display:grid;place-items:center;width:.9em;height:.9em;border-radius:.25em;background:linear-gradient(145deg,#fff3dc,#ffd0a0);color:#ef5723;font-size:.72em;font-weight:1000;text-shadow:0 2px 0 #fff;box-shadow:0 .07em 0 #b93512,0 .14em 0 #8b2c12,0 .24em .45em #751d0866,inset 0 2px 0 #fff;transform:translateZ(24px) rotateY(-8deg)}
+.foozy-scooter{font-size:52px;filter:drop-shadow(0 8px 5px #6c210955);animation:foozyScooterDrive .9s ease-in .65s both}
+.foozy-splash-tagline{font-size:14px;letter-spacing:2px;text-transform:uppercase}
+@keyframes foozyLogo3D{0%{opacity:0;transform:rotateY(-75deg) rotateX(22deg) scale(.55) translateY(20px)}55%{opacity:1;transform:rotateY(18deg) rotateX(-6deg) scale(1.08) translateY(-4px)}100%{opacity:1;transform:rotateY(0) rotateX(0) scale(1) translateY(0)}}
+@keyframes splashGlow{0%{opacity:0}100%{opacity:1}}
+.foozy-bottom-nav{background:rgba(255,255,255,.96);border-color:#eceef1;box-shadow:0 12px 35px rgba(27,33,44,.12)}
+.foozy-nav-item{color:#757b85}.restaurant{border:1px solid #eceef1;box-shadow:0 8px 26px rgba(25,30,40,.06)}
+.category{border-color:#e9ebef;box-shadow:0 3px 12px rgba(25,30,40,.035)}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid rgba(255,100,31,.32);outline-offset:3px}
+@media(max-width:600px){.nav{min-height:68px;gap:9px}.nav-brand .logo{gap:7px;font-size:22px}.nav-brand .logo-mark{width:36px;height:36px;border-radius:12px;font-size:18px}#foozy-notifications{height:38px!important;padding:0 10px!important;gap:6px;font-size:12px!important}.nav-actions{gap:7px}.nav-actions .cart-label{display:inline}.nav-actions .cart-btn{padding:10px 11px}.hero-showcase,.hero-showcase-inner{min-height:440px}.hero-showcase-content{padding:48px 0}.hero-ad-actions button{padding:12px 13px;font-size:12px}}
+@media(prefers-reduced-motion:reduce){#foozySplash.foozy-splash-active,.foozy-splash-logo,.foozy-scooter{animation:none!important}.hero-ad-actions button,#foozy-notifications{transition:none}}
 </style>
 </head>
 
@@ -2153,7 +2186,7 @@ body {
   <!-- Foozy ANIMATED SPLASH SCREEN -->
 <div id="foozySplash" aria-label="Welcome to Foozy">
   <div class="foozy-splash-content">
-    <div class="foozy-splash-logo">Foozy</div>
+    <div class="foozy-splash-logo"><span class="foozy-3d-mark" aria-hidden="true">F</span><span>Foozy</span></div>
 
     <div class="foozy-scooter">
       🛵
@@ -2191,11 +2224,11 @@ body {
 
     <div class="welcome-actions">
       <button class="primary-btn" onclick="enterFoozy()">
-        Discover Deliciousness →
+        Explore the Foozy menu →
       </button>
 
       <button class="skip-btn" onclick="enterFoozy()">
-        Skip Ad
+        Continue to Foozy
       </button>
     </div>
 
@@ -2208,9 +2241,7 @@ body {
 <!-- HEADER -->
 <header>
   <div class="container nav"><div class="nav-brand">
-  <div class="logo" aria-label="Foozy">
-    <span class="logo-mark">🍜</span>
-  </div>
+  <div class="logo" aria-label="Foozy"><span class="logo-mark">F</span><span class="logo-word">Foozy</span></div>
 </div>
 
 <div class="nav-actions">
@@ -2219,7 +2250,7 @@ body {
     type="button"
     aria-label="Enable Foozy notifications"
     title="Enable Foozy notifications"
-  >🔔</button>
+  ><span class="notification-icon" aria-hidden="true">🔔</span><span class="notification-label">Notifications</span></button>
 
   <button class="cart-btn" onclick="openCart()">
     <span class="cart-icon" aria-hidden="true">🛒</span>
@@ -2295,21 +2326,24 @@ body {
     <div class="hero-showcase-content">
 
       <div class="eyebrow">
-        YOUR TOWN. YOUR FOOD. YOUR Foozy.
+        LOCAL FLAVOURS. ONE EASY ORDER.
       </div>
 
       <h2>
-        UKHRUL,<br>
-        <span>ON YOUR TABLE.</span>
+        UKHRUL’S FAVOURITES,<br>
+        <span>AT YOUR DOOR.</span>
       </h2>
 
       <p class="hero-copy">
-        From your favourite local spots to the meals
-        you're craving today. Discover Ukhrul's food
-        scene, order with ease, and enjoy more.
+        Discover Ukhrul’s favourite local kitchens, explore
+        dishes made for every craving, and enjoy easy
+        ordering right from your phone.
       </p>
 
-      <!-- ADMIN-CONTROLLED PROMOTION -->
+      <div class="hero-ad-actions">
+        <button class="hero-ad-primary" onclick="scrollToRestaurants()">Explore local restaurants</button>
+        <button onclick="document.getElementById('categoriesSection').scrollIntoView({behavior:'smooth'})">Browse today’s menu</button>
+      </div>
 
     </div>
   </div>
@@ -2804,11 +2838,11 @@ body {
 function enterFoozy() {
   const welcome = document.getElementById('welcome');
   welcome.style.opacity = '0';
-  welcome.style.transition = 'opacity .35s ease';
-
+  welcome.style.transition = 'opacity .3s ease';
   setTimeout(() => {
     welcome.classList.add('hidden');
-  }, 350);
+    if (window.playFoozyIntro) window.playFoozyIntro();
+  }, 300);
 }
 
 /* SEARCH AND CATEGORIES */
@@ -3593,14 +3627,11 @@ window.OneSignalDeferred.push(async function (OneSignal) {
     });
 
     function markEnabled() {
-      button.textContent = "✓";
+      button.innerHTML = '<span class="notification-icon" aria-hidden="true">✓</span><span class="notification-label">Enabled</span>';
+      button.classList.add("is-enabled");
       button.title = "Foozy notifications enabled";
-      button.setAttribute(
-        "aria-label",
-        "Foozy notifications enabled"
-      );
+      button.setAttribute("aria-label", "Foozy notifications enabled");
       button.disabled = true;
-      button.style.background = "#16a34a";
     }
 
     if (OneSignal.User.PushSubscription.optedIn) {
@@ -3629,13 +3660,7 @@ window.OneSignalDeferred.push(async function (OneSignal) {
 
     button.addEventListener("click", enableNotifications);
 
-    // Ask on entry, without repeatedly prompting subscribed customers.
-    if (
-      "Notification" in window &&
-      Notification.permission !== "denied"
-    ) {
-      setTimeout(enableNotifications, 1500);
-    }
+    // Customers choose when to enable notifications from the header button.
 
   } catch (error) {
     console.error("Foozy OneSignal initialization:", error);
@@ -3643,75 +3668,24 @@ window.OneSignalDeferred.push(async function (OneSignal) {
 });
 </script>
 
-  <div style="text-align:center; padding:20px;">
-  <button id="foozy-notifications"
-    style="padding:14px 20px; background:#16a34a; color:white; border:0; border-radius:10px; font-size:16px;">
-    🔔 Enable Foozy Notifications
-  </button>
-  <p id="foozy-notification-message"></p>
-</div>
+  <!-- Notification preferences are available in the app header. -->
 
-<script>
-window.OneSignalDeferred = window.OneSignalDeferred || [];
 
-window.OneSignalDeferred.push(async function (OneSignal) {
-  try {
-    // Don't prompt if the customer has already subscribed
-    // or has blocked notifications in browser settings.
-    if (
-      Notification.permission === "denied" ||
-      OneSignal.User.PushSubscription.optedIn
-    ) {
-      return;
-    }
-
-    // Show Foozy's notification prompt when the page opens.
-    setTimeout(async function () {
-      try {
-        await OneSignal.Slidedown.promptPush();
-      } catch (error) {
-        console.error("Foozy notification prompt:", error);
-      }
-    }, 1200);
-
-  } catch (error) {
-    console.error("Foozy notification setup:", error);
-  }
-});
-</script>
   
 <!-- FOOZY SPLASH SCREEN CONTROLLER -->
 <script>
-(function () {
+window.playFoozyIntro = function () {
   const splash = document.getElementById("foozySplash");
-  const welcome = document.getElementById("welcome");
-
-  const skipIntro =
-    new URLSearchParams(window.location.search)
-      .get("skipIntro") === "1";
-
-  if (skipIntro) {
-    if (splash) splash.remove();
-    if (welcome) welcome.classList.add("hidden");
-    return;
-  }
-
   if (!splash) return;
-
-  const reducedMotion = window.matchMedia(
-    "(prefers-reduced-motion: reduce)"
-  ).matches;
-
-  const duration = reducedMotion ? 500 : 2300;
-
+  splash.classList.remove("foozy-splash-hide", "foozy-splash-active");
+  void splash.offsetWidth;
+  splash.classList.add("foozy-splash-active");
+  const duration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 550 : 1900;
   window.setTimeout(function () {
     splash.classList.add("foozy-splash-hide");
-
-    window.setTimeout(function () {
-      splash.remove();
-    }, 400);
+    window.setTimeout(function () { splash.classList.remove("foozy-splash-active", "foozy-splash-hide"); }, 400);
   }, duration);
-})();
+};
 </script>
 <!-- END FOOZY SPLASH SCREEN CONTROLLER -->
 <script>
@@ -4014,35 +3988,7 @@ categories = categories.filter(Boolean);
   }
 })();
 </script>
-<script>
-(function () {
-  function fixWelcomeButtons() {
-    const welcome = document.getElementById("welcome");
-
-    if (!welcome) return;
-
-    window.enterFoozy = function () {
-      welcome.style.opacity = "0";
-      welcome.style.transition = "opacity 0.35s ease";
-
-      setTimeout(function () {
-        welcome.classList.add("hidden");
-      }, 350);
-    };
-
-    document.querySelectorAll(".welcome-actions button")
-      .forEach(function (button) {
-        button.addEventListener("click", window.enterFoozy);
-      });
-  }
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", fixWelcomeButtons);
-  } else {
-    fixWelcomeButtons();
-  }
-})();
-</script>
+<!-- Welcome actions use the primary enterFoozy handler. -->
 <!-- FOOZY FLOATING BOTTOM NAVIGATION -->
 <nav class="foozy-bottom-nav" aria-label="Main navigation">
 
