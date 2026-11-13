@@ -1,5 +1,5 @@
 
-name: Deploy FoodRush to Cloudflare Pages
+name: Deploy Foozy to Cloudflare Pages
 
 on:
   push:
@@ -13,7 +13,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Check out FoodRush
+      - name: Check out Foozy
         uses: actions/checkout@v4
 
       - name: Deploy to Cloudflare Pages
