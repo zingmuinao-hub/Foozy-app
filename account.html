@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#101010">
-<title>My Account | FoodRush</title>
+<title>My Account | Foozy</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -422,7 +422,7 @@ header {
 
   <div class="page-title">
     <h1>My Account 👋</h1>
-    <p>Your profile, orders and everything FoodRush.</p>
+    <p>Your profile, orders and everything Foozy.</p>
   </div>
 
   <section class="profile-card">
@@ -481,7 +481,7 @@ header {
       <button class="menu-row" onclick="showFeature('Foozy Money')">
         <div class="icon">💰</div>
         <div class="row-content">
-          <strong>FoodRush Money</strong>
+          <strong>Foozy Money</strong>
           <small>Wallet balance and transactions</small>
         </div>
         <span class="badge">WALLET</span>
@@ -565,7 +565,7 @@ header {
       <button class="menu-row" onclick="showLegal('About Foozy')">
         <div class="icon">🧡</div>
         <div class="row-content">
-          <strong>About FoodRush</strong>
+          <strong>About Foozy</strong>
           <small>Food is calling!</small>
         </div>
         <span class="arrow">›</span>
@@ -609,7 +609,7 @@ header {
 
 <script>
 /*
-  FoodRush Supabase configuration.
+  Foozy Supabase configuration.
   The publishable key is intended for client-side use.
   Database access must still be protected by Supabase RLS policies.
 */
@@ -1159,11 +1159,11 @@ async function showFeature(feature) {
     "My Vouchers":
       "Your available coupons will appear here when the voucher system is connected.",
 
-    "FoodRush Money":
+    "Foozy Money":
       "Your wallet balance will appear here when the secure wallet system is connected.",
 
     "Help & Support":
-      "The FoodRush support contact details will be added here."
+      "The Foozy support contact details will be added here."
   };
 
   openDialog(
@@ -1483,9 +1483,9 @@ async function openSettings() {
 function showLegal(page) {
   const messages = {
     "Terms & Conditions": "The final Foozy Terms & Conditions must explain ordering, restaurant responsibilities, payments, cancellations, customer conduct and dispute handling. This section is a placeholder until the official terms are approved.",
-    "Privacy Policy": "FoodRush should explain what customer data it collects, why it is used, how it is protected, and how customers can request access or deletion. The official privacy policy still needs to be published.",
+    "Privacy Policy": "Foozy should explain what customer data it collects, why it is used, how it is protected, and how customers can request access or deletion. The official privacy policy still needs to be published.",
     "Refund & Cancellation Policy": "Refund eligibility, cancellation rules and processing times must follow Foozy's actual operating policy. This page is a placeholder, not a promise that a refund has been approved.",
-    "About FoodRush": "FoodRush is being built to help people discover and order food locally in Ukhrul, Manipur. Food is calling!"
+    "About Foozy": "Foozy is being built to help people discover and order food locally in Ukhrul, Manipur. Food is calling!"
   };
 
   openDialog(page, `<div class="status">${escapeHTML(messages[page] || "")}</div>`);
