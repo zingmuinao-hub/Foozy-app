@@ -3,7 +3,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#ff6b2c">
-  <title>Restaurant Menu | FoodRush</title>  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <title>Restaurant Menu | Foozy</title>  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">  <style>
     * {
       box-sizing: border-box;
@@ -330,7 +330,7 @@
         grid-template-columns: 1fr;
       }
     }
-/* FOODRUSH — HORIZONTAL FOOD MENU */
+/* Foozy — HORIZONTAL FOOD MENU */
 .menu-grid {
 display: flex;
 flex-direction: column;
@@ -554,7 +554,7 @@ font-size: 12px;
   margin-top: 12px;
 }
   </style></head><body>  <header class="topbar">
-    <a class="logo" href="./index.html?skipIntro=1">FOODRUSH<span style="color:white">.</span></a>
+    <a class="logo" href="./index.html?skipIntro=1">Foozy<span style="color:white">.</span></a>
 <a class="back" href="./index.html?skipIntro=1">← Home</a>
 <button class="cart-button" id="openCart">
   🛒 Cart <span id="cartCount">0</span>
@@ -584,7 +584,7 @@ font-size: 12px;
 </section>
 
   </main>  <footer>
-    Made with 🧡 for Ukhrul, Manipur · FoodRush
+    Made with 🧡 for Ukhrul, Manipur · Foozy
   </footer>  <div class="cart-panel" id="cartPanel">
     <div class="cart-box">
       <div class="cart-heading">
@@ -602,7 +602,7 @@ font-size: 12px;
   </button>
 
   <p style="color:#999;font-size:12px;margin-top:12px;line-height:1.6">
-    Orders are placed through FoodRush's ordering system. Payment handling
+    Orders are placed through Foozy's ordering system. Payment handling
     depends on the available payment options.
   </p>
 </div>
@@ -917,7 +917,7 @@ font-size: 12px;
           "Restaurant not found";
 
         document.getElementById("restaurantDescription").textContent =
-          "Please return to FoodRush and choose a restaurant.";
+          "Please return to Foozy and choose a restaurant.";
 
         status.textContent = "No restaurant was selected.";
         return;
@@ -946,7 +946,7 @@ font-size: 12px;
           return;
         }
 
-        document.title = restaurantData.name + " | FoodRush";
+        document.title = restaurantData.name + " | Foozy";
 
         document.getElementById("restaurantName").textContent =
           restaurantData.name || "Local Restaurant";
@@ -997,7 +997,7 @@ font-size: 12px;
 
 syncMenuQuantities();
       } catch (error) {
-        console.error("FoodRush restaurant page error:", error);
+        console.error("Foozy restaurant page error:", error);
 
         status.textContent =
           "We couldn't load this restaurant. Please try again later.";
