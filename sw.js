@@ -1,6 +1,6 @@
 self.addEventListener("push", event => {
   let data = {
-    title: "New FoodRush Order! 🍔",
+    title: "New Foozy Order! 🍔",
     body: "You've received a new order. Tap to view it!",
     url: "/Foozy-app/restaurant-dashboard.html"
   };
