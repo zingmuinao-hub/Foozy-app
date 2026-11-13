@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#fff8f2">
-  <title>Delivery Partner | FoodRush</title>
+  <title>Delivery Partner | Foozy</title>
 
   <style>
     * { box-sizing: border-box; }
@@ -232,7 +232,7 @@
         <div class="hero-art" aria-hidden="true">🛵 📦</div>
         <h1>Deliver food.<br>Earn money.<br>Move forward.</h1>
         <p>
-          Join FoodRush's delivery team and help bring delicious food
+          Join Foozy's delivery team and help bring delicious food
           from local restaurants straight to customers.
         </p>
       </div>
@@ -242,7 +242,7 @@
 
     <section class="content">
       <div class="box">
-        <div class="mobile-brand">🛵 FoodRush Delivery</div>
+        <div class="mobile-brand">🛵 Foozy Delivery</div>
 
         <h2 id="heading">Delivery Partner Login</h2>
         <p class="sub" id="subtitle">
@@ -251,7 +251,7 @@
 
         <div class="tabs">
           <button type="button" id="loginTab" class="active">Log In</button>
-          <button type="button" id="registerTab">Join FoodRush</button>
+          <button type="button" id="registerTab">Join Foozy</button>
         </div>
 
         <form id="partnerForm">
@@ -366,7 +366,7 @@
         });
 
         heading.textContent = registering
-          ? "Join FoodRush Delivery"
+          ? "Join Foozy Delivery"
           : "Delivery Partner Login";
 
         subtitle.textContent = registering
@@ -439,7 +439,7 @@
 
             if (!data.session || !data.user) {
               say(
-                "Your account request was received. Confirm your email first. Then log in here and contact FoodRush Admin to complete your delivery application."
+                "Your account request was received. Confirm your email first. Then log in here and contact Foozy Admin to complete your delivery application."
               );
               return;
             }
@@ -461,13 +461,13 @@
             if (applicationError) {
               console.error("Application submission error:", applicationError);
               say(
-                "Your account was created, but your application could not be submitted. Please contact FoodRush Admin before trying again."
+                "Your account was created, but your application could not be submitted. Please contact Foozy Admin before trying again."
               );
               return;
             }
 
             say(
-              "Your delivery partner application has been submitted for review. FoodRush Admin must review it before you can start delivering."
+              "Your delivery partner application has been submitted for review. Foozy Admin must review it before you can start delivering."
             );
           } else {
   const { data, error } = await db.auth.signInWithPassword({
@@ -524,7 +524,7 @@
     if (createError || !newApplication) {
       console.error("Delivery application recovery error:", createError);
       await db.auth.signOut();
-      say("We couldn't submit your delivery application. Please contact FoodRush Admin.");
+      say("We couldn't submit your delivery application. Please contact Foozy Admin.");
       return;
     }
 
@@ -536,9 +536,9 @@
     await db.auth.signOut();
 
     if (status === "rejected") {
-      say("Your delivery partner application was not approved. Please contact FoodRush Admin.");
+      say("Your delivery partner application was not approved. Please contact Foozy Admin.");
     } else {
-      say("Your delivery partner application is awaiting approval. You can access your dashboard once FoodRush Admin approves it.");
+      say("Your delivery partner application is awaiting approval. You can access your dashboard once Foozy Admin approves it.");
     }
 
     return;
