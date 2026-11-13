@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#ff641f">
-<title>FoodRush | Survey & Feedback</title>
+<title>Foozy | Survey & Feedback</title>
 
 <style>
 :root {
@@ -259,7 +259,7 @@ footer {
 
 <header>
   <div class="header-inner">
-    <div class="logo">FoodRush<span style="color:#333">.</span></div>
+    <div class="logo">Foozy<span style="color:#333">.</span></div>
     <a class="back" href="./index.html">← Back to app</a>
   </div>
 </header>
@@ -267,7 +267,7 @@ footer {
 <main>
   <section class="hero">
     <span class="badge">YOUR VOICE MATTERS 🧡</span>
-    <h1>Help us make FoodRush better.</h1>
+    <h1>Help us make Foozy better.</h1>
     <p>We're preparing to serve Ukhrul. Tell us what you think about the app and what you'd love to see next.</p>
   </section>
 
@@ -298,7 +298,7 @@ footer {
       <h2>⭐ Rate your experience</h2>
 
       <div class="field">
-        <span class="field-title">Overall, how do you rate FoodRush? <span class="required">*</span></span>
+        <span class="field-title">Overall, how do you rate Foozy? <span class="required">*</span></span>
         <div class="rating">
           <label><input type="radio" name="overall" value="1" required><span>⭐<small>1</small></span></label>
           <label><input type="radio" name="overall" value="2"><span>⭐<small>2</small></span></label>
@@ -366,11 +366,11 @@ footer {
 
     <section class="card">
       <h2>✍️ Your review</h2>
-      <p>Your written review can appear publicly on FoodRush. Please don't include private information.</p>
+      <p>Your written review can appear publicly on Foozy. Please don't include private information.</p>
 
       <div class="field">
         <label for="review">Write a review (optional)</label>
-        <textarea id="review" maxlength="2000" placeholder="What do you think about FoodRush?"></textarea>
+        <textarea id="review" maxlength="2000" placeholder="What do you think about Foozy?"></textarea>
       </div>
     </section>
 
@@ -382,10 +382,10 @@ footer {
 
   </form>
 
-  <p class="privacy">Thank you for helping FoodRush grow in Ukhrul. 🧡</p>
+  <p class="privacy">Thank you for helping Foozy grow in Ukhrul. 🧡</p>
 </main>
 
-<footer>FoodRush · Your town. Your food.</footer>
+<footer>Foozy · Your town. Your food.</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -435,7 +435,7 @@ form.addEventListener("submit", async function(event) {
 
   try {
     const { error } = await db
-      .from("foodrush_feedback")
+      .from("Foozy_feedback")
       .insert(payload);
 
     if (error) throw error;
@@ -446,7 +446,7 @@ form.addEventListener("submit", async function(event) {
     statusBox.scrollIntoView({ behavior: "smooth", block: "center" });
 
   } catch (error) {
-    console.error("FoodRush survey error:", error);
+    console.error("Foozy survey error:", error);
     statusBox.textContent = "Sorry, your feedback could not be submitted. Please check your internet connection and try again.";
     statusBox.className = "status error";
   } finally {
