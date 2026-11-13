@@ -6,11 +6,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#ff641f">
 
-<title>FoodRush — Food Is Calling!</title>
+<title>Foozy — Food Is Calling!</title>
   <link rel="manifest" href="./manifest.json">
 <link rel="apple-touch-icon" href="./icons/foozy-192.png">
 
-<meta name="description" content="Discover delicious food in Ukhrul with FoodRush. Your cravings, delivered locally.">
+<meta name="description" content="Discover delicious food in Ukhrul with Foozy. Your cravings, delivered locally.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2078,7 +2078,7 @@ body {
 .foozy-nav-item:active {
   transform: scale(.96);
 }
-/* FOODRUSH CIRCULAR SWIPEABLE CATEGORIES */
+/* Foozy CIRCULAR SWIPEABLE CATEGORIES */
 .categories {
   display: flex;
   gap: 12px;
@@ -2150,10 +2150,10 @@ body {
 </head>
 
 <body>
-  <!-- FOODRUSH ANIMATED SPLASH SCREEN -->
-<div id="foozySplash" aria-label="Welcome to FoodRush">
+  <!-- Foozy ANIMATED SPLASH SCREEN -->
+<div id="foozySplash" aria-label="Welcome to Foozy">
   <div class="foozy-splash-content">
-    <div class="foozy-splash-logo">FOODRUSH</div>
+    <div class="foozy-splash-logo">Foozy</div>
 
     <div class="foozy-scooter">
       🛵
@@ -2164,7 +2164,7 @@ body {
     </p>
   </div>
 </div>
-<!-- END FOODRUSH SPLASH SCREEN -->
+<!-- END Foozy SPLASH SCREEN -->
 
 <!-- WELCOME ADVERTISEMENT -->
 
@@ -2208,7 +2208,7 @@ body {
 <!-- HEADER -->
 <header>
   <div class="container nav"><div class="nav-brand">
-  <div class="logo" aria-label="FoodRush">
+  <div class="logo" aria-label="Foozy">
     <span class="logo-mark">🍜</span>
   </div>
 </div>
@@ -2217,8 +2217,8 @@ body {
   <button
     id="foozy-notifications"
     type="button"
-    aria-label="Enable FoodRush notifications"
-    title="Enable FoodRush notifications"
+    aria-label="Enable Foozy notifications"
+    title="Enable Foozy notifications"
   >🔔</button>
 
   <button class="cart-btn" onclick="openCart()">
@@ -2231,9 +2231,9 @@ body {
 </div>
 
 <div class="promo-banner" id="promoBanner">
-    <img id="promoImage" src="" alt="FoodRush promotion" loading="lazy">
+    <img id="promoImage" src="" alt="Foozy promotion" loading="lazy">
     <div class="promo-banner-content">
-      <div class="promo-banner-label">🔥 SPECIAL ON FOODRUSH</div>
+      <div class="promo-banner-label">🔥 SPECIAL ON Foozy</div>
       <h3 id="promoTitle"></h3>
       <p id="promoDescription"></p>
     </div>
@@ -2295,7 +2295,7 @@ body {
     <div class="hero-showcase-content">
 
       <div class="eyebrow">
-        YOUR TOWN. YOUR FOOD. YOUR FOODRUSH.
+        YOUR TOWN. YOUR FOOD. YOUR Foozy.
       </div>
 
       <h2>
@@ -2321,7 +2321,7 @@ body {
   <div class="container promo-grid">
 
     <div class="promo promo-one">
-      <div class="promo-label">🔥 THE FOODRUSH EXPERIENCE</div>
+      <div class="promo-label">🔥 THE Foozy EXPERIENCE</div>
       <h3>Your next favourite meal is calling.</h3>
       <p>Explore delicious options and discover local favourites.</p>
 
@@ -2426,7 +2426,7 @@ body {
             alt="Burger and fries"
             loading="lazy"
           >
-          <span class="tag">FOODRUSH FAVOURITE</span>
+          <span class="tag">Foozy FAVOURITE</span>
         </div>
 
         <div class="restaurant-body">
@@ -2757,7 +2757,7 @@ body {
         Built with love for Ukhrul, Manipur. Restaurant listings,
         menu items, prices and ratings on this demo page are examples.
       </p>
-      <p>© <span id="year"></span> FoodRush. All rights reserved.</p>
+      <p>© <span id="year"></span> Foozy. All rights reserved.</p>
     </div>
 
   </div>
@@ -3239,7 +3239,7 @@ updateCart();
 
   <!-- FOOZY LIVE MENU -->
 <section id="foozy-live-menu" style="padding:24px 16px;background:#fffaf3;color:#29231f;font-family:Arial,sans-serif;">
-  <h2 style="font-size:26px;margin-bottom:6px;">🍔 Fresh on FoodRush</h2>
+  <h2 style="font-size:26px;margin-bottom:6px;">🍔 Fresh on Foozy</h2>
   <p style="color:#777;margin-bottom:20px;">Discover something delicious today!</p>
 
   <div id="foozy-menu-status" style="padding:12px 0;color:#777;">
@@ -3459,7 +3459,7 @@ const destination = new URL(promo.destination_url);
       if (promo.image_url) {
         const img = document.createElement("img");
         img.src = promo.image_url;
-        img.alt = promo.title || "FoodRush promotion";
+        img.alt = promo.title || "Foozy promotion";
         img.loading = index === 0 ? "eager" : "lazy";
         slide.appendChild(img);
       }
@@ -3469,7 +3469,7 @@ const destination = new URL(promo.destination_url);
 
       const label = document.createElement("span");
       label.className = "promo-label";
-      label.textContent = "🔥 SPECIAL ON FOODRUSH";
+      label.textContent = "🔥 SPECIAL ON Foozy";
 
       const title = document.createElement("h3");
       title.textContent = promo.title || "";
@@ -3594,10 +3594,10 @@ window.OneSignalDeferred.push(async function (OneSignal) {
 
     function markEnabled() {
       button.textContent = "✓";
-      button.title = "FoodRush notifications enabled";
+      button.title = "Foozy notifications enabled";
       button.setAttribute(
         "aria-label",
-        "FoodRush notifications enabled"
+        "Foozy notifications enabled"
       );
       button.disabled = true;
       button.style.background = "#16a34a";
@@ -3646,7 +3646,7 @@ window.OneSignalDeferred.push(async function (OneSignal) {
   <div style="text-align:center; padding:20px;">
   <button id="foozy-notifications"
     style="padding:14px 20px; background:#16a34a; color:white; border:0; border-radius:10px; font-size:16px;">
-    🔔 Enable FoodRush Notifications
+    🔔 Enable Foozy Notifications
   </button>
   <p id="foozy-notification-message"></p>
 </div>
