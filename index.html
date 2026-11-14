@@ -2146,6 +2146,197 @@ body {
 .categories .category:hover .emoji {
   background: #ffe2d0;
 }
+  
+/* FOOZY CHRISTMAS FEST */
+.christmas-section {
+  padding: 35px 0;
+}
+
+.christmas-hero {
+  background: linear-gradient(120deg,#ff641f,#a92e13);
+  color: white;
+  padding: 25px;
+  border-radius: 22px;
+  position: relative;
+  overflow: hidden;
+}
+
+.christmas-hero .fest-label {
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.christmas-hero h2 {
+  font-size: clamp(27px,5vw,38px);
+  margin: 9px 0;
+  line-height: 1.1;
+}
+
+.christmas-hero p {
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 480px;
+}
+
+.christmas-hero button {
+  background: white;
+  color: #e6531d;
+  border: 0;
+  border-radius: 11px;
+  padding: 12px 17px;
+  font-weight: 900;
+  margin-top: 15px;
+}
+
+.christmas-categories {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 18px 0;
+  scrollbar-width: none;
+}
+
+.christmas-categories button {
+  flex-shrink: 0;
+  background: #252525;
+  color: white;
+  border: 1px solid #393939;
+  border-radius: 13px;
+  padding: 12px 15px;
+  font-weight: 800;
+}
+
+.christmas-categories button.active {
+  background: #ff6b2c;
+  border-color: #ff6b2c;
+}
+
+.christmas-search {
+  width: 100%;
+  padding: 13px;
+  border-radius: 12px;
+  border: 1px solid #444;
+  background: #252525;
+  color: white;
+  outline: none;
+  margin: 8px 0 18px;
+}
+
+.christmas-listings {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 13px;
+}
+
+.christmas-card {
+  background: #1c1c1c;
+  border: 1px solid #353535;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.christmas-card img,
+.christmas-placeholder {
+  width: 100%;
+  height: 145px;
+  object-fit: cover;
+}
+
+.christmas-placeholder {
+  display: grid;
+  place-items: center;
+  background: #30221d;
+  font-size: 45px;
+}
+
+.christmas-card-body {
+  padding: 13px;
+}
+
+.christmas-card-body h3 {
+  font-size: 16px;
+  margin: 7px 0;
+}
+
+.christmas-card-body p,
+.christmas-meta {
+  color: #b5b5b5;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.christmas-price {
+  color: #ff8b55;
+  font-weight: 900;
+  margin-top: 8px;
+}
+
+.christmas-seller {
+  margin-top: 25px;
+  padding: 22px;
+  background: #202020;
+  border: 1px solid #393939;
+  border-radius: 18px;
+}
+
+.christmas-seller h3 {
+  margin-bottom: 8px;
+}
+
+.christmas-seller p {
+  color: #b5b5b5;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.christmas-form {
+  display: grid;
+  gap: 11px;
+  margin-top: 16px;
+}
+
+.christmas-form input,
+.christmas-form select,
+.christmas-form textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #444;
+  border-radius: 10px;
+  background: #292929;
+  color: white;
+}
+
+.christmas-form textarea {
+  min-height: 85px;
+}
+
+.christmas-form button {
+  background: #ff6b2c;
+  color: white;
+  border: 0;
+  padding: 13px;
+  border-radius: 11px;
+  font-weight: 900;
+}
+
+#christmasMessage {
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+@media(max-width:650px) {
+  .christmas-listings {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 10px;
+  }
+
+  .christmas-card img,
+  .christmas-placeholder {
+    height: 120px;
+  }
+}
+
 </style>
 <style>
 /* Foozy premium app polish */
@@ -2382,6 +2573,127 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid rgba(
 
   </div>
 </section>
+  
+<!-- FOOZY CHRISTMAS FEST -->
+<section class="christmas-section" id="christmasFest">
+  <div class="container">
+
+    <div class="christmas-hero">
+      <div class="fest-label">🎄 NEW ON FOOZY · DECEMBER 2026</div>
+      <h2>Christmas Fest is here!</h2>
+      <p>
+        Shop local and celebrate together in Ukhrul.
+        Discover gifts, food, fashion, decorations,
+        rentals and more from local sellers.
+      </p>
+      <button onclick="document.getElementById('christmasDiscover').scrollIntoView({behavior:'smooth'})">
+        Explore Christmas Fest →
+      </button>
+    </div>
+
+    <div id="christmasDiscover" style="padding-top:25px">
+      <div class="section-heading">
+        <div>
+          <h2>🎁 Christmas Market</h2>
+          <p>Discover what's available around Ukhrul.</p>
+        </div>
+      </div>
+
+      <div class="christmas-categories" id="christmasCategories">
+        <button class="active" data-category="all">✨ All</button>
+        <button data-category="food">🍰 Food</button>
+        <button data-category="gifts">🎁 Gifts</button>
+        <button data-category="fashion">👗 Fashion</button>
+        <button data-category="decorations">🎄 Decorations</button>
+        <button data-category="beauty">💄 Beauty</button>
+        <button data-category="electronics">🎧 Electronics</button>
+        <button data-category="services">🛠️ Services</button>
+        <button data-category="rentals">🔊 Rentals</button>
+        <button data-category="pre_loved">♻️ Pre-loved</button>
+      </div>
+
+      <input
+        class="christmas-search"
+        id="christmasSearch"
+        type="search"
+        placeholder="Search Christmas products and services..."
+      >
+
+      <div class="christmas-listings" id="christmasListings">
+        <p style="color:#b5b5b5">Loading Christmas listings...</p>
+      </div>
+    </div>
+
+    <div class="christmas-seller" id="christmasSeller">
+      <h3>🎄 Sell something this Christmas?</h3>
+      <p>
+        Local shops, home businesses, creators, rental providers
+        and individual sellers are welcome. Submit your details
+        and Foozy will review your application.
+      </p>
+
+      <form class="christmas-form" id="christmasSellerForm">
+        <input id="cfName" required maxlength="100"
+          placeholder="Your full name">
+
+        <input id="cfBusiness" maxlength="120"
+          placeholder="Shop / business name (optional)">
+
+        <select id="cfType" required>
+          <option value="">Choose seller type</option>
+          <option value="local_business">Local business / shop</option>
+          <option value="home_business">Home business</option>
+          <option value="individual">Individual seller</option>
+          <option value="creator">Creator / handmade products</option>
+          <option value="service">Service provider</option>
+          <option value="rental">Rental provider</option>
+        </select>
+
+        <select id="cfCategory" required>
+          <option value="">Choose category</option>
+          <option value="food">Food</option>
+          <option value="gifts">Gifts</option>
+          <option value="fashion">Fashion</option>
+          <option value="decorations">Decorations</option>
+          <option value="beauty">Beauty</option>
+          <option value="electronics">Electronics</option>
+          <option value="services">Services</option>
+          <option value="rentals">Rentals</option>
+          <option value="pre_loved">Pre-loved</option>
+          <option value="other">Other</option>
+        </select>
+
+        <input id="cfPhone" type="tel" required maxlength="25"
+          placeholder="Phone / WhatsApp number">
+
+        <input id="cfLocality" required maxlength="120"
+          value="Ukhrul" placeholder="Village / locality">
+
+        <textarea id="cfDescription" maxlength="1000"
+          placeholder="What do you want to sell or offer?"></textarea>
+
+        <label><input type="checkbox" id="cfPickup" checked> Pickup</label>
+        <label><input type="checkbox" id="cfDelivery"> Local delivery</label>
+        <label><input type="checkbox" id="cfMeetup"> Meet-up</label>
+
+        <label style="font-size:12px;color:#ccc">
+          <input type="checkbox" id="cfConsent" required>
+          I agree that Foozy may contact me about my application.
+          My contact details will not be shown publicly.
+        </label>
+
+        <button type="submit" id="cfSubmit">
+          Submit seller application
+        </button>
+      </form>
+
+      <div id="christmasMessage"></div>
+    </div>
+
+  </div>
+</section>
+<!-- END FOOZY CHRISTMAS FEST -->
+
 
 <!-- CATEGORIES -->
 
@@ -2846,6 +3158,211 @@ function enterFoozy() {
     if (window.playFoozyIntro) window.playFoozyIntro();
   }, 300);
 }
+
+/* FOOZY CHRISTMAS FEST - SUPABASE */
+
+(function () {
+  const db = window.foozySupabase;
+
+  const grid = document.getElementById("christmasListings");
+  const search = document.getElementById("christmasSearch");
+  const categories = document.getElementById("christmasCategories");
+  const form = document.getElementById("christmasSellerForm");
+  const message = document.getElementById("christmasMessage");
+
+  if (!db || !grid || !form) {
+    console.error("Christmas Fest: Supabase or section unavailable.");
+    return;
+  }
+
+  let listings = [];
+  let activeCategory = "all";
+
+  const categoryNames = {
+    food: "Food & treats",
+    gifts: "Gifts & toys",
+    fashion: "Fashion",
+    decorations: "Decorations",
+    beauty: "Beauty & care",
+    electronics: "Electronics",
+    services: "Local services",
+    rentals: "Rentals",
+    pre_loved: "Pre-loved",
+    other: "Other"
+  };
+
+  function safe(value) {
+    return String(value ?? "").replace(/[&<>"']/g, c => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[c]);
+  }
+
+  function render() {
+    const term = search.value.trim().toLowerCase();
+
+    const filtered = listings.filter(item => {
+      const matchesCategory =
+        activeCategory === "all" ||
+        item.category === activeCategory;
+
+      const text = [
+        item.title,
+        item.seller_name,
+        item.description,
+        item.category,
+        item.locality
+      ].join(" ").toLowerCase();
+
+      return matchesCategory && text.includes(term);
+    });
+
+    if (!filtered.length) {
+      grid.innerHTML =
+        '<p style="color:#b5b5b5">No approved listings yet. Check back soon! 🎄</p>';
+      return;
+    }
+
+    grid.innerHTML = filtered.map(item => {
+      const image = item.image_url &&
+        /^https?:\/\//i.test(item.image_url)
+        ? `<img src="${safe(item.image_url)}"
+             alt="${safe(item.title)}" loading="lazy">`
+        : '<div class="christmas-placeholder">🎁</div>';
+
+      const price = item.price_label ||
+        (item.price != null
+          ? "₹" + Number(item.price).toLocaleString("en-IN")
+          : "Contact seller");
+
+      const fulfilment = Array.isArray(item.fulfilment_options)
+        ? item.fulfilment_options.map(safe).join(" · ")
+        : "Pickup";
+
+      return `
+        <article class="christmas-card">
+          ${image}
+          <div class="christmas-card-body">
+            <small style="color:#ff8b55;font-weight:900">
+              ${safe(categoryNames[item.category] || item.category)}
+            </small>
+            <h3>${safe(item.title)}</h3>
+            <p>${safe(item.description || "Ask the seller for details.")}</p>
+            <div class="christmas-price">${safe(price)}</div>
+            <div class="christmas-meta">
+              📍 ${safe(item.locality || "Ukhrul")}
+            </div>
+            <div class="christmas-meta">
+              Seller: ${safe(item.seller_name)}
+            </div>
+            <div class="christmas-meta">
+              ${safe(fulfilment)}
+            </div>
+          </div>
+        </article>
+      `;
+    }).join("");
+  }
+
+  async function loadListings() {
+    const { data, error } = await db
+      .from("christmas_listings")
+      .select("id,title,seller_name,category,description,price,price_label,image_url,locality,fulfilment_options")
+      .order("display_order", { ascending: true })
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Christmas listings:", error);
+      grid.innerHTML =
+        '<p style="color:#ff8b55">Christmas Market is temporarily unavailable.</p>';
+      return;
+    }
+
+    listings = data || [];
+    render();
+  }
+
+  categories.addEventListener("click", event => {
+    const button = event.target.closest("[data-category]");
+    if (!button) return;
+
+    activeCategory = button.dataset.category;
+
+    categories.querySelectorAll("button").forEach(btn =>
+      btn.classList.remove("active")
+    );
+
+    button.classList.add("active");
+    render();
+  });
+
+  search.addEventListener("input", render);
+
+  form.addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const fulfilment = [];
+
+    if (document.getElementById("cfPickup").checked)
+      fulfilment.push("pickup");
+
+    if (document.getElementById("cfDelivery").checked)
+      fulfilment.push("local_delivery");
+
+    if (document.getElementById("cfMeetup").checked)
+      fulfilment.push("meetup");
+
+    if (!fulfilment.length) {
+      message.textContent = "Choose at least one collection option.";
+      return;
+    }
+
+    const submit = document.getElementById("cfSubmit");
+    submit.disabled = true;
+    submit.textContent = "Submitting...";
+
+    message.textContent = "";
+
+    const payload = {
+      seller_name: document.getElementById("cfName").value.trim(),
+      business_name: document.getElementById("cfBusiness").value.trim() || null,
+      seller_type: document.getElementById("cfType").value,
+      category: document.getElementById("cfCategory").value,
+      phone: document.getElementById("cfPhone").value.trim(),
+      locality: document.getElementById("cfLocality").value.trim(),
+      description: document.getElementById("cfDescription").value.trim() || null,
+      fulfilment_options: fulfilment,
+      contact_consent: document.getElementById("cfConsent").checked,
+      status: "pending"
+    };
+
+    const { error } = await db
+      .from("christmas_seller_applications")
+      .insert(payload);
+
+    submit.disabled = false;
+    submit.textContent = "Submit seller application";
+
+    if (error) {
+      console.error(error);
+      message.textContent =
+        "Application could not be submitted. Please try again.";
+      return;
+    }
+
+    form.reset();
+    document.getElementById("cfLocality").value = "Ukhrul";
+    document.getElementById("cfPickup").checked = true;
+
+    message.textContent =
+      "🎉 Application received! Foozy will review it and contact you.";
+  });
+
+  loadListings();
+})();
 
 /* SEARCH AND CATEGORIES */
 
@@ -4011,6 +4528,11 @@ categories = categories.filter(Boolean);
     <span class="foozy-nav-icon">🏷️</span>
     <span>Offers</span>
   </button>
+  <button class="foozy-nav-item"
+        onclick="document.getElementById('christmasFest').scrollIntoView({behavior:'smooth'})">
+  <span class="foozy-nav-icon">🎄</span>
+  <span>Fest</span>
+</button>
 <a class="foozy-nav-item" href="./order-status.html">
     <span class="foozy-nav-icon">▤</span>
     <span>Orders</span>
