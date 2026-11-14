@@ -1,0 +1,701 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#15110f">
+<title>Foozy Christmas Fest | Ukhrul</title>
+<meta name="description" content="Shop local and celebrate together at Foozy Christmas Fest in Ukhrul. Discover food, gifts, fashion, decorations, rentals and more.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root {
+  --orange:#ff6b2c;
+  --dark:#15110f;
+  --panel:#211b18;
+  --muted:#bdb2ac;
+  --green:#1c9b62;
+  --cream:#fff6ed;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body {
+  font-family:'Nunito',sans-serif;
+  background:#faf8f5;
+  color:#211b18;
+}
+button,input,select,textarea { font:inherit; }
+button { cursor:pointer; }
+.container { width:min(1120px,92%); margin:auto; }
+header {
+  background:#15110f;
+  color:white;
+  padding:15px 0;
+  position:sticky;
+  top:0;
+  z-index:20;
+  border-bottom:1px solid #ffffff18;
+}
+.nav {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+}
+.logo { font-size:27px; font-weight:900; letter-spacing:-1px; }
+.logo span { color:var(--orange); }
+.nav a {
+  color:white;
+  text-decoration:none;
+  font-weight:800;
+  font-size:14px;
+}
+.nav-links { display:flex; gap:20px; align-items:center; }
+.nav-cta {
+  background:var(--orange);
+  color:white !important;
+  padding:10px 15px;
+  border-radius:11px;
+}
+.hero {
+  background:
+    radial-gradient(circle at 85% 20%,#8c321f 0,transparent 32%),
+    linear-gradient(130deg,#15110f,#342018 65%,#542719);
+  color:white;
+  padding:75px 0 68px;
+  overflow:hidden;
+}
+.hero-grid {
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
+  gap:35px;
+  align-items:center;
+}
+.eyebrow {
+  color:#ffc49f;
+  font-size:12px;
+  font-weight:900;
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+.hero h1 {
+  font-size:clamp(43px,7vw,76px);
+  line-height:1.02;
+  letter-spacing:-2px;
+  margin:17px 0;
+}
+.hero h1 span { color:#ff8b55; }
+.hero p {
+  color:#eadbd2;
+  line-height:1.8;
+  max-width:510px;
+}
+.hero-actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:27px; }
+.btn {
+  border:0;
+  border-radius:12px;
+  padding:13px 19px;
+  font-weight:900;
+  text-decoration:none;
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+}
+.btn-orange { background:var(--orange); color:white; }
+.btn-light { background:white; color:#211b18; }
+.hero-art {
+  min-height:270px;
+  border:1px solid #ffffff25;
+  border-radius:28px;
+  background:linear-gradient(145deg,#ffffff18,#ffffff08);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:clamp(90px,15vw,155px);
+  box-shadow:0 25px 60px #0003;
+}
+.hero-note { color:#d8c5b8; font-size:12px; margin-top:20px; }
+.info-strip {
+  background:#fff0e5;
+  padding:14px 0;
+  color:#69351f;
+  font-size:13px;
+  font-weight:800;
+  text-align:center;
+}
+section { padding:55px 0; }
+.section-head { margin-bottom:24px; }
+.section-head h2 {
+  font-size:clamp(27px,4vw,38px);
+  letter-spacing:-1px;
+}
+.section-head p { color:#766d67; margin-top:5px; line-height:1.6; }
+.categories {
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:12px;
+}
+.category {
+  border:1px solid #eee2d9;
+  background:white;
+  border-radius:17px;
+  padding:18px 8px;
+  text-align:center;
+  color:#2b211c;
+  transition:.2s;
+}
+.category:hover,.category.active {
+  border-color:var(--orange);
+  background:#fff0e7;
+  transform:translateY(-2px);
+}
+.category .emoji { font-size:30px; display:block; margin-bottom:7px; }
+.category strong { font-size:13px; }
+.toolbar {
+  display:flex;
+  gap:10px;
+  margin-bottom:20px;
+}
+.toolbar input {
+  flex:1;
+  min-width:0;
+  border:1px solid #e8ded6;
+  border-radius:12px;
+  padding:13px 15px;
+  background:white;
+  outline:none;
+}
+.toolbar input:focus,.field input:focus,.field select:focus,.field textarea:focus {
+  border-color:var(--orange);
+  box-shadow:0 0 0 3px #ff6b2c18;
+}
+.listing-grid {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:17px;
+}
+.listing {
+  background:white;
+  border:1px solid #eee6df;
+  border-radius:18px;
+  overflow:hidden;
+}
+.listing img {
+  width:100%;
+  height:175px;
+  object-fit:cover;
+  background:#f1e8e0;
+}
+.listing-placeholder {
+  height:175px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:55px;
+  background:linear-gradient(135deg,#fff0e5,#f4ded0);
+}
+.listing-body { padding:16px; }
+.listing-tag {
+  display:inline-block;
+  background:#fff0e5;
+  color:#a6471f;
+  padding:5px 9px;
+  border-radius:30px;
+  font-size:11px;
+  font-weight:900;
+  text-transform:capitalize;
+}
+.listing h3 { margin:9px 0 4px; font-size:18px; }
+.listing p { color:#746a64; font-size:13px; line-height:1.6; }
+.listing-meta {
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  margin-top:12px;
+  font-size:12px;
+  color:#766d67;
+}
+.price { color:#1c8655; font-weight:900; font-size:16px; }
+.empty {
+  background:white;
+  border:1px dashed #d9c9bd;
+  border-radius:18px;
+  padding:35px 20px;
+  text-align:center;
+  color:#766d67;
+  grid-column:1/-1;
+  line-height:1.7;
+}
+.empty strong { display:block; color:#2b211c; font-size:18px; margin-bottom:5px; }
+.seller-section { background:#17120f; color:white; }
+.seller-grid {
+  display:grid;
+  grid-template-columns:.8fr 1.2fr;
+  gap:35px;
+  align-items:start;
+}
+.seller-copy h2 {
+  font-size:clamp(30px,4vw,43px);
+  line-height:1.1;
+  margin:12px 0;
+}
+.seller-copy p { color:#c9bcb4; line-height:1.8; }
+.seller-points { margin-top:22px; display:grid; gap:12px; color:#eee0d7; font-size:14px; }
+.form-card {
+  background:white;
+  color:#211b18;
+  border-radius:22px;
+  padding:25px;
+}
+.form-card h3 { font-size:23px; margin-bottom:5px; }
+.form-card .sub { color:#766d67; font-size:13px; margin-bottom:20px; }
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:13px; }
+.field { display:flex; flex-direction:column; gap:6px; }
+.field.full { grid-column:1/-1; }
+.field label { font-size:12px; font-weight:900; }
+.field input,.field select,.field textarea {
+  width:100%;
+  padding:12px;
+  border:1px solid #e7ddd5;
+  border-radius:10px;
+  outline:none;
+  background:white;
+  color:#211b18;
+}
+.field textarea { min-height:90px; resize:vertical; }
+.checks { display:flex; gap:14px; flex-wrap:wrap; font-size:13px; }
+.checks label { display:flex; align-items:center; gap:6px; font-weight:700; }
+.consent {
+  display:flex;
+  gap:9px;
+  align-items:flex-start;
+  font-size:12px;
+  line-height:1.5;
+  color:#655b55;
+  margin:16px 0;
+}
+.consent input { margin-top:3px; }
+.submit-btn { width:100%; }
+#formMessage { margin-top:12px; font-size:13px; line-height:1.5; }
+.success { color:#16804e; }
+.error { color:#c33b2d; }
+.local-note {
+  background:#fff0e5;
+  border:1px solid #f2d6c4;
+  border-radius:17px;
+  padding:20px;
+  line-height:1.7;
+  color:#63351f;
+}
+footer {
+  background:#100d0b;
+  color:#c7b9b0;
+  padding:28px 0;
+  font-size:13px;
+}
+.footer-row {
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+  flex-wrap:wrap;
+}
+footer a { color:#ff9a6d; text-decoration:none; }
+@media(max-width:800px) {
+  .hero-grid,.seller-grid { grid-template-columns:1fr; }
+  .hero-art { min-height:190px; }
+  .categories { grid-template-columns:repeat(3,1fr); }
+  .listing-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:520px) {
+  .nav-links a:not(.nav-cta) { display:none; }
+  .hero { padding:55px 0; }
+  section { padding:42px 0; }
+  .categories { grid-template-columns:repeat(2,1fr); }
+  .listing-grid { grid-template-columns:1fr; }
+  .form-grid { grid-template-columns:1fr; }
+  .field.full { grid-column:auto; }
+  .form-card { padding:19px; }
+  .toolbar { flex-direction:column; }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="container nav">
+    <a class="logo" href="./index.html">FOOZY<span>.</span></a>
+    <nav class="nav-links">
+      <a href="#discover">Discover</a>
+      <a href="#local-info">How it works</a>
+      <a class="nav-cta" href="#seller">Become a seller</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="eyebrow">🎄 December 2026 · Ukhrul, Manipur</div>
+        <h1>Foozy<br><span>Christmas Fest</span></h1>
+        <p>
+          Shop local. Celebrate together. Discover Christmas food,
+          gifts, fashion, decorations, beauty, electronics, services,
+          rentals and pre-loved finds from our local community.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-orange" href="#discover">Explore the fest</a>
+          <a class="btn btn-light" href="#seller">Join as a seller</a>
+        </div>
+        <div class="hero-note">Support local shops, home businesses and creators in Ukhrul.</div>
+      </div>
+      <div class="hero-art" aria-label="Christmas decorations">🎄🎁</div>
+    </div>
+  </section>
+
+  <div class="info-strip">
+    📍 Ukhrul first · Local pickup and locally confirmed delivery · No out-of-town delivery promise
+  </div>
+
+  <section id="discover">
+    <div class="container">
+      <div class="section-head">
+        <h2>Explore the Christmas market</h2>
+        <p>Find something special from local sellers and businesses.</p>
+      </div>
+
+      <div class="categories" id="categoryButtons">
+        <button class="category active" data-category="all"><span class="emoji">✨</span><strong>All</strong></button>
+        <button class="category" data-category="food"><span class="emoji">🍰</span><strong>Food & treats</strong></button>
+        <button class="category" data-category="gifts"><span class="emoji">🎁</span><strong>Gifts & toys</strong></button>
+        <button class="category" data-category="fashion"><span class="emoji">👗</span><strong>Fashion</strong></button>
+        <button class="category" data-category="decorations"><span class="emoji">🎄</span><strong>Decorations</strong></button>
+        <button class="category" data-category="beauty"><span class="emoji">💄</span><strong>Beauty & care</strong></button>
+        <button class="category" data-category="electronics"><span class="emoji">🎧</span><strong>Electronics</strong></button>
+        <button class="category" data-category="services"><span class="emoji">🛠️</span><strong>Local services</strong></button>
+        <button class="category" data-category="rentals"><span class="emoji">🔊</span><strong>Rentals</strong></button>
+        <button class="category" data-category="pre_loved"><span class="emoji">♻️</span><strong>Pre-loved</strong></button>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="container">
+      <div class="section-head">
+        <h2>Local finds</h2>
+        <p>Only listings approved for the Christmas Fest appear here.</p>
+      </div>
+      <div class="toolbar">
+        <input id="searchInput" type="search" placeholder="Search products, gifts, services...">
+      </div>
+      <div class="listing-grid" id="listingGrid">
+        <div class="empty"><strong>Loading the Christmas market...</strong>Please wait.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="local-info" style="padding-top:0">
+    <div class="container">
+      <div class="local-note">
+        <strong>Shopping locally, made simple 🎁</strong><br>
+        Contact the seller to confirm stock, price and collection details.
+        Pickup is the default. Local delivery or meet-up must be arranged
+        and confirmed directly with the seller. Availability and delivery
+        are not guaranteed until the seller confirms them.
+      </div>
+    </div>
+  </section>
+
+  <section class="seller-section" id="seller">
+    <div class="container seller-grid">
+      <div class="seller-copy">
+        <div class="eyebrow">Be part of the celebration</div>
+        <h2>Have something to sell or offer?</h2>
+        <p>
+          Join Foozy Christmas Fest. We welcome local shops, home businesses,
+          food makers, creators, service providers and people offering rentals
+          or pre-loved items.
+        </p>
+        <div class="seller-points">
+          <div>✓ No need to own a physical shop</div>
+          <div>✓ Food, products, services and rentals welcome</div>
+          <div>✓ Local pickup and delivery arrangements</div>
+          <div>✓ Your application is reviewed before approval</div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h3>Seller registration</h3>
+        <p class="sub">Send your details. Foozy will review your application.</p>
+
+        <form id="sellerForm">
+          <div class="form-grid">
+            <div class="field">
+              <label for="sellerName">Your name *</label>
+              <input id="sellerName" name="sellerName" required maxlength="100" placeholder="Full name">
+            </div>
+            <div class="field">
+              <label for="businessName">Shop / business name</label>
+              <input id="businessName" name="businessName" maxlength="120" placeholder="Optional">
+            </div>
+            <div class="field">
+              <label for="sellerType">Seller type *</label>
+              <select id="sellerType" name="sellerType" required>
+                <option value="">Choose one</option>
+                <option value="local_business">Local business / shop</option>
+                <option value="home_business">Home business</option>
+                <option value="individual">Individual seller</option>
+                <option value="creator">Creator / handmade products</option>
+                <option value="service">Service provider</option>
+                <option value="rental">Rental provider</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="sellerCategory">Main category *</label>
+              <select id="sellerCategory" name="sellerCategory" required>
+                <option value="">Choose category</option>
+                <option value="food">Food & treats</option>
+                <option value="gifts">Gifts & toys</option>
+                <option value="fashion">Fashion</option>
+                <option value="decorations">Decorations</option>
+                <option value="beauty">Beauty & care</option>
+                <option value="electronics">Electronics</option>
+                <option value="services">Local services</option>
+                <option value="rentals">Rentals</option>
+                <option value="pre_loved">Pre-loved</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="sellerPhone">Phone / WhatsApp *</label>
+              <input id="sellerPhone" name="sellerPhone" type="tel" required maxlength="25" placeholder="Your contact number">
+            </div>
+            <div class="field">
+              <label for="sellerLocality">Village / locality *</label>
+              <input id="sellerLocality" name="sellerLocality" required maxlength="120" value="Ukhrul" placeholder="Your location">
+            </div>
+            <div class="field full">
+              <label for="sellerDescription">What do you want to sell or offer?</label>
+              <textarea id="sellerDescription" name="sellerDescription" maxlength="1000" placeholder="Briefly describe your products or services"></textarea>
+            </div>
+            <div class="field full">
+              <label>How can customers receive it?</label>
+              <div class="checks">
+                <label><input type="checkbox" name="fulfilment" value="pickup" checked> Pickup</label>
+                <label><input type="checkbox" name="fulfilment" value="local_delivery"> Local delivery</label>
+                <label><input type="checkbox" name="fulfilment" value="meetup"> Meet-up</label>
+              </div>
+            </div>
+          </div>
+
+          <label class="consent">
+            <input type="checkbox" id="contactConsent" required>
+            <span>I agree that Foozy may contact me about this Christmas Fest application. My contact details will not be shown publicly on the market page.</span>
+          </label>
+
+          <button class="btn btn-orange submit-btn" id="submitBtn" type="submit">Submit seller application</button>
+          <div id="formMessage" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container footer-row">
+    <div><strong>FOOZY.</strong> Christmas Fest · Ukhrul, Manipur</div>
+    <div><a href="./index.html">Back to Foozy</a> · Shop local, celebrate together.</div>
+  </div>
+</footer>
+
+<script>
+const SUPABASE_URL = "https://snmufxscviahmmsdbess.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Ix1rMiMTqPQIsBEM708shg_POK6_JM8";
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const listingGrid = document.getElementById("listingGrid");
+const searchInput = document.getElementById("searchInput");
+const categoryButtons = document.getElementById("categoryButtons");
+const sellerForm = document.getElementById("sellerForm");
+const submitBtn = document.getElementById("submitBtn");
+const formMessage = document.getElementById("formMessage");
+
+let allListings = [];
+let activeCategory = "all";
+
+const categoryNames = {
+  food:"Food & treats",
+  gifts:"Gifts & toys",
+  fashion:"Fashion",
+  decorations:"Decorations",
+  beauty:"Beauty & care",
+  electronics:"Electronics",
+  services:"Local services",
+  rentals:"Rentals",
+  pre_loved:"Pre-loved",
+  other:"Other"
+};
+
+function escapeHTML(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  })[char]);
+}
+
+function formatPrice(item) {
+  if (item.price_label) return escapeHTML(item.price_label);
+  if (item.price !== null && item.price !== undefined) {
+    return "₹" + Number(item.price).toLocaleString("en-IN");
+  }
+  return "Contact seller";
+}
+
+function renderListings() {
+  const term = searchInput.value.trim().toLowerCase();
+
+  const filtered = allListings.filter(item => {
+    const matchesCategory = activeCategory === "all" || item.category === activeCategory;
+    const searchable = [
+      item.title, item.seller_name, item.description,
+      item.category, item.locality, item.listing_type
+    ].join(" ").toLowerCase();
+    return matchesCategory && searchable.includes(term);
+  });
+
+  if (!filtered.length) {
+    listingGrid.innerHTML = `
+      <div class="empty">
+        <strong>No listings here yet 🎄</strong>
+        Local sellers are being added. Check back soon or register as a seller.
+      </div>`;
+    return;
+  }
+
+  listingGrid.innerHTML = filtered.map(item => {
+    const image = item.image_url && /^https?:\/\//i.test(item.image_url)
+      ? `<img src="${escapeHTML(item.image_url)}" alt="${escapeHTML(item.title)}" loading="lazy">`
+      : `<div class="listing-placeholder">🎁</div>`;
+
+    const fulfilment = Array.isArray(item.fulfilment_options)
+      ? item.fulfilment_options.map(x => x.replace("_"," ")).join(" · ")
+      : "Pickup";
+
+    return `
+      <article class="listing">
+        ${image}
+        <div class="listing-body">
+          <span class="listing-tag">${escapeHTML(categoryNames[item.category] || item.category)} · ${escapeHTML(item.listing_type)}</span>
+          <h3>${escapeHTML(item.title)}</h3>
+          <p>${escapeHTML(item.description || "Ask the seller for more details.")}</p>
+          <div class="listing-meta">
+            <span>📍 ${escapeHTML(item.locality || "Ukhrul")}</span>
+            <span class="price">${formatPrice(item)}</span>
+          </div>
+          <div class="listing-meta">
+            <span>Seller: ${escapeHTML(item.seller_name)}</span>
+            <span>${escapeHTML(fulfilment)}</span>
+          </div>
+        </div>
+      </article>`;
+  }).join("");
+}
+
+async function loadListings() {
+  listingGrid.innerHTML = `<div class="empty"><strong>Loading...</strong>Finding local listings.</div>`;
+
+  const { data, error } = await db
+    .from("christmas_listings")
+    .select("id,title,seller_name,category,listing_type,description,price,price_label,image_url,locality,fulfilment_options")
+    .order("display_order", { ascending:true })
+    .order("created_at", { ascending:false });
+
+  if (error) {
+    console.error("Christmas listings:", error);
+    listingGrid.innerHTML = `
+      <div class="empty">
+        <strong>Market temporarily unavailable</strong>
+        Please try refreshing the page later.
+      </div>`;
+    return;
+  }
+
+  allListings = data || [];
+  renderListings();
+}
+
+categoryButtons.addEventListener("click", event => {
+  const button = event.target.closest("[data-category]");
+  if (!button) return;
+
+  activeCategory = button.dataset.category;
+  categoryButtons.querySelectorAll(".category").forEach(el => el.classList.remove("active"));
+  button.classList.add("active");
+  renderListings();
+});
+
+searchInput.addEventListener("input", renderListings);
+
+sellerForm.addEventListener("submit", async event => {
+  event.preventDefault();
+
+  const fulfilment = [...sellerForm.querySelectorAll('input[name="fulfilment"]:checked')]
+    .map(input => input.value);
+
+  if (!fulfilment.length) {
+    formMessage.className = "error";
+    formMessage.textContent = "Please choose at least one collection or delivery option.";
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Submitting...";
+  formMessage.className = "";
+  formMessage.textContent = "";
+
+  const payload = {
+    seller_name: document.getElementById("sellerName").value.trim(),
+    business_name: document.getElementById("businessName").value.trim() || null,
+    seller_type: document.getElementById("sellerType").value,
+    category: document.getElementById("sellerCategory").value,
+    phone: document.getElementById("sellerPhone").value.trim(),
+    locality: document.getElementById("sellerLocality").value.trim(),
+    description: document.getElementById("sellerDescription").value.trim() || null,
+    fulfilment_options: fulfilment,
+    contact_consent: document.getElementById("contactConsent").checked,
+    status: "pending"
+  };
+
+  const { error } = await db
+    .from("christmas_seller_applications")
+    .insert(payload);
+
+  submitBtn.disabled = false;
+  submitBtn.textContent = "Submit seller application";
+
+  if (error) {
+    console.error("Seller application:", error);
+    formMessage.className = "error";
+    formMessage.textContent = "We couldn't submit your application. Please check your connection and try again.";
+    return;
+  }
+
+  sellerForm.reset();
+  document.getElementById("sellerLocality").value = "Ukhrul";
+  sellerForm.querySelector('input[value="pickup"]').checked = true;
+
+  formMessage.className = "success";
+  formMessage.textContent = "Application received! Foozy will review it and contact you.";
+});
+
+loadListings();
+</script>
+</body>
+</html>
